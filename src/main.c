@@ -1,7 +1,8 @@
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "global_vars.h"
-#include "parser.h"
+#include "main_functions.h"
 #include "utils.h"
 
 int main(int argc, char* argv[])
@@ -39,6 +40,8 @@ int main(int argc, char* argv[])
     print_instruction(&program[i / 4]);
   }
 
+  pthread_create(&threads[0], NULL, instruction_fetch, (void*)NULL);
+  pthread_join(threads[0], NULL);
   fclose(code);
   fclose(svg);
   return 0;

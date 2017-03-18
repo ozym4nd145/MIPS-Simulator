@@ -1,6 +1,8 @@
 #ifndef GLOBAL_VARS_H
 #define GLOBAL_VARS_H
 
+#include <pthread.h>
+
 /**
 * Instruction memory
 */
@@ -44,9 +46,20 @@ typedef struct buffer
   int Register[32];
 } buffer;
 
+typedef struct
+{
+  int stall;
+
+} signal;
+
 extern buffer pipeline[NUM_PIPELINES];
 extern instruction program[INSTRUCTION_MEM];
 extern int register_file[32];
 extern int PC;
 extern int MAX_PC;  // in bytes == 4*number of instructions
+extern int STEPS;   // counts the numbers of steps taken
+extern pthread_t threads[NUM_PIPELINES];  // Threads corresponding to different
+                                          // pipeline threads
+extern signal control_signal;
+
 #endif
