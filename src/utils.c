@@ -77,3 +77,25 @@ char *get_instruction_name(const instruction_type instr)
   }
   return NULL;
 }
+
+void int_to_binary(int au)
+{
+  unsigned a = au;
+  printf("Value - %u\n",a);
+  char s[35];int k=31;
+  s[32]='\0';
+  while(k>=0)
+  {
+    if(a%2==0)
+      s[k]='0';
+    else s[k]='1';
+    a/=2;
+    k--;
+  }
+  printf("%s\n",s);
+}
+
+int lsr(int x,int n)
+{
+  return (int)((unsigned int)x >> n);
+}

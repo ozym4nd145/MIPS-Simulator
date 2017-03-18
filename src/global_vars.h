@@ -43,7 +43,7 @@ typedef struct
 typedef struct buffer
 {
   instruction instr;
-  int Register[32];
+  int rs_val,rt_val,rd_val,alu_result;
 } buffer;
 
 typedef struct
