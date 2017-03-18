@@ -21,13 +21,17 @@ instruction instruction_parse(int a)
   instruction *information = (instruction *)malloc(sizeof(instruction));
 
   int temp = 63;
-  information->opcode = (a & (temp << 26)) >> 26;
+  
+  information->opcode = lsr((a & (temp << 26)),26);
+  
+  
+  //printf("%d\n",information->opcode);
   temp = (temp >> 1);
-  information->rs = (a & (temp << 21)) >> 21;
-  information->rt = (a & (temp << 16)) >> 16;
-  information->rd = (a & (temp << 11)) >> 11;
-  information->shf_amt = (a & (temp << 6)) >> 6;
-  information->function = a & ((temp << 1) & 1);
+  information->rs = lsr((a & (temp << 21)), 21);
+  information->rt = lsr((a & (temp << 16)), 16);
+  information->rd = lsr((a & (temp << 11)), 11);
+  information->shf_amt = lsr((a & (temp << 6)), 6);
+  information->function = a & ((temp << 1) | 1);
   information->immediate =
       information->rd | information->shf_amt | information->function;
   information->target_address =

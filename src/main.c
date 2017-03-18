@@ -24,17 +24,17 @@ int main(int argc, char* argv[])
   char* a = malloc(sizeof(char) * 10);
   int i = 0;
 
-  while (fscanf(code, "%s", a))
+  while (fscanf(code, "%s", a)!=EOF)
   {
     int num = (int)strtol(a, NULL, 16);
     program[i++] = instruction_parse(num);
-    print_instruction(&program[i - 1]);
+    //print_instruction(&program[i - 1]);
   }
   free(a);
 
   MAX_PC = 4 * (i - 1);
 
-  for (i = 0; i < MAX_PC; i += 4)
+  for (i = 0; i <= MAX_PC; i += 4)
   {
     print_instruction(&program[i / 4]);
   }
