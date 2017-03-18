@@ -6,17 +6,18 @@
 #include "utils.h"
 // typedef enum { Monday, Tuesday Thursday} days;
 
-int input()
+int input(FILE *fl)
 {
   char *a = malloc(sizeof(char) * 10);
-  scanf("%s,",`a);
-
+  fscanf(fl, "%s", a);
   int num = (int)strtol(a, NULL, 16);
+  free(a);
   return num;
 }
 
-instruction *instruction_set(int a)
+instruction instruction_parse(int a)
 {
+  printf("Instruction %08x\n", a);
   instruction *information = (instruction *)malloc(sizeof(instruction));
 
   int temp = 63;
@@ -27,7 +28,8 @@ instruction *instruction_set(int a)
   information->rd = (a & (temp << 11)) >> 11;
   information->shf_amt = (a & (temp << 6)) >> 6;
   information->function = a & ((temp << 1) & 1);
-  information->immediate = rd | shf_amt | funct;
+  information->immediate =
+      information->rd | information->shf_amt | information->function;
   information->target_address =
       information->immediate | information->rs | information->rt;
 
@@ -79,7 +81,7 @@ instruction *instruction_set(int a)
            information->shf_amt == 0)
   {
     information->Ctype = DP;
-    information->Itype = SUBTRACT;
+    information->Itype = SUB;
   }
   else if (information->opcode == 4)
   {
@@ -130,25 +132,6 @@ instruction *instruction_set(int a)
   {
     throw_error("Wrong Instruction Set.");
   }
+
+  return *information;
 }
-
-// int hex_to_int(char *a)
-// {
-// 	int i=0;
-// 	int mul=1;
-// 	int res=0;
-
-// 	int x=strlen(a);
-
-// 	for(int i=x-1;i>=0;i--)
-// 	{
-// 		if(a[i]>='a' && a[i]<='f')
-// 		{
-// 			res+=(a[i]-'a'+10)*
-// 		}
-// 	}
-
-// }
-
-void instruction_decode() {}
-int main(int argc, char *argv[]) { printf("%d", input()); }

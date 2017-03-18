@@ -33,3 +33,6 @@
 *.su
  
 ignore/
+*.txt
+*.svg
+.vscode/

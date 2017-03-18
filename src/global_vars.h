@@ -41,9 +41,12 @@ typedef struct
 typedef struct buffer
 {
   instruction instr;
-  int register[32];
+  int Register[32];
 } buffer;
 
 extern buffer pipeline[NUM_PIPELINES];
-
+extern instruction program[INSTRUCTION_MEM];
+extern int register_file[32];
+extern int PC;
+extern int MAX_PC;  // in bytes == 4*number of instructions
 #endif
