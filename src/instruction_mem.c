@@ -8,7 +8,7 @@
 
 void* instruction_fetch(void* data)
 {
-  printf("Inside Instruction fetch");
+  printf("Inside Instruction fetch\n");
   char input[100];
   while (1)
   {
@@ -16,10 +16,10 @@ void* instruction_fetch(void* data)
     if (strcmp(input, "step") == 0)
     {
       STEPS++;
-      if (control_signal.stall == 1)
+      if (control_signal.stall == 0)
       {
         PC = PC + 4;
-        printf("PC - %d", PC);
+        printf("PC - %d\n", PC);
         pipeline[0].instr = program[PC / 4];
       }
       else
