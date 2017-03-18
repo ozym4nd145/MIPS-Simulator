@@ -4,6 +4,6 @@
 
 void throw_error(char *a)
 {
-	fprint(stderr,"%s\n",a);
-	exit(-1);
+  fprint(stderr, "%s\n", a);
+  exit(-1);
 }
