@@ -55,13 +55,29 @@ typedef struct
 
 extern buffer pipeline[NUM_PIPELINES];
 extern instruction program[INSTRUCTION_MEM];
-extern int register_file[32];
-extern int PC;
-extern int MAX_PC;  // in bytes == 4*number of instructions
-extern int STEPS;   // counts the numbers of steps taken
-extern pthread_t
-    threads[NUM_PIPELINES + 1];  // Threads corresponding to different
-                                 // pipeline threads
 extern signal control_signal;
+
+extern int register_file[32];
+extern int PC = 0;
+extern int MAX_PC = 0;
+extern int STEPS = 0;
+extern int CLOCK =
+    0;  // emulates the clock which all of the instructions follow
+extern double FREQUENCY = 0;
+extern unsigned int DELAY =
+    1000;  // sleep delay for each thread in micro seconds
+extern int NUM_THREADS_READ =
+    0;  // number of threads that have completed the copy stage
+        // from buffer
+extern int NUM_THREADS_WRITE =
+    0;  // number of threads that have completed processing for
+        // that particular cycle
+extern pthread_t threads[NUM_THREADS];
+
+extern int Memory_Block[MEMORY_SIZE];
+
+extern pthread_mutex_t CLOCK_LOCK;
+extern pthread_mutex_t READ_LOCK;
+extern pthread_mutex_t WRITE_LOCK;
 
 #endif
