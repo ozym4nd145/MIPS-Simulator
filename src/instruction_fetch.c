@@ -28,7 +28,12 @@ void* instruction_fetch(void* data)
 
       int stall = control_signal.stall;
       temp_pc = PC;
-      PC += 4;
+
+      if (stall == 0)
+      {
+        PC += 4;
+      }
+
       // loop until reading stage has completed
       while (1)
       {
