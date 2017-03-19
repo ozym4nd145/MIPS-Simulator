@@ -120,8 +120,8 @@ int lsr(int x, int n) { return (int)((unsigned int)x >> n); }
 void instruction_to_file(char *s, buffer instruct)
 {
   FILE *write = fopen(s, "a");
-  fprintf(write, "CLOCK %d\n",CLOCK );
-  fprintf(write, "Number Thread Read %d\n",NUM_THREADS_READ );
+  // fprintf(write, "CLOCK %d\n",CLOCK );
+  // fprintf(write, "Number Thread Read %d\n",NUM_THREADS_READ );
 
   fprintf(write, "Register RS %d\n", instruct.instr.rs);
   fprintf(write, "Register RT %d\n", instruct.instr.rt);
