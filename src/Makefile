@@ -1,2 +1,2 @@
 simulator: main.c global_vars.c utils.c parser.c instruction_fetch.c
-	gcc -g -Wall main.c global_vars.c utils.c parser.c instruction_fetch.c data_memory.c register_read.c register_write.c thread_alu.c -lpthread
+	gcc -g -Wall -o simulator main.c global_vars.c utils.c parser.c instruction_fetch.c data_memory.c register_read.c register_write.c thread_alu.c -lpthread

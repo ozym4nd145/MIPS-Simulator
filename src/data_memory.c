@@ -35,7 +35,7 @@ void* memory_op(void* data)
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
-      printf("DM - Increased NUMREAD - %d\n",NUM_THREADS_READ);
+      printf("DM - Increased NUMREAD - %d\n", NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
       // FILE *opener;
@@ -113,7 +113,7 @@ void* memory_op(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-      instruction_to_file("results/4_data_memory_thread.txt", pipeline[1]);
+      instruction_to_file("results/4_data_memory_thread.txt", pipeline[3]);
     }
     usleep(DELAY);
   }

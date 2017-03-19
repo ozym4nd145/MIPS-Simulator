@@ -49,7 +49,15 @@ int main(int argc, char* argv[])
 
   for (i = 0; i < MEMORY_SIZE; i++)
   {
-    Memory_Block[i] = 0;
+    Memory_Block[i] = 1;  // Just for checking
+    // Memory_Block[i] = 0;
+  }
+
+  // Initialize register file
+  for (i = 0; i < 32; i++)
+  {
+    register_file[i] = i + 1;  // Just for checking
+    // register_file[i] = 0;
   }
 
   // Initializing mutex locks
