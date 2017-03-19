@@ -34,6 +34,7 @@ instruction instruction_parse(int a)
   information->function = a & ((temp << 1) | 1);
   information->immediate =
       information->rd | information->shf_amt | information->function;
+  information->immediate = (information->immediate << 16)>>16;
   information->target_address =
       information->immediate | information->rs | information->rt;
 
