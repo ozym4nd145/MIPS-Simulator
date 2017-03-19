@@ -1,57 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include "global_vars.h"
+#include "main_functions.h"
+#include "utils.h"
 
 void* memory_op(void* data)
 {
   while (1)
   {
-    if (pipeline[2].instr.Itype == NO_OP)
+    if (read)
     {
-      // sleep;
-      pipeline[3].instr.Itype = NO_OP;
+      temp_pipeline[2] = pipeline[2];
     }
-    if (pipeline[2].instr.Ctype == DT)
+    else
     {
-      int write_val = pipeline[2].rt_val;
-      int offset = pipeline[2].alu_result;
-
-      if ((pipeline[3].instr.Itype == LDR_WRD ||
-           pipeline[3].instr.Itype == LDR_BYTE) &&
-          pipeline[3].instr.rt == pipeline[2].instr.rt)
+      pipeline[3] = temp_pipeline[2];
+      if (temp_pipeline[2].instr.Itype == NO_OP)
       {
-        write_val = pipeline[3].rt_val;
+        // sleep;
       }
-      else if ((pipeline[3].instr.Ctype == DP) &&
-               pipeline[3].instr.rd == pipeline[2].instr.rt)
+      if (temp_pipeline[2].instr.Ctype == DT)
       {
-        write_val = pipeline[3].rd_val;
-      }
+        int write_val = temp_pipeline[2].rt_val;
+        int offset = temp_pipeline[2].alu_result;
 
-      switch (pipeline[2].Itype)
-      {
-        case LDR_WRD:
+        if ((temp_pipeline[3].instr.Itype == LDR_WRD ||
+             temp_pipeline[3].instr.Itype == LDR_BYTE) &&
+            temp_pipeline[3].instr.rt == temp_pipeline[2].instr.rt)
         {
-          pipeline[3].rt_val = Memory_Block[offset / 4];
-          break;
+          write_val = temp_pipeline[3].rt_val;
         }
-        case LDR_BYTE:
+        else if ((temp_pipeline[3].instr.Ctype == DP) &&
+                 temp_pipeline[3].instr.rd == temp_pipeline[2].instr.rt)
         {
-          pipeline[3].rt_val = Memory_Block[offset / 4];
-          break;
+          write_val = temp_pipeline[3].rd_val;
         }
-        case STR_WRD:
+
+        switch (temp_pipeline[2].Itype)
         {
-          Memory_Block[offset / 4] = write_val;
-          break;
-        }
-        case STR_BYTE:
-        {
-          Memory_Block[offset / 4] = write_val;
-          break;
+          case LDR_WRD:
+          {
+            pipeline[3].rt_val = Memory_Block[offset / 4];
+            break;
+          }
+          case LDR_BYTE:
+          {
+            pipeline[3].rt_val = Memory_Block[offset / 4];
+            break;
+          }
+          case STR_WRD:
+          {
+            Memory_Block[offset / 4] = write_val;
+            break;
+          }
+          case STR_BYTE:
+          {
+            Memory_Block[offset / 4] = write_val;
+            break;
+          }
         }
       }
     }
-    pipeline[3].instr = pipeline[2].instr;
-    pipeline[3].alu_result = pipeline[2].alu_result;
-    pipeline[3].rs_val = write_val;
-    pipeline[3].pc = pipeline[2].pc;
   }
 }

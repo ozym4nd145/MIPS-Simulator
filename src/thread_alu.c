@@ -1,36 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include "global_vars.h"
+#include "main_functions.h"
+#include "utils.h"
 
 void alu_op()
 {
-  int r1 = pipeline[1].rs_val;
-  int r2 = pipeline[1].rt_val;
+  while(1)
+  {
 
-  if (pipeline[1].instr.rs == pipeline[2].instr.rd &&
+    if(read)
+    {
+      temp_pipeline[1]=pipeline[1];
+    }
+    else
+    {
+      pipeline[2]=temp_pipeline[1];
+  int r1 = temp_pipeline[1].rs_val;
+  int r2 = temp_pipeline[1].rt_val;
+
+  if (temp_pipeline[1].instr.rs == pipeline[2].instr.rd &&
       pipeline[2].instr.Ctype == DP)
   {
     r1 = pipeline[2].alu_result;
   }
-  else if (pipeline[1].instr.rs == pipeline[3].instr.rt &&
+  else if (temp_pipeline[1].instr.rs == pipeline[3].instr.rt &&
            pipeline[3].instr.Itype == LDR_WRD)
   {
     r1 = pipeline[3].rt_val;
   }
 
-  if (pipeline[1].instr.rt == pipeline[2].instr.rd &&
+  if (temp_pipeline[1].instr.rt == pipeline[2].instr.rd &&
       pipeline[2].instr.Ctype == DP)
   {
     r2 = pipeline[2].alu_result;
   }
-  else if (pipeline[1].instr.rt == pipeline[3].instr.rt &&
+  else if (temp_pipeline[1].instr.rt == pipeline[3].instr.rt &&
            pipeline[3].instr.Itype == LDR_WRD)
   {
     r2 = pipeline[3].rt_val;
   }
 
-  switch (pipeline[1].instr.Ctype)
+  switch (temp_pipeline[1].instr.Ctype)
   {
     case DP:
     {
-      switch (pipeline[1].instr.Itype)
+      switch (temp_pipeline[1].instr.Itype)
       {
         case ADD:
           pipeline[2].alu_result = r1 + r2;
@@ -49,7 +66,7 @@ void alu_op()
           break;
 
         case LOGICAL_SHIFT_LEFT:
-          pipeline[2].alu_result = (r2 << (pipeline[1].instr.shft_amt));
+          pipeline[2].alu_result = (r2 << (temp_pipeline[1].instr.shft_amt));
           break;
 
         case AND:
@@ -80,14 +97,14 @@ void alu_op()
 
     case DT:
     {
-      switch (pipeline[1].instr.Itype)
+      switch (temp_pipeline[1].instr.Itype)
       {
         case LDR_WRD:
         case LDR_BYTE:
         case STR_WRD:
         case STR_BYTE:
           pipeline[2].alu_result =
-              pipeline[1].instr.immediate + pipeline[1].rs_val;
+              temp_pipeline[1].instr.immediate + temp_pipeline[1].rs_val;
           break;
         default:
           throw_error("Unrecognized Instruction");
@@ -97,50 +114,62 @@ void alu_op()
     // Branch Class Cases Handling
     case BRANCH:
     {
-      switch (pipeline[1].instr.Itype)
+      int branched=0;
+      switch (temp_pipeline[1].instr.Itype)
       {
         case BRANCH_EQUAL:
-          if (pipeline[1].rs_val == pipeline[1].rt_val)
+          if (temp_pipeline[1].rs_val == temp_pipeline[1].rt_val)
           {
-            PC += pipeline[1].pc + (pipeline[1].instr.immediate << 2);
+            PC += temp_pipeline[1].pc + (temp_pipeline[1].instr.immediate << 2);
+            branched=1;
           }
           break;
 
         case BRANCH_GREATER_OR_EQUAL:
-          if (pipeline[1].rs_val >= 0)
+          if (temp_pipeline[1].rs_val >= 0)
           {
-            PC += pipeline[1].pc + (pipeline[1].instr.immediate << 2);
+            PC += temp_pipeline[1].pc + (temp_pipeline[1].instr.immediate << 2);
+            branched=1;
           }
           break;
 
         case BRANCH_LESS_OR_EQUAL:
-          if (pipeline[1].rs_val <= 0)
+          if (temp_pipeline[1].rs_val <= 0)
           {
-            PC += pipeline[1].pc + (pipeline[1].instr.immediate << 2);
+            PC += temp_pipeline[1].pc + (temp_pipeline[1].instr.immediate << 2);
+            branched=1;
           }
           break;
 
         case BRANCH_GREATER:
-          if (pipeline[1].rs_val > 0)
+          if (temp_pipeline[1].rs_val > 0)
           {
-            PC += pipeline[1].pc + (pipeline[1].instr.immediate << 2);
+            PC += temp_pipeline[1].pc + (temp_pipeline[1].instr.immediate << 2);
+            branched=1;
           }
           break;
 
         case BRANCH_LESS:
-          if (pipeline[1].rs_val < 0)
+          if (temp_pipeline[1].rs_val < 0)
           {
-            PC += pipeline[1].pc + (pipeline[1].instr.immediate << 2);
+            PC += temp_pipeline[1].pc + (temp_pipeline[1].instr.immediate << 2);
+            branched=1;
           }
           break;
 
         default:
           throw_error("Wrong Instruction");
       }
+      if(branched==1)
+       {
+        pipeline[3].instr.Itype=NO_OP;
+        pipeline[3].instr.Ctype=NO_OPERATION;
+      }
+
       break;
     }
 
-    case NO_OP:
+    case NO_OPERATION:
     {
       // Make thread sleep/Wait
     }
@@ -151,9 +180,13 @@ void alu_op()
 
   // Copying relevant contents for next pipeline
 
-  pipeline[2].instr = pipeline[1].instr;
+ // pipeline[2].instr = temp_pipeline[1].instr;
   pipeline[2].rs_val = r1;
   pipeline[2].rt_val = r2;
-  pipeline[2].pc = pipeline[1].pc;
-  pipeline[2].no_op = pipeline[1].no_op;
+  pipeline[2].pc = temp_pipeline[1].pc;
+  //pipeline[2].no_op = temp_pipeline[1].no_op;
 }
+sleep(1);
+}
+}
+
