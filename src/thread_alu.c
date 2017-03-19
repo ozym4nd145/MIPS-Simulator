@@ -35,7 +35,7 @@ void* alu_op(void* data)
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
-      printf("ALU - Increased NUMREAD - %d\n",NUM_THREADS_READ);
+      printf("ALU - Increased NUMREAD - %d\n", NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
       //       FILE *opener;
@@ -60,26 +60,26 @@ void* alu_op(void* data)
       int r1 = temp_pipeline[1].rs_val;
       int r2 = temp_pipeline[1].rt_val;
 
-      if (temp_pipeline[1].instr.rs == pipeline[2].instr.rd &&
-          pipeline[2].instr.Ctype == DP)
+      if (temp_pipeline[1].instr.rs == temp_pipeline[2].instr.rd &&
+          temp_pipeline[2].instr.Ctype == DP)
       {
-        r1 = pipeline[2].alu_result;
+        r1 = temp_pipeline[2].alu_result;
       }
-      else if (temp_pipeline[1].instr.rs == pipeline[3].instr.rt &&
-               pipeline[3].instr.Itype == LDR_WORD)
+      else if (temp_pipeline[1].instr.rs == temp_pipeline[3].instr.rt &&
+               temp_pipeline[3].instr.Itype == LDR_WORD)
       {
-        r1 = pipeline[3].rt_val;
+        r1 = temp_pipeline[3].rt_val;
       }
 
-      if (temp_pipeline[1].instr.rt == pipeline[2].instr.rd &&
-          pipeline[2].instr.Ctype == DP)
+      if (temp_pipeline[1].instr.rt == temp_pipeline[2].instr.rd &&
+          temp_pipeline[2].instr.Ctype == DP)
       {
-        r2 = pipeline[2].alu_result;
+        r2 = temp_pipeline[2].alu_result;
       }
-      else if (temp_pipeline[1].instr.rt == pipeline[3].instr.rt &&
-               pipeline[3].instr.Itype == LDR_WORD)
+      else if (temp_pipeline[1].instr.rt == temp_pipeline[3].instr.rt &&
+               temp_pipeline[3].instr.Itype == LDR_WORD)
       {
-        r2 = pipeline[3].rt_val;
+        r2 = temp_pipeline[3].rt_val;
       }
 
       switch (temp_pipeline[1].instr.Ctype)
@@ -235,7 +235,7 @@ void* alu_op(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-      instruction_to_file("results/3_alu_thread.txt", temp_pipeline[1]);
+      instruction_to_file("results/3_alu_thread.txt", pipeline[2]);
     }
 
     usleep(DELAY);

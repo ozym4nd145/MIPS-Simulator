@@ -11,6 +11,7 @@ void* instruction_fetch(void* data)
 {
   printf("Inside Instruction fetch\n");
   char input[100];
+  int temp_pc;
 
   while (1)
   {
@@ -26,9 +27,10 @@ void* instruction_fetch(void* data)
       pthread_mutex_unlock(&CLOCK_LOCK);
 
       int stall = control_signal.stall;
-
+      temp_pc = PC;
+      PC += 4;
       // loop until reading stage has completed
-      printf("Reached***********%d\n",stall);
+      printf("Reached***********%d\n", stall);
       while (1)
       {
         usleep(DELAY);
@@ -43,15 +45,14 @@ void* instruction_fetch(void* data)
         //        NUM_THREADS_READ);  //****************************************
       }
 
-      printf("STALL***********%d\n",stall);
+      printf("STALL***********%d\n", stall);
 
       if (stall == 0)
       {
         // /printf("%d\n",PC );
-        pipeline[0].instr = program[PC / 4];
-        pipeline[0].pc = PC;
-        PC = PC + 4;
-        printf("PC - %d\n", PC);
+        pipeline[0].instr = program[temp_pc / 4];
+        pipeline[0].pc = temp_pc;
+        printf("PC - %d\n", temp_pc);
         instruction_to_file("results/1_instruction_fetch.txt", pipeline[0]);
       }
 
