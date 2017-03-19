@@ -36,14 +36,14 @@ void* register_read(void* data)
       NUM_THREADS_READ++;
       pthread_mutex_unlock(&READ_LOCK);
 
-      int loop = 1;
-      while (loop)
+      while (1)
       {
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
-          loop = 0;
+          pthread_mutex_unlock(&READ_LOCK);
+          break;
         }
         pthread_mutex_unlock(&READ_LOCK);
       }
