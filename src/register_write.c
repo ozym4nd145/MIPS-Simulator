@@ -62,6 +62,8 @@ void* register_write(void* data)
       // for same instruction
       new_instruction = 0;
     }
+          print_registers("results/register_write.txt");
+
     usleep(DELAY);
   }
 }

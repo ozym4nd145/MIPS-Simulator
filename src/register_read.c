@@ -30,15 +30,19 @@ void* register_read(void* data)
     if (clock_start && new_instruction)
     {
       temp_pipeline[0] = pipeline[0];
+       instruction_to_file("results/register_read.txt",temp_pipeline[0]);
 
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
       pthread_mutex_unlock(&READ_LOCK);
 
+FILE *opener;
+opener=fopen("random.txt","a");
       int loop = 1;
       while (loop)
       {
+         fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
@@ -46,6 +50,7 @@ void* register_read(void* data)
           loop = 0;
         }
         pthread_mutex_unlock(&READ_LOCK);
+        printf("NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
       }
 
       control_signal.stall = 0;
@@ -124,6 +129,8 @@ void* register_read(void* data)
       // for same instruction
       new_instruction = 0;
     }
+    instruction_to_file("results/register_read.txt",pipeline[1]);
+
     usleep(DELAY);
   }
 }

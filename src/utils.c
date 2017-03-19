@@ -120,6 +120,8 @@ int lsr(int x, int n) { return (int)((unsigned int)x >> n); }
 void instruction_to_file(char *s, buffer instruct)
 {
   FILE *write = fopen(s, "a");
+  fprintf(write, "CLOCK %d\n",CLOCK );
+  fprintf(write, "Number Thread Read %d\n",NUM_THREADS_READ );
 
   fprintf(write, "Register RS %d\n", instruct.instr.rs);
   fprintf(write, "Register RT %d\n", instruct.instr.rt);
@@ -147,7 +149,7 @@ void print_registers(char *s)
   int i;
 
   for (i = 0; i < 32; i++)
-    fprintf(write, "Register %d :%d", i, register_file[i]);
+    fprintf(write, "Register %d :%d\n", i, register_file[i]);
 
   fprintf(write, "\n\n");
   fclose(write);

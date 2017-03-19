@@ -29,6 +29,8 @@ void* alu_op(void* data)
     if (clock_start && new_instruction)
     {
       temp_pipeline[1] = pipeline[1];
+       instruction_to_file("results/alu_thread.txt",temp_pipeline[1]);
+       printf("%d\n",NUM_THREADS_READ ); //*************************************
 
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
@@ -36,8 +38,13 @@ void* alu_op(void* data)
       pthread_mutex_unlock(&READ_LOCK);
 
       int loop = 1;
+      FILE *opener;
+opener=fopen("random.txt","a");
+
       while (loop)
       {
+                 fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
+
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
@@ -226,6 +233,8 @@ void* alu_op(void* data)
       // for same instruction
       new_instruction = 0;
     }
+      instruction_to_file("results/alu_thread.txt",temp_pipeline[1]);
+
     usleep(DELAY);
   }
 }
