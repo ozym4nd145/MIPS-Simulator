@@ -111,8 +111,9 @@ opener=fopen("random.txt","a");
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+                instruction_to_file("results/data_memory_thread.txt",pipeline[1]);
+
     }
-          instruction_to_file("results/data_memory_thread.txt",pipeline[1]);
     usleep(DELAY);
   }
 }

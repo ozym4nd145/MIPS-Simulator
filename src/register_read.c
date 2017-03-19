@@ -128,8 +128,9 @@ opener=fopen("random.txt","a");
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+       instruction_to_file("results/register_read.txt",pipeline[1]);
     }
-    instruction_to_file("results/register_read.txt",pipeline[1]);
+   
 
     usleep(DELAY);
   }

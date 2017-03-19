@@ -14,6 +14,7 @@ void* instruction_fetch(void* data)
 
   while (1)
   {
+    // printf("Looping CLOCK %d\n",CLOCK);
     scanf("%s", input);
     if (strcmp(input, "step") == 0)
     {
@@ -30,7 +31,6 @@ void* instruction_fetch(void* data)
       // loop until reading stage has completed
       while (1)
       {
-        printf("%d\n",loop );//****************************************
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
