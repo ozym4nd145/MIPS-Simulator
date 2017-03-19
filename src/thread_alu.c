@@ -2,19 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include "global_vars.h"
 #include "main_functions.h"
 #include "utils.h"
 
-void alu_op()
+void* alu_op(void* data)
 {
   int clock_start = 0;
   int new_instruction = 1;
-
+  long long int temp;
   while (1)
   {
     // does reading really require lock?
-    pthread_mutex_lock(&CLOCK_LOCK, NULL);
+    pthread_mutex_lock(&CLOCK_LOCK);
     if (CLOCK == 1)
     {
       clock_start = 1;
@@ -23,27 +24,27 @@ void alu_op()
     {
       new_instruction = 1;
     }
-    pthread_mutex_unlock(&CLOCK_LOCK, NULL);
+    pthread_mutex_unlock(&CLOCK_LOCK);
 
     if (clock_start && new_instruction)
     {
       temp_pipeline[1] = pipeline[1];
 
       // updating that this thread has completed reading stage
-      pthread_mutex_lock(&READ_LOCK, NULL);
+      pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
-      pthread_mutex_unlock(&READ_LOCK, NULL);
+      pthread_mutex_unlock(&READ_LOCK);
 
       int loop = 1;
       while (loop)
       {
         usleep(DELAY);
-        pthread_mutex_lock(&READ_LOCK, NULL);
+        pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
           loop = 0;
         }
-        pthread_mutex_unlock(&READ_LOCK, NULL);
+        pthread_mutex_unlock(&READ_LOCK);
       }
 
       pipeline[2] = temp_pipeline[1];
@@ -56,7 +57,7 @@ void alu_op()
         r1 = pipeline[2].alu_result;
       }
       else if (temp_pipeline[1].instr.rs == pipeline[3].instr.rt &&
-               pipeline[3].instr.Itype == LDR_WRD)
+               pipeline[3].instr.Itype == LDR_WORD)
       {
         r1 = pipeline[3].rt_val;
       }
@@ -67,7 +68,7 @@ void alu_op()
         r2 = pipeline[2].alu_result;
       }
       else if (temp_pipeline[1].instr.rt == pipeline[3].instr.rt &&
-               pipeline[3].instr.Itype == LDR_WRD)
+               pipeline[3].instr.Itype == LDR_WORD)
       {
         r2 = pipeline[3].rt_val;
       }
@@ -94,9 +95,8 @@ void alu_op()
               pipeline[2].alu_result = (r1 | r2);
               break;
 
-            case LOGICAL_SHIFT_LEFT:
-              pipeline[2].alu_result =
-                  (r2 << (temp_pipeline[1].instr.shft_amt));
+            case LOGIC_SHIFT_LEFT:
+              pipeline[2].alu_result = (r2 << (temp_pipeline[1].instr.shf_amt));
               break;
 
             case AND:
@@ -108,14 +108,14 @@ void alu_op()
               break;
 
             case MULTIPLY:
-              long long int temp = ((long long int)r1) * ((long long int)r2);
-              pipeline[2].HI = (int)((unsigned temp) >> 32);
+              temp = ((long long int)r1) * ((long long int)r2);
+              pipeline[2].HI = (int)(((unsigned long long)temp) >> 32);
               pipeline[2].LO = (int)temp;
               break;
 
             case MULTIPLY_ADD:
-              long long int temp = ((long long int)r1) * ((long long int)r2);
-              pipeline[2].HI += (int)((unsigned temp) >> 32);
+              temp = ((long long int)r1) * ((long long int)r2);
+              pipeline[2].HI += (int)(((unsigned long long)temp) >> 32);
               pipeline[2].LO += (int)temp;
               break;
 
@@ -129,9 +129,9 @@ void alu_op()
         {
           switch (temp_pipeline[1].instr.Itype)
           {
-            case LDR_WRD:
+            case LDR_WORD:
             case LDR_BYTE:
-            case STR_WRD:
+            case STR_WORD:
             case STR_BYTE:
               pipeline[2].alu_result =
                   temp_pipeline[1].instr.immediate + temp_pipeline[1].rs_val;
@@ -218,9 +218,9 @@ void alu_op()
       pipeline[2].rs_val = r1;
       pipeline[2].rt_val = r2;
 
-      pthread_mutex_lock(&WRITE_LOCK, NULL);
+      pthread_mutex_lock(&WRITE_LOCK);
       NUM_THREADS_WRITE++;
-      pthread_mutex_unlock(&WRITE_LOCK, NULL);
+      pthread_mutex_unlock(&WRITE_LOCK);
 
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction

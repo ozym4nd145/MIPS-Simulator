@@ -1,8 +1,9 @@
 #include "global_vars.h"
 
 buffer pipeline[NUM_THREADS - 1];
-
+buffer temp_pipeline[NUM_THREADS - 1];
 instruction program[INSTRUCTION_MEM];
+signal control_signal;
 
 int register_file[32];
 int PC = 0;
@@ -24,5 +25,3 @@ int Memory_Block[MEMORY_SIZE];
 pthread_mutex_t CLOCK_LOCK;
 pthread_mutex_t READ_LOCK;
 pthread_mutex_t WRITE_LOCK;
-
-signal control_signal;

@@ -71,6 +71,9 @@ char *get_instruction_name(const instruction_type instr)
     case STR_WORD:
       return "STR_WORD";
       break;
+    case NO_OP:
+      return "NO_OP";
+      break;
   }
   return NULL;
 }
@@ -80,73 +83,72 @@ char *get_instruction_class(const class_type instr)
   switch (instr)
   {
     case DP:
-    return "DP";
-    break;
+      return "DP";
+      break;
     case DT:
-    return "DT";
-    break;
+      return "DT";
+      break;
     case BRANCH:
-    return "BRANCH";
-    break;
+      return "BRANCH";
+      break;
     case NO_OPERATION:
-    return "NO_OPERATION";
+      return "NO_OPERATION";
   }
   return NULL;
 }
 
-
 void int_to_binary(int au)
 {
   unsigned a = au;
-  printf("Value - %u\n",a);
-  char s[35];int k=31;
-  s[32]='\0';
-  while(k>=0)
+  printf("Value - %u\n", a);
+  char s[35];
+  int k = 31;
+  s[32] = '\0';
+  while (k >= 0)
   {
-    if(a%2==0)
-      s[k]='0';
-    else s[k]='1';
-    a/=2;
+    if (a % 2 == 0)
+      s[k] = '0';
+    else
+      s[k] = '1';
+    a /= 2;
     k--;
   }
-  printf("%s\n",s);
+  printf("%s\n", s);
 }
 
-int lsr(int x,int n)
+int lsr(int x, int n) { return (int)((unsigned int)x >> n); }
+void instruction_to_file(char *s, buffer instruct)
 {
-  return (int)((unsigned int)x >> n);
-}
+  FILE *write = fopen(s, "a");
 
-void instruction_to_file(char *s,buffer instruct)
-{
-  File *write=fopen(s,"a");
-
-  fprintf(write, "Register RS %d\n",instruct.instr.rs);
-  fprintf(write, "Register RT %d\n",instruct.instr.rt);
-  fprintf(write, "Register RD %d\n",instruct.instr.rd);
-  fprintf(write, "Register OPCODE %d\n",instruct.instr.opcode);
-  fprintf(write, "Register SHT_AMT %d\n",instruct.instr.sht_amt);
-  fprintf(write, "Register CTYPE %s\n",get_instruction_class(instruct.instr.CTYPE));
-  fprintf(write, "Register ITYPE %s\n",get_instruction_name(instruct.instr.ITYPE));
-  fprintf(write, "Register RS_Val %d\n",instruct.rs_val);
-  fprintf(write, "Register RT_Val %d\n",instruct.rt_val);
-  fprintf(write, "Register RD_Val %d\n",instruct.rd_val);
-  fprintf(write, "Register ALU_Result %d\n",instruct.alu_result);
-  fprintf(write, "Register HI_Val %d\n",instruct.HI);
-  fprintf(write, "Register LO_Val %d\n",instruct.LO);
-  fprintf(write, "Register PC_Val %d\n",instruct.pc);
+  fprintf(write, "Register RS %d\n", instruct.instr.rs);
+  fprintf(write, "Register RT %d\n", instruct.instr.rt);
+  fprintf(write, "Register RD %d\n", instruct.instr.rd);
+  fprintf(write, "Register OPCODE %d\n", instruct.instr.opcode);
+  fprintf(write, "Register SHT_AMT %d\n", instruct.instr.shf_amt);
+  fprintf(write, "Register CTYPE %s\n",
+          get_instruction_class(instruct.instr.Ctype));
+  fprintf(write, "Register ITYPE %s\n",
+          get_instruction_name(instruct.instr.Itype));
+  fprintf(write, "Register RS_Val %d\n", instruct.rs_val);
+  fprintf(write, "Register RT_Val %d\n", instruct.rt_val);
+  fprintf(write, "Register RD_Val %d\n", instruct.rd_val);
+  fprintf(write, "Register ALU_Result %d\n", instruct.alu_result);
+  fprintf(write, "Register HI_Val %d\n", instruct.HI);
+  fprintf(write, "Register LO_Val %d\n", instruct.LO);
+  fprintf(write, "Register PC_Val %d\n", instruct.pc);
   fprintf(write, "\n\n");
   fclose(write);
 }
 
 void print_registers(char *s)
 {
-   File *write=fopen(s,"a");
-   int i;
+  FILE *write = fopen(s, "a");
+  int i;
 
-   for(i=0;i<32;i++)
-    printf(write,"Register %d :%d",i,register_file[i]);
+  for (i = 0; i < 32; i++)
+    fprintf(write, "Register %d :%d", i, register_file[i]);
 
-   fprintf(write, "\n\n");
-   fclose(write);   
+  fprintf(write, "\n\n");
+  fclose(write);
 }

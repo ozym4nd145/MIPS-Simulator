@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include "global_vars.h"
 #include "main_functions.h"
 #include "utils.h"
@@ -15,7 +16,7 @@ void* register_read(void* data)
   while (1)
   {
     // does reading really require lock?
-    pthread_mutex_lock(&CLOCK_LOCK, NULL);
+    pthread_mutex_lock(&CLOCK_LOCK);
     if (CLOCK == 1)
     {
       clock_start = 1;
@@ -24,31 +25,31 @@ void* register_read(void* data)
     {
       new_instruction = 1;
     }
-    pthread_mutex_unlock(&CLOCK_LOCK, NULL);
+    pthread_mutex_unlock(&CLOCK_LOCK);
 
     if (clock_start && new_instruction)
     {
       temp_pipeline[0] = pipeline[0];
 
       // updating that this thread has completed reading stage
-      pthread_mutex_lock(&READ_LOCK, NULL);
+      pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
-      pthread_mutex_unlock(&READ_LOCK, NULL);
+      pthread_mutex_unlock(&READ_LOCK);
 
       int loop = 1;
       while (loop)
       {
         usleep(DELAY);
-        pthread_mutex_lock(&READ_LOCK, NULL);
+        pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
           loop = 0;
         }
-        pthread_mutex_unlock(&READ_LOCK, NULL);
+        pthread_mutex_unlock(&READ_LOCK);
       }
 
       control_signal.stall = 0;
-      if (temp_pipeline[0].instr.type != NO_OP)
+      if (temp_pipeline[0].instr.Itype != NO_OP)
       {
         // Reading stage
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
@@ -115,9 +116,9 @@ void* register_read(void* data)
         pipeline[1] = temp_pipeline[0];
       }
 
-      pthread_mutex_lock(&WRITE_LOCK, NULL);
+      pthread_mutex_lock(&WRITE_LOCK);
       NUM_THREADS_WRITE++;
-      pthread_mutex_unlock(&WRITE_LOCK, NULL);
+      pthread_mutex_unlock(&WRITE_LOCK);
 
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction

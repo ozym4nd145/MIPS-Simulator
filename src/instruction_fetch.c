@@ -20,9 +20,9 @@ void* instruction_fetch(void* data)
       STEPS++;
 
       // lock CLOCK for updating
-      pthread_mutex_lock(&CLOCK_LOCK, NULL);
+      pthread_mutex_lock(&CLOCK_LOCK);
       CLOCK = 1;
-      pthread_mutex_unlock(&CLOCK_LOCK, NULL);
+      pthread_mutex_unlock(&CLOCK_LOCK);
 
       int stall = control_signal.stall;
 
@@ -31,12 +31,12 @@ void* instruction_fetch(void* data)
       while (loop)
       {
         usleep(DELAY);
-        pthread_mutex_lock(&READ_LOCK, NULL);
+        pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
           loop = 0;
         }
-        pthread_mutex_unlock(&READ_LOCK, NULL);
+        pthread_mutex_unlock(&READ_LOCK);
       }
 
       if (stall == 0)
@@ -51,19 +51,19 @@ void* instruction_fetch(void* data)
       while (loop)
       {
         usleep(DELAY);
-        pthread_mutex_lock(&WRITE_LOCK, NULL);
+        pthread_mutex_lock(&WRITE_LOCK);
         if (NUM_THREADS_WRITE == (NUM_THREADS - 1))
         {
           NUM_THREADS_WRITE = 0;
           NUM_THREADS_READ = 0;
           loop = 0;
         }
-        pthread_mutex_unlock(&WRITE_LOCK, NULL);
+        pthread_mutex_unlock(&WRITE_LOCK);
       }
 
-      pthread_mutex_lock(&CLOCK_LOCK, NULL);
+      pthread_mutex_lock(&CLOCK_LOCK);
       CLOCK = 0;
-      pthread_mutex_unlock(&CLOCK_LOCK, NULL);
+      pthread_mutex_unlock(&CLOCK_LOCK);
 
       // Implement READ_CLOCK_0 ?
     }

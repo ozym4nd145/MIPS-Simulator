@@ -20,7 +20,6 @@ typedef enum {
   OR,
   LOGIC_SHIFT_LEFT,
   LOGIC_SHIFT_LEFT_VARIABLE,
-  SUB,
   BRANCH_GREATER_OR_EQUAL,
   BRANCH_GREATER,
   BRANCH_LESS_OR_EQUAL,
@@ -48,32 +47,29 @@ typedef struct buffer
   int rs_val, rt_val, rd_val, alu_result, HI, LO, pc;
 } buffer;
 
-
 typedef struct
 {
   int stall;
 } signal;
 
-extern buffer pipeline[NUM_PIPELINES];
-extern buffer temp_pipeline[NUM_PIPELINES];
+extern buffer pipeline[NUM_THREADS - 1];
+extern buffer temp_pipeline[NUM_THREADS - 1];
 extern instruction program[INSTRUCTION_MEM];
 extern signal control_signal;
 
 extern int register_file[32];
-extern int PC = 0;
-extern int MAX_PC = 0;
-extern int STEPS = 0;
-extern int CLOCK =
-    0;  // emulates the clock which all of the instructions follow
-extern double FREQUENCY = 0;
-extern unsigned int DELAY =
-    1000;  // sleep delay for each thread in micro seconds
-extern int NUM_THREADS_READ =
-    0;  // number of threads that have completed the copy stage
-        // from buffer
-extern int NUM_THREADS_WRITE =
-    0;  // number of threads that have completed processing for
-        // that particular cycle
+extern int PC;
+extern int MAX_PC;
+extern int STEPS;
+extern int CLOCK;  // emulates the clock which all of the instructions follow
+extern double FREQUENCY;
+extern unsigned int DELAY;  // sleep delay for each thread in micro seconds
+extern int
+    NUM_THREADS_READ;  // number of threads that have completed the copy stage
+                       // from buffer
+extern int
+    NUM_THREADS_WRITE;  // number of threads that have completed processing for
+                        // that particular cycle
 extern pthread_t threads[NUM_THREADS];
 
 extern int Memory_Block[MEMORY_SIZE];

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include "global_vars.h"
 #include "main_functions.h"
 #include "utils.h"
@@ -16,7 +17,7 @@ void* register_write(void* data)
   while (1)
   {
     // does reading really require lock?
-    pthread_mutex_lock(&CLOCK_LOCK, NULL);
+    pthread_mutex_lock(&CLOCK_LOCK);
     if (CLOCK == 1)
     {
       clock_start = 1;
@@ -25,12 +26,12 @@ void* register_write(void* data)
     {
       new_instruction = 1;
     }
-    pthread_mutex_unlock(&CLOCK_LOCK, NULL);
+    pthread_mutex_unlock(&CLOCK_LOCK);
 
     if (clock_start && new_instruction)
     {
       // If the instruction is not No Operation
-      if (pipeline[3].instr.type != NO_OP)
+      if (pipeline[3].instr.Itype != NO_OP)
       {
         // Write value into the Register file
         if (pipeline[3].instr.Itype == LDR_BYTE ||
@@ -49,13 +50,13 @@ void* register_write(void* data)
       }
 
       // updating that this thread has completed reading stage
-      pthread_mutex_lock(&READ_LOCK, NULL);
+      pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
-      pthread_mutex_unlock(&READ_LOCK, NULL);
+      pthread_mutex_unlock(&READ_LOCK);
 
-      pthread_mutex_lock(&WRITE_LOCK, NULL);
+      pthread_mutex_lock(&WRITE_LOCK);
       NUM_THREADS_WRITE++;
-      pthread_mutex_unlock(&WRITE_LOCK, NULL);
+      pthread_mutex_unlock(&WRITE_LOCK);
 
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction

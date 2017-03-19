@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include "global_vars.h"
 #include "main_functions.h"
 #include "utils.h"
@@ -14,7 +15,7 @@ void* memory_op(void* data)
   while (1)
   {
     // does reading really require lock?
-    pthread_mutex_lock(&CLOCK_LOCK, NULL);
+    pthread_mutex_lock(&CLOCK_LOCK);
     if (CLOCK == 1)
     {
       clock_start = 1;
@@ -23,27 +24,27 @@ void* memory_op(void* data)
     {
       new_instruction = 1;
     }
-    pthread_mutex_unlock(&CLOCK_LOCK, NULL);
+    pthread_mutex_unlock(&CLOCK_LOCK);
 
     if (clock_start && new_instruction)
     {
       temp_pipeline[2] = pipeline[2];
 
       // updating that this thread has completed reading stage
-      pthread_mutex_lock(&READ_LOCK, NULL);
+      pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
-      pthread_mutex_unlock(&READ_LOCK, NULL);
+      pthread_mutex_unlock(&READ_LOCK);
 
       int loop = 1;
       while (loop)
       {
         usleep(DELAY);
-        pthread_mutex_lock(&READ_LOCK, NULL);
+        pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
           loop = 0;
         }
-        pthread_mutex_unlock(&READ_LOCK, NULL);
+        pthread_mutex_unlock(&READ_LOCK);
       }
 
       pipeline[3] = temp_pipeline[2];
@@ -56,7 +57,7 @@ void* memory_op(void* data)
         int write_val = temp_pipeline[2].rt_val;
         int offset = temp_pipeline[2].alu_result;
 
-        if ((temp_pipeline[3].instr.Itype == LDR_WRD ||
+        if ((temp_pipeline[3].instr.Itype == LDR_WORD ||
              temp_pipeline[3].instr.Itype == LDR_BYTE) &&
             temp_pipeline[3].instr.rt == temp_pipeline[2].instr.rt)
         {
@@ -68,9 +69,9 @@ void* memory_op(void* data)
           write_val = temp_pipeline[3].rd_val;
         }
 
-        switch (temp_pipeline[2].Itype)
+        switch (temp_pipeline[2].instr.Itype)
         {
-          case LDR_WRD:
+          case LDR_WORD:
           {
             pipeline[3].rt_val = Memory_Block[offset / 4];
             break;
@@ -80,7 +81,7 @@ void* memory_op(void* data)
             pipeline[3].rt_val = Memory_Block[offset / 4];
             break;
           }
-          case STR_WRD:
+          case STR_WORD:
           {
             Memory_Block[offset / 4] = write_val;
             break;
@@ -90,12 +91,16 @@ void* memory_op(void* data)
             Memory_Block[offset / 4] = write_val;
             break;
           }
+          default:
+          {
+            throw_error("Error in parsing instructions");
+          }
         }
       }
 
-      pthread_mutex_lock(&WRITE_LOCK, NULL);
+      pthread_mutex_lock(&WRITE_LOCK);
       NUM_THREADS_WRITE++;
-      pthread_mutex_unlock(&WRITE_LOCK, NULL);
+      pthread_mutex_unlock(&WRITE_LOCK);
 
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
