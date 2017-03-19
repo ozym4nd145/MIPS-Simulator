@@ -30,7 +30,6 @@ void* instruction_fetch(void* data)
       temp_pc = PC;
       PC += 4;
       // loop until reading stage has completed
-      printf("Reached***********%d\n", stall);
       while (1)
       {
         usleep(DELAY);
@@ -44,8 +43,6 @@ void* instruction_fetch(void* data)
         // printf("NUm_THR_READ %d\n",
         //        NUM_THREADS_READ);  //****************************************
       }
-
-      printf("STALL***********%d\n", stall);
 
       if (stall == 0)
       {
