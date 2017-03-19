@@ -44,9 +44,6 @@ char *get_instruction_name(const instruction_type instr)
     case LOGIC_SHIFT_LEFT_VARIABLE:
       return "LOGIC_SHIFT_LEFT_VARIABLE";
       break;
-    case SUBTRACT:
-      return "SUBTRACT";
-      break;
     case BRANCH_GREATER_OR_EQUAL:
       return "BRANCH_GREATER_OR_EQUAL";
       break;
@@ -78,6 +75,26 @@ char *get_instruction_name(const instruction_type instr)
   return NULL;
 }
 
+char *get_instruction_class(const class_type instr)
+{
+  switch (instr)
+  {
+    case DP:
+    return "DP";
+    break;
+    case DT:
+    return "DT";
+    break;
+    case BRANCH:
+    return "BRANCH";
+    break;
+    case NO_OPERATION:
+    return "NO_OPERATION";
+  }
+  return NULL;
+}
+
+
 void int_to_binary(int au)
 {
   unsigned a = au;
@@ -98,4 +115,38 @@ void int_to_binary(int au)
 int lsr(int x,int n)
 {
   return (int)((unsigned int)x >> n);
+}
+
+void instruction_to_file(char *s,buffer instruct)
+{
+  File *write=fopen(s,"a");
+
+  fprintf(write, "Register RS %d\n",instruct.instr.rs);
+  fprintf(write, "Register RT %d\n",instruct.instr.rt);
+  fprintf(write, "Register RD %d\n",instruct.instr.rd);
+  fprintf(write, "Register OPCODE %d\n",instruct.instr.opcode);
+  fprintf(write, "Register SHT_AMT %d\n",instruct.instr.sht_amt);
+  fprintf(write, "Register CTYPE %s\n",get_instruction_class(instruct.instr.CTYPE));
+  fprintf(write, "Register ITYPE %s\n",get_instruction_name(instruct.instr.ITYPE));
+  fprintf(write, "Register RS_Val %d\n",instruct.rs_val);
+  fprintf(write, "Register RT_Val %d\n",instruct.rt_val);
+  fprintf(write, "Register RD_Val %d\n",instruct.rd_val);
+  fprintf(write, "Register ALU_Result %d\n",instruct.alu_result);
+  fprintf(write, "Register HI_Val %d\n",instruct.HI);
+  fprintf(write, "Register LO_Val %d\n",instruct.LO);
+  fprintf(write, "Register PC_Val %d\n",instruct.pc);
+  fprintf(write, "\n\n");
+  fclose(write);
+}
+
+void print_registers(char *s)
+{
+   File *write=fopen(s,"a");
+   int i;
+
+   for(i=0;i<32;i++)
+    printf(write,"Register %d :%d",i,register_file[i]);
+
+   fprintf(write, "\n\n");
+   fclose(write);   
 }
