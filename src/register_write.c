@@ -6,14 +6,16 @@
 #include "main_functions.h"
 #include "utils.h"
 
-void* register_read(void* data)
+void* register_write(void* data)
 {
   printf("Inside Register Write");
+  // Running it all the time
   while (1)
   {
+    // If the instruction is not No Operation
     if (pipeline[3].instr.type != NO_OP)
     {
-      // Reading stage
+      // Write value into the Register file
       if (pipeline[3].instr.Itype == LDR_BYTE ||
           pipeline[3].instr.Itype == LDR_WORD)
       {

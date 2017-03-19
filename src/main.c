@@ -40,6 +40,23 @@ int main(int argc, char* argv[])
     print_instruction(&program[i / 4]);
   }
 
+  // Initializing memory and pipeline buffer
+  for (i = 0; i <= (NUM_THREADS - 1); i++)
+  {
+    pipeline[i].instr.Itype = NO_OP;
+    pipeline[i].instr.Ctype = NO_OPERATION;
+  }
+
+  for (i = 0; i < MEMORY_SIZE; i++)
+  {
+    Memory_Block[i] = 0;
+  }
+
+  // Initializing mutex locks
+  pthread_mutex_init(&CLOCK_LOCK, NULL);
+  pthread_mutex_init(&READ_LOCK, NULL);
+  pthread_mutex_init(&WRITE_LOCK, NULL);
+
   pthread_create(&threads[0], NULL, instruction_fetch, (void*)NULL);
   pthread_create(&threads[1], NULL, register_read, (void*)NULL);
   pthread_create(&threads[2], NULL, alu_op, (void*)NULL);

@@ -7,7 +7,8 @@
 * Instruction memory
 */
 #define INSTRUCTION_MEM 10000
-#define NUM_PIPELINES 5
+#define NUM_THREADS 5
+#define MEMORY_SIZE 1000000
 
 typedef enum {
   ADD,
