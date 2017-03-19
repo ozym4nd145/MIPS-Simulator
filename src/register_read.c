@@ -12,7 +12,7 @@ void* register_read(void* data)
   int clock_start = 0;
   int new_instruction = 1;
 
-  printf("Inside Register Read");
+  // printf("Inside Register Read");
   while (1)
   {
     // does reading really require lock?
@@ -31,7 +31,7 @@ void* register_read(void* data)
     if (clock_start && new_instruction)
     {
       temp_pipeline[0] = pipeline[0];
-      instruction_to_file("results/register_read.txt", temp_pipeline[0]);
+      instruction_to_file("results/2_register_read.txt", temp_pipeline[0]);
 
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
@@ -43,8 +43,6 @@ void* register_read(void* data)
       // opener=fopen("random.txt","a");
       while (1)
       {
-        // fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ
-        // );
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
@@ -53,7 +51,6 @@ void* register_read(void* data)
           break;
         }
         pthread_mutex_unlock(&READ_LOCK);
-        // printf("NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
       }
 
       control_signal.stall = 0;
@@ -132,7 +129,7 @@ void* register_read(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-      instruction_to_file("results/register_read.txt", pipeline[1]);
+      instruction_to_file("results/2_register_read.txt", pipeline[1]);
     }
 
     usleep(DELAY);

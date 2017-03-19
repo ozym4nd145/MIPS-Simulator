@@ -30,8 +30,7 @@ void* alu_op(void* data)
     if (clock_start && new_instruction)
     {
       temp_pipeline[1] = pipeline[1];
-      instruction_to_file("results/alu_thread.txt", temp_pipeline[1]);
-      printf("%d\n", NUM_THREADS_READ);  //*************************************
+      instruction_to_file("results/3_alu_thread.txt", temp_pipeline[1]);
 
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
@@ -236,7 +235,7 @@ void* alu_op(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-      instruction_to_file("results/alu_thread.txt", temp_pipeline[1]);
+      instruction_to_file("results/3_alu_thread.txt", temp_pipeline[1]);
     }
 
     usleep(DELAY);

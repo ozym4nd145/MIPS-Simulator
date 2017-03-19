@@ -122,7 +122,7 @@ void instruction_to_file(char *s, buffer instruct)
   FILE *write = fopen(s, "a");
   // fprintf(write, "CLOCK %d\n",CLOCK );
   // fprintf(write, "Number Thread Read %d\n",NUM_THREADS_READ );
-
+  fprintf(write, "--------STEP  %d--------------\n", STEPS);
   fprintf(write, "Register RS %d\n", instruct.instr.rs);
   fprintf(write, "Register RT %d\n", instruct.instr.rt);
   fprintf(write, "Register RD %d\n", instruct.instr.rd);
@@ -139,6 +139,7 @@ void instruction_to_file(char *s, buffer instruct)
   fprintf(write, "Register HI_Val %d\n", instruct.HI);
   fprintf(write, "Register LO_Val %d\n", instruct.LO);
   fprintf(write, "Register PC_Val %d\n", instruct.pc);
+  fprintf(write, "---------------------------\n");
   fprintf(write, "\n\n");
   fclose(write);
 }
@@ -147,9 +148,10 @@ void print_registers(char *s)
 {
   FILE *write = fopen(s, "a");
   int i;
-
+  fprintf(write, "--------STEP  %d--------------\n", STEPS);
   for (i = 0; i < 32; i++)
     fprintf(write, "Register %d :%d\n", i, register_file[i]);
+  fprintf(write, "---------------------------\n");
 
   fprintf(write, "\n\n");
   fclose(write);

@@ -12,7 +12,7 @@ void* register_write(void* data)
   int clock_start = 0;
   int new_instruction = 1;
 
-  printf("Inside Register Write");
+  // printf("Inside Register Write");
   // Running it all the time
   while (1)
   {
@@ -63,7 +63,7 @@ void* register_write(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-      print_registers("results/register_write.txt");
+      print_registers("results/5_register_write.txt");
     }
 
     usleep(DELAY);
