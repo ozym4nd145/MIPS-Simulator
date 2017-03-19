@@ -37,11 +37,11 @@ void* register_read(void* data)
       NUM_THREADS_READ++;
       pthread_mutex_unlock(&READ_LOCK);
 
-FILE *opener;
-opener=fopen("random.txt","a");
+//FILE *opener;
+//opener=fopen("random.txt","a");
       while (1)
       {
-         fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
+         //fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
@@ -50,7 +50,7 @@ opener=fopen("random.txt","a");
           break;
         }
         pthread_mutex_unlock(&READ_LOCK);
-        printf("NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
+        //printf("NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
       }
 
       control_signal.stall = 0;

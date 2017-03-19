@@ -37,13 +37,13 @@ void* alu_op(void* data)
       NUM_THREADS_READ++;
       pthread_mutex_unlock(&READ_LOCK);
 
-      FILE *opener;
-opener=fopen("random.txt","a");
+//       FILE *opener;
+// opener=fopen("random.txt","a");
 
 
       while (1)
       {
-                 fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
+//fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
 
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
@@ -215,6 +215,7 @@ opener=fopen("random.txt","a");
         case NO_OPERATION:
         {
           // Make thread sleep/Wait
+          break;
         }
 
         default:
