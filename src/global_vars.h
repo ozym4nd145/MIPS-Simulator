@@ -32,7 +32,7 @@ typedef enum {
   NO_OP
 } instruction_type;
 
-typedef enum { DP, DT, BRANCH } class_type;
+typedef enum { DP, DT, BRANCH, NO_OPERATION } class_type;
 
 typedef struct
 {
@@ -47,12 +47,14 @@ typedef struct buffer
   int rs_val, rt_val, rd_val, alu_result, HI, LO, pc;
 } buffer;
 
+
 typedef struct
 {
   int stall;
 } signal;
 
 extern buffer pipeline[NUM_PIPELINES];
+extern buffer temp_pipeline[NUM_PIPELINES];
 extern instruction program[INSTRUCTION_MEM];
 extern int register_file[32];
 extern int PC;

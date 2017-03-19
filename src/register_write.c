@@ -6,7 +6,7 @@
 #include "main_functions.h"
 #include "utils.h"
 
-void* register_read(void* data)
+void* register_write(void* data)
 {
   printf("Inside Register Write");
   while (1)

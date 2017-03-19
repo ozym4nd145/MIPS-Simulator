@@ -10,6 +10,7 @@ void* instruction_fetch(void* data)
 {
   printf("Inside Instruction fetch\n");
   char input[100];
+
   while (1)
   {
     scanf("%s", input);
