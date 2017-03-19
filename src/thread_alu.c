@@ -22,6 +22,7 @@ void* alu_op(void* data)
     }
     if (CLOCK == 0)
     {
+      clock_start = 0;
       new_instruction = 1;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
@@ -35,6 +36,7 @@ void* alu_op(void* data)
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
+      printf("ALU - Increased NUMREAD - %d\n",NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
       //       FILE *opener;

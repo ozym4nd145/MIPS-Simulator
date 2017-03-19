@@ -24,6 +24,7 @@ void* register_read(void* data)
     if (CLOCK == 0)
     {
       new_instruction = 1;
+      clock_start = 0;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
 
@@ -35,6 +36,7 @@ void* register_read(void* data)
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
+      printf("RR - Increased NUMREAD - %d\n",NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
       // FILE *opener;
@@ -63,6 +65,7 @@ void* register_read(void* data)
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
+          printf("Reached\n");//*****************************************************
           control_signal.stall = 1;
           pipeline[1].instr.Itype = NO_OP;
           pipeline[1].instr.Ctype = NO_OPERATION;

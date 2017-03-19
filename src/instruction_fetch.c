@@ -29,11 +29,12 @@ void* instruction_fetch(void* data)
       //printf("Stall %d\n", stall);  //****************************************
 
       // loop until reading stage has completed
+      printf("Reached***********%d\n",stall);
       while (1)
       {
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
-        if (NUM_THREADS_READ == (NUM_THREADS - 1))
+        if (NUM_THREADS_READ >= (NUM_THREADS - 1))
         {
           pthread_mutex_unlock(&READ_LOCK);
           break;
@@ -42,6 +43,8 @@ void* instruction_fetch(void* data)
         // printf("NUm_THR_READ %d\n",
         //        NUM_THREADS_READ);  //****************************************
       }
+
+      printf("STALL***********%d\n",stall);
 
       if (stall == 0)
       {
