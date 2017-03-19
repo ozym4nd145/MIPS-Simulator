@@ -7,6 +7,9 @@
 #include "main_functions.h"
 #include "utils.h"
 
+/**
+* @description: Performs Arithmetic operations on the input based upon opcode.
+*/
 void* alu_op(void* data)
 {
   int clock_start = 0;
@@ -15,6 +18,8 @@ void* alu_op(void* data)
   while (1)
   {
     // does reading really require lock?
+
+    // wait for the new instruction to occur
     pthread_mutex_lock(&CLOCK_LOCK);
     if (CLOCK == 1)
     {
@@ -22,6 +27,7 @@ void* alu_op(void* data)
     }
     if (CLOCK == 0)
     {
+      // indicates that the current instruction has ended
       clock_start = 0;
       new_instruction = 1;
     }
@@ -29,6 +35,7 @@ void* alu_op(void* data)
 
     if (clock_start && new_instruction)
     {
+      // copy previous pipeline : Reading stage
       temp_pipeline[1] = pipeline[1];
       instruction_to_file("results/3_alu_thread.txt", temp_pipeline[1]);
 
@@ -38,14 +45,9 @@ void* alu_op(void* data)
       printf("ALU - Increased NUMREAD - %d\n", NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
-      //       FILE *opener;
-      // opener=fopen("random.txt","a");
-
+      // wait for all the threads to complete reading
       while (1)
       {
-        // fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ
-        // );
-
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
@@ -228,6 +230,7 @@ void* alu_op(void* data)
       pipeline[2].rs_val = r1;
       pipeline[2].rt_val = r2;
 
+      // update that this thread has completed processing
       pthread_mutex_lock(&WRITE_LOCK);
       NUM_THREADS_WRITE++;
       pthread_mutex_unlock(&WRITE_LOCK);
@@ -238,6 +241,7 @@ void* alu_op(void* data)
       instruction_to_file("results/3_alu_thread.txt", pipeline[2]);
     }
 
+    // Adding delay before checking for new instruction
     usleep(DELAY);
   }
 }

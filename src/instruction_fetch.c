@@ -7,6 +7,10 @@
 #include "main_functions.h"
 #include "utils.h"
 
+/**
+* @description: Fetches the appropriate instruction from instruction memory
+*               and updates PC accordingly
+*/
 void* instruction_fetch(void* data)
 {
   printf("Inside Instruction fetch\n");
@@ -19,6 +23,12 @@ void* instruction_fetch(void* data)
     scanf("%s", input);
     if (strcmp(input, "step") == 0)
     {
+      if (PC >= MAX_PC)
+      {
+        printf("Program complete");
+        // TODO: Close all threads and free all memory
+        exit(0);
+      }
       STEPS++;
 
       // lock CLOCK for updating
@@ -29,6 +39,7 @@ void* instruction_fetch(void* data)
       int stall = control_signal.stall;
       temp_pc = PC;
 
+      // update value of pc when not stalls
       if (stall == 0)
       {
         PC += 4;
@@ -45,10 +56,9 @@ void* instruction_fetch(void* data)
           break;
         }
         pthread_mutex_unlock(&READ_LOCK);
-        // printf("NUm_THR_READ %d\n",
-        //        NUM_THREADS_READ);  //****************************************
       }
 
+      // if not stall then propagate new instruction
       if (stall == 0)
       {
         // /printf("%d\n",PC );
@@ -58,6 +68,7 @@ void* instruction_fetch(void* data)
         instruction_to_file("results/1_instruction_fetch.txt", pipeline[0]);
       }
 
+      // wait for the rest of the threads to complete write stage
       while (1)
       {
         usleep(DELAY);
@@ -72,6 +83,7 @@ void* instruction_fetch(void* data)
         pthread_mutex_unlock(&WRITE_LOCK);
       }
 
+      // make clock 0 thus marking the end of the instruction
       pthread_mutex_lock(&CLOCK_LOCK);
       CLOCK = 0;
       pthread_mutex_unlock(&CLOCK_LOCK);

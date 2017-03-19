@@ -25,16 +25,18 @@ int main(int argc, char* argv[])
   char* a = malloc(sizeof(char) * 10);
   int i = 0;
 
+  // reading and parsing instructions until file end
   while (fscanf(code, "%s", a) != EOF)
   {
     int num = (int)strtol(a, NULL, 16);
     program[i++] = instruction_parse(num);
-    // print_instruction(&program[i - 1]);
   }
   free(a);
 
+  // Initializing MAX_PC
   MAX_PC = 4 * (i - 1);
 
+  // Printing all instructions
   for (i = 0; i <= MAX_PC; i += 4)
   {
     print_instruction(&program[i / 4]);
@@ -65,6 +67,7 @@ int main(int argc, char* argv[])
   pthread_mutex_init(&READ_LOCK, NULL);
   pthread_mutex_init(&WRITE_LOCK, NULL);
 
+  // Creating threads
   pthread_create(&threads[0], NULL, instruction_fetch, (void*)NULL);
   pthread_create(&threads[1], NULL, register_read, (void*)NULL);
   pthread_create(&threads[2], NULL, alu_op, (void*)NULL);

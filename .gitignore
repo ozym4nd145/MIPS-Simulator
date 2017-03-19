@@ -36,3 +36,4 @@ ignore/
 *.txt
 *.svg
 .vscode/
+./src/simulator
