@@ -39,15 +39,15 @@ void* register_read(void* data)
 
 FILE *opener;
 opener=fopen("random.txt","a");
-      int loop = 1;
-      while (loop)
+      while (1)
       {
          fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
-          loop = 0;
+          pthread_mutex_unlock(&READ_LOCK);
+          break;
         }
         pthread_mutex_unlock(&READ_LOCK);
         printf("NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );

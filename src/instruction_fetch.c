@@ -28,15 +28,15 @@ void* instruction_fetch(void* data)
       printf("Stall %d\n",stall );//****************************************
 
       // loop until reading stage has completed
-      int loop = 1;
-      while (loop)
+      while (1)
       {
         printf("%d\n",loop );//****************************************
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
-          loop = 0;
+          pthread_mutex_unlock(&READ_LOCK);
+          break;
         }
         pthread_mutex_unlock(&READ_LOCK);
         printf("NUm_THR_READ %d\n",NUM_THREADS_READ );//****************************************
@@ -52,9 +52,7 @@ void* instruction_fetch(void* data)
         instruction_to_file("results/instruction_fetch.txt",pipeline[0]);
       }
 
-
-      loop = 1;
-      while (loop)
+      while (1)
       {
         usleep(DELAY);
         pthread_mutex_lock(&WRITE_LOCK);
@@ -62,7 +60,8 @@ void* instruction_fetch(void* data)
         {
           NUM_THREADS_WRITE = 0;
           NUM_THREADS_READ = 0;
-          loop = 0;
+          pthread_mutex_unlock(&WRITE_LOCK);
+          break;
         }
         pthread_mutex_unlock(&WRITE_LOCK);
       }

@@ -37,10 +37,9 @@ void* memory_op(void* data)
       NUM_THREADS_READ++;
       pthread_mutex_unlock(&READ_LOCK);
 
-      int loop = 1;
 FILE *opener;
 opener=fopen("random.txt","a");
-      while (loop)
+      while (1)
       {
                  fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
 
@@ -48,7 +47,8 @@ opener=fopen("random.txt","a");
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
-          loop = 0;
+          pthread_mutex_unlock(&READ_LOCK);
+          break;
         }
         pthread_mutex_unlock(&READ_LOCK);
       }

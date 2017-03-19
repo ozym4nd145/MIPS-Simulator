@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "global_vars.h"
+#include "main_functions.h"
 #include "utils.h"
 // typedef enum { Monday, Tuesday Thursday} days;
 
@@ -21,11 +22,10 @@ instruction instruction_parse(int a)
   instruction *information = (instruction *)malloc(sizeof(instruction));
 
   int temp = 63;
-  
-  information->opcode = lsr((a & (temp << 26)),26);
-  
-  
-  //printf("%d\n",information->opcode);
+
+  information->opcode = lsr((a & (temp << 26)), 26);
+
+  // printf("%d\n",information->opcode);
   temp = (temp >> 1);
   information->rs = lsr((a & (temp << 21)), 21);
   information->rt = lsr((a & (temp << 16)), 16);
@@ -34,7 +34,7 @@ instruction instruction_parse(int a)
   information->function = a & ((temp << 1) | 1);
   information->immediate =
       information->rd | information->shf_amt | information->function;
-  information->immediate = (information->immediate << 16)>>16;
+  information->immediate = (information->immediate << 16) >> 16;
   information->target_address =
       information->immediate | information->rs | information->rt;
 
