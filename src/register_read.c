@@ -8,15 +8,46 @@
 
 void* register_read(void* data)
 {
+  int clock_start = 0;
+  int new_instruction = 1;
+
   printf("Inside Register Read");
   while (1)
   {
-    if (read)
+    // does reading really require lock?
+    pthread_mutex_lock(&CLOCK_LOCK, NULL);
+    if (CLOCK == 1)
+    {
+      clock_start = 1;
+    }
+    if (CLOCK == 0)
+    {
+      new_instruction = 1;
+    }
+    pthread_mutex_unlock(&CLOCK_LOCK, NULL);
+
+    if (clock_start && new_instruction)
     {
       temp_pipeline[0] = pipeline[0];
-    }
-    else
-    {
+
+      // updating that this thread has completed reading stage
+      pthread_mutex_lock(&READ_LOCK, NULL);
+      NUM_THREADS_READ++;
+      pthread_mutex_unlock(&READ_LOCK, NULL);
+
+      int loop = 1;
+      while (loop)
+      {
+        usleep(DELAY);
+        pthread_mutex_lock(&READ_LOCK, NULL);
+        if (NUM_THREADS_READ == (NUM_THREADS - 1))
+        {
+          loop = 0;
+        }
+        pthread_mutex_unlock(&READ_LOCK, NULL);
+      }
+
+      control_signal.stall = 0;
       if (temp_pipeline[0].instr.type != NO_OP)
       {
         // Reading stage
@@ -83,7 +114,15 @@ void* register_read(void* data)
       {
         pipeline[1] = temp_pipeline[0];
       }
+
+      pthread_mutex_lock(&WRITE_LOCK, NULL);
+      NUM_THREADS_WRITE++;
+      pthread_mutex_unlock(&WRITE_LOCK, NULL);
+
+      // Indicates that this instruction is completed and not to again run loop
+      // for same instruction
+      new_instruction = 0;
     }
-    sleep(1);
+    usleep(DELAY);
   }
 }

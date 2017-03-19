@@ -24,6 +24,8 @@ void* instruction_fetch(void* data)
       CLOCK = 1;
       pthread_mutex_unlock(&CLOCK_LOCK, NULL);
 
+      int stall = control_signal.stall;
+
       // loop until reading stage has completed
       int loop = 1;
       while (loop)
@@ -37,16 +39,12 @@ void* instruction_fetch(void* data)
         pthread_mutex_unlock(&READ_LOCK, NULL);
       }
 
-      if (control_signal.stall == 0)
+      if (stall == 0)
       {
         pipeline[0].instr = program[PC / 4];
         pipeline[0].pc = PC;
         PC = PC + 4;
         printf("PC - %d\n", PC);
-      }
-      else
-      {
-        control_signal.stall = 0;
       }
 
       loop = 1;
