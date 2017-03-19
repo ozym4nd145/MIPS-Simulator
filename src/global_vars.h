@@ -19,7 +19,7 @@ typedef enum {
   OR,
   LOGIC_SHIFT_LEFT,
   LOGIC_SHIFT_LEFT_VARIABLE,
-  SUBTRACT,
+  SUB,
   BRANCH_GREATER_OR_EQUAL,
   BRANCH_GREATER,
   BRANCH_LESS_OR_EQUAL,
@@ -28,7 +28,8 @@ typedef enum {
   LDR_BYTE,
   LDR_WORD,
   STR_BYTE,
-  STR_WORD
+  STR_WORD,
+  NO_OP
 } instruction_type;
 
 typedef enum { DP, DT, BRANCH } class_type;
@@ -43,13 +44,12 @@ typedef struct
 typedef struct buffer
 {
   instruction instr;
-  int rs_val,rt_val,rd_val,alu_result;
+  int rs_val, rt_val, rd_val, alu_result, pc;
 } buffer;
 
 typedef struct
 {
   int stall;
-
 } signal;
 
 extern buffer pipeline[NUM_PIPELINES];
@@ -58,8 +58,9 @@ extern int register_file[32];
 extern int PC;
 extern int MAX_PC;  // in bytes == 4*number of instructions
 extern int STEPS;   // counts the numbers of steps taken
-extern pthread_t threads[NUM_PIPELINES];  // Threads corresponding to different
-                                          // pipeline threads
+extern pthread_t
+    threads[NUM_PIPELINES + 1];  // Threads corresponding to different
+                                 // pipeline threads
 extern signal control_signal;
 
 #endif

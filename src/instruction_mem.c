@@ -18,9 +18,10 @@ void* instruction_fetch(void* data)
       STEPS++;
       if (control_signal.stall == 0)
       {
+        pipeline[0].instr = program[PC / 4];
+        pipeline[0].pc = PC;
         PC = PC + 4;
         printf("PC - %d\n", PC);
-        pipeline[0].instr = program[PC / 4];
       }
       else
       {

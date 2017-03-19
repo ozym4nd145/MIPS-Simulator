@@ -9,5 +9,5 @@ int PC;
 int MAX_PC;
 int STEPS;
 
-pthread_t threads[NUM_PIPELINES];
+pthread_t threads[NUM_PIPELINES + 1];
 signal control_signal;

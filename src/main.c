@@ -25,11 +25,11 @@ int main(int argc, char* argv[])
   char* a = malloc(sizeof(char) * 10);
   int i = 0;
 
-  while (fscanf(code, "%s", a)!=EOF)
+  while (fscanf(code, "%s", a) != EOF)
   {
     int num = (int)strtol(a, NULL, 16);
     program[i++] = instruction_parse(num);
-    //print_instruction(&program[i - 1]);
+    // print_instruction(&program[i - 1]);
   }
   free(a);
 
@@ -41,7 +41,19 @@ int main(int argc, char* argv[])
   }
 
   pthread_create(&threads[0], NULL, instruction_fetch, (void*)NULL);
+  pthread_create(&threads[1], NULL, register_read, (void*)NULL);
+  pthread_create(&threads[2], NULL, alu_op, (void*)NULL);
+  pthread_create(&threads[3], NULL, memory_op, (void*)NULL);
+  pthread_create(&threads[4], NULL, register_write, (void*)NULL);
+  pthread_create(&threads[5], NULL, print_svg, (void*)NULL);
+
   pthread_join(threads[0], NULL);
+  pthread_join(threads[1], NULL);
+  pthread_join(threads[2], NULL);
+  pthread_join(threads[3], NULL);
+  pthread_join(threads[4], NULL);
+  pthread_join(threads[5], NULL);
+
   fclose(code);
   fclose(svg);
   return 0;
