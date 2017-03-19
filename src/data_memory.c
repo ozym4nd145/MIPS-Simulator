@@ -29,19 +29,19 @@ void* memory_op(void* data)
     if (clock_start && new_instruction)
     {
       temp_pipeline[2] = pipeline[2];
-      instruction_to_file("results/data_memory_thread.txt",temp_pipeline[2]);
-
+      instruction_to_file("results/data_memory_thread.txt", temp_pipeline[2]);
 
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
       pthread_mutex_unlock(&READ_LOCK);
 
-//FILE *opener;
-//opener=fopen("random.txt","a");
+      // FILE *opener;
+      // opener=fopen("random.txt","a");
       while (1)
       {
-                 //fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
+        // fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ
+        // );
 
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
@@ -111,8 +111,7 @@ void* memory_op(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-                instruction_to_file("results/data_memory_thread.txt",pipeline[1]);
-
+      instruction_to_file("results/data_memory_thread.txt", pipeline[1]);
     }
     usleep(DELAY);
   }

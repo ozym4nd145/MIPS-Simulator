@@ -61,8 +61,7 @@ void* register_write(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-                print_registers("results/register_write.txt");
-
+      print_registers("results/register_write.txt");
     }
 
     usleep(DELAY);
