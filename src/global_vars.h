@@ -64,16 +64,15 @@ extern int STEPS;
 extern int CLOCK;  // emulates the clock which all of the instructions follow
 extern double FREQUENCY;
 extern unsigned int DELAY;  // sleep delay for each thread in micro seconds
+extern int Memory_Block[MEMORY_SIZE];
 extern int
     NUM_THREADS_READ;  // number of threads that have completed the copy stage
                        // from buffer
 extern int
     NUM_THREADS_WRITE;  // number of threads that have completed processing for
                         // that particular cycle
+
 extern pthread_t threads[NUM_THREADS];
-
-extern int Memory_Block[MEMORY_SIZE];
-
 extern pthread_mutex_t CLOCK_LOCK;
 extern pthread_mutex_t READ_LOCK;
 extern pthread_mutex_t WRITE_LOCK;
