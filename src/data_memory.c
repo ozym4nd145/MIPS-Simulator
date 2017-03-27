@@ -35,6 +35,7 @@ void* memory_op(void* data)
       // copy previous pipeline : Reading stage
       temp_pipeline[2] = pipeline[2];
       instruction_to_file("results/4_data_memory_thread.txt", temp_pipeline[2]);
+      //printing for debugging
 
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
@@ -46,6 +47,7 @@ void* memory_op(void* data)
       while (1)
       {
         usleep(DELAY);
+        //sleep to prevent locking
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
         {
@@ -56,14 +58,18 @@ void* memory_op(void* data)
       }
 
       pipeline[3] = temp_pipeline[2];
+      //copying the whole structure into a temporary buffer pipeline in reading stage
+
       if (temp_pipeline[2].instr.Itype == NO_OP)
       {
         // sleep;
       }
       if (temp_pipeline[2].instr.Ctype == DT)
       {
+      	//instruction of class Data Transfer
         int write_val = temp_pipeline[2].rt_val;
         int offset = temp_pipeline[2].alu_result;
+//Data forwarding from exit of Data Memory to input of Data Memory
 
         if ((temp_pipeline[3].instr.Itype == LDR_WORD ||
              temp_pipeline[3].instr.Itype == LDR_BYTE) &&
@@ -71,6 +77,8 @@ void* memory_op(void* data)
         {
           write_val = temp_pipeline[3].rt_val;
         }
+        //Data forwarding from exit of Data Memory to input of Data Memory for ALU operation
+
         else if ((temp_pipeline[3].instr.Ctype == DP) &&
                  temp_pipeline[3].instr.rd == temp_pipeline[2].instr.rt)
         {
@@ -97,6 +105,11 @@ void* memory_op(void* data)
           case STR_BYTE:
           {
             Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
+            break;
+          }
+          case LDR_UPPER_IMMEDIATE:
+          {
+            pipeline[3].rt_val = temp_pipeline[2].alu_result;
             break;
           }
           default:

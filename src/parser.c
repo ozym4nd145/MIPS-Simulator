@@ -44,6 +44,11 @@ instruction instruction_parse(int a)
     information->Ctype = DP;
     information->Itype = ADD;
   }
+  else if(information->opcode==8)
+  {
+    information->Ctype = DP;
+    information->Itype = ADDI;
+  }
   else if (information->opcode == 0 && information->shf_amt == 0 &&
            information->function == 36)
   {
@@ -71,6 +76,11 @@ instruction instruction_parse(int a)
   {
     information->Ctype = DP;
     information->Itype = OR;
+  }
+  else if (information->opcode == 13)
+  {
+    information->Ctype = DP;
+    information->Itype = ORI;
   }
   else if (information->opcode == 0 && information->function == 0)
   {
@@ -132,6 +142,21 @@ instruction instruction_parse(int a)
   {
     information->Ctype = DT;
     information->Itype = STR_WORD;
+  }
+  else if(information->opcode == 15)
+  {
+    information->Ctype = DT;
+    information->Itype = LDR_UPPER_IMMEDIATE;
+  }
+  else if(information->opcode == 0 && information->shf_amt==0 && information->function==43)
+  {
+    information->Ctype = DP;
+    information->Itype = SLTU;
+  }
+  else if(information->opcode==10)
+  {
+    information->Ctype = DP;
+    information->Itype = SLTI;
   }
   else
   {
