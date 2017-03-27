@@ -6,9 +6,13 @@
 /**
 * Instruction memory
 */
-#define INSTRUCTION_MEM 10000
+#define INSTRUCTION_MEM 0x00010000
 #define NUM_THREADS 5
-#define MEMORY_SIZE 1000000
+#define MEMORY_SIZE 1671168  // equals 64MB of memory
+#define BASE_ADDR 0x10010000
+#define END_ADDR 0x14010000
+#define BASE_PC_ADDR 0x00400000
+#define END_PC_ADDR 0x00410000
 
 typedef enum {
   ADD,

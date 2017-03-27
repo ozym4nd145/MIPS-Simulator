@@ -6,7 +6,7 @@ instruction program[INSTRUCTION_MEM];   // Array containing decoded instructions
 signal control_signal;                  // Control signals
 
 int register_file[32];  // Register file
-int PC = 0;             // Global value of pc
+int PC = BASE_PC_ADDR;  // Global value of pc
 int MAX_PC = 0;         // Max value of pc that can be attained
 int STEPS = 0;          // Number of clock cycles passed
 int CLOCK = 0;  // emulates the clock which all of the instructions follow

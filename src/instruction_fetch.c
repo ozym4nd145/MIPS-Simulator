@@ -62,9 +62,9 @@ void* instruction_fetch(void* data)
       if (stall == 0)
       {
         // /printf("%d\n",PC );
-        pipeline[0].instr = program[temp_pc / 4];
+        pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
         pipeline[0].pc = temp_pc;
-        printf("PC - %d\n", temp_pc);
+        printf("PC - %08x\n", temp_pc);
         instruction_to_file("results/1_instruction_fetch.txt", pipeline[0]);
       }
 

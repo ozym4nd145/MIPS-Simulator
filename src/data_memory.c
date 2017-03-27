@@ -81,22 +81,22 @@ void* memory_op(void* data)
         {
           case LDR_WORD:
           {
-            pipeline[3].rt_val = Memory_Block[offset / 4];
+            pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
             break;
           }
           case LDR_BYTE:
           {
-            pipeline[3].rt_val = Memory_Block[offset / 4];
+            pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
             break;
           }
           case STR_WORD:
           {
-            Memory_Block[offset / 4] = write_val;
+            Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
             break;
           }
           case STR_BYTE:
           {
-            Memory_Block[offset / 4] = write_val;
+            Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
             break;
           }
           default:
