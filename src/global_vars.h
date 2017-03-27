@@ -12,12 +12,14 @@
 
 typedef enum {
   ADD,
+  ADDI,
   SUB,
   AND,
   MULTIPLY,
   MULTIPLY_ADD,
   NOR,
   OR,
+  ORI,
   LOGIC_SHIFT_LEFT,
   LOGIC_SHIFT_LEFT_VARIABLE,
   BRANCH_GREATER_OR_EQUAL,
@@ -29,6 +31,9 @@ typedef enum {
   LDR_WORD,
   STR_BYTE,
   STR_WORD,
+  SLTU,
+  SLTI,
+  LDR_UPPER_IMMEDIATE,
   NO_OP
 } instruction_type;
 

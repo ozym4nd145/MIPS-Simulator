@@ -107,6 +107,11 @@ void* memory_op(void* data)
             Memory_Block[offset / 4] = write_val;
             break;
           }
+          case LDR_UPPER_IMMEDIATE:
+          {
+            pipeline[3].rt_val = temp_pipeline[2].alu_result;
+            break;
+          }
           default:
           {
             throw_error("Error in parsing instructions");

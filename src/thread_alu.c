@@ -102,6 +102,11 @@ void* alu_op(void* data)
               pipeline[2].alu_result = r1 + r2;
               break;
 
+            case ADDI:
+              pipeline[2].alu_result = r1 + temp_pipeline[1].instr.immediate;
+              pipeline[2].instr.rd = temp_pipeline[1].instr.rt;
+              break;
+
             case SUB:
               pipeline[2].alu_result = r1 - r2;
               break;
@@ -113,6 +118,27 @@ void* alu_op(void* data)
             case OR:
               pipeline[2].alu_result = (r1 | r2);
               break;
+
+            case ORI:
+              pipeline[2].alu_result = (r1 | temp_pipeline[1].instr.immediate);
+              pipeline[2].instr.rd = temp_pipeline[1].instr.rt;
+              break;
+
+            case SLTU:
+              if(r1<r2)
+                pipeline[2].alu_result=1;
+              else
+                pipeline[2].alu_result=0;
+              break;
+
+            case SLTI:
+              if(r1<temp_pipeline[1].instr.immediate)
+                pipeline[2].alu_result=1;
+              else
+                pipeline[2].alu_result=0;
+
+              pipeline[2].instr.rd=temp_pipeline[1].instr.rt;
+                break;
 
             case LOGIC_SHIFT_LEFT:
               pipeline[2].alu_result = (r2 << (temp_pipeline[1].instr.shf_amt));
@@ -157,6 +183,10 @@ void* alu_op(void* data)
               pipeline[2].alu_result =
                   temp_pipeline[1].instr.immediate + temp_pipeline[1].rs_val;
               break;
+
+            case LDR_UPPER_IMMEDIATE:
+                pipeline[2].alu_result = (temp_pipeline[1].instr.immediate<<16);
+                break;
               //Similar ALU operation to be performed for all DT instruction
             default:
               throw_error("Unrecognized Instruction");
