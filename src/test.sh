@@ -3,4 +3,9 @@ rm -rf ./results
 mkdir results
 make
 make clean
-./simulator ./Testcases/testcase1/in1.hex ./testcases/testcase1/out.svg
+#for i in {1..5}
+#do
+#echo Testcase$i
+i=6
+./simulator ./Testcases/testcase$i/in$i.hex ./Testcases/testcase$i/out.svg
+#done
