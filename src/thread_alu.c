@@ -61,17 +61,23 @@ void* alu_op(void* data)
       pipeline[2] = temp_pipeline[1];
       int r1 = temp_pipeline[1].rs_val;
       int r2 = temp_pipeline[1].rt_val;
+      //values loaded for operation to support data forwarding
+
+      //ALU to ALU Data Forwarding (Path1)
 
       if (temp_pipeline[1].instr.rs == temp_pipeline[2].instr.rd &&
           temp_pipeline[2].instr.Ctype == DP)
       {
         r1 = temp_pipeline[2].alu_result;
       }
+      //DATA Memory to ALU Data Forwarding (Path 2)
       else if (temp_pipeline[1].instr.rs == temp_pipeline[3].instr.rt &&
                temp_pipeline[3].instr.Itype == LDR_WORD)
       {
         r1 = temp_pipeline[3].rt_val;
       }
+
+      //Similar check for operand2 of ALU
 
       if (temp_pipeline[1].instr.rt == temp_pipeline[2].instr.rd &&
           temp_pipeline[2].instr.Ctype == DP)
@@ -83,6 +89,8 @@ void* alu_op(void* data)
       {
         r2 = temp_pipeline[3].rt_val;
       }
+
+      //processing instruction to perform ALU operations
 
       switch (temp_pipeline[1].instr.Ctype)
       {
@@ -115,8 +123,10 @@ void* alu_op(void* data)
               break;
 
             case LOGIC_SHIFT_LEFT_VARIABLE:
-              pipeline[2].alu_result = r2 << (r1 & (0x0000001F));
+              pipeline[2].alu_result = r2 << (r1 & (0x0000001F));//looking at last 5 bits of register
               break;
+
+              //HI LO are 2 separate registers for multiplication
 
             case MULTIPLY:
               temp = ((long long int)r1) * ((long long int)r2);
@@ -147,12 +157,14 @@ void* alu_op(void* data)
               pipeline[2].alu_result =
                   temp_pipeline[1].instr.immediate + temp_pipeline[1].rs_val;
               break;
+              //Similar ALU operation to be performed for all DT instruction
             default:
               throw_error("Unrecognized Instruction");
           }
           break;
         }
-        // Branch Class Cases Handling
+        // Branch Class Cases Handling and Updating PC if branch occurs
+
         case BRANCH:
         {
           int branched = 0;
@@ -206,6 +218,8 @@ void* alu_op(void* data)
             default:
               throw_error("Wrong Instruction");
           }
+
+          //If branch is successful filling bubbles/no-operation in Pipeline
           if (branched == 1)
           {
             pipeline[3].instr.Itype = NO_OP;
@@ -229,6 +243,7 @@ void* alu_op(void* data)
 
       pipeline[2].rs_val = r1;
       pipeline[2].rt_val = r2;
+      //updating next pipeline buffer (required if Data Forwading had occured)
 
       // update that this thread has completed processing
       pthread_mutex_lock(&WRITE_LOCK);
