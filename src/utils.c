@@ -137,6 +137,7 @@ void instruction_to_file(char *s, buffer instruct)
   fprintf(write, "Register RS %d\n", instruct.instr.rs);
   fprintf(write, "Register RT %d\n", instruct.instr.rt);
   fprintf(write, "Register RD %d\n", instruct.instr.rd);
+  fprintf(write, "Immediate %d\n", instruct.instr.immediate);
   fprintf(write, "Register OPCODE %d\n", instruct.instr.opcode);
   fprintf(write, "Register SHT_AMT %d\n", instruct.instr.shf_amt);
   fprintf(write, "Register CTYPE %s\n",
@@ -149,7 +150,7 @@ void instruction_to_file(char *s, buffer instruct)
   fprintf(write, "Register ALU_Result %d\n", instruct.alu_result);
   fprintf(write, "Register HI_Val %d\n", instruct.HI);
   fprintf(write, "Register LO_Val %d\n", instruct.LO);
-  fprintf(write, "Register PC_Val %d\n", instruct.pc);
+  fprintf(write, "Register PC_Val %08x\n", instruct.pc);
   fprintf(write, "---------------------------\n");
   fprintf(write, "\n\n");
   fclose(write);

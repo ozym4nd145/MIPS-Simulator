@@ -62,7 +62,7 @@ typedef struct
 } signal;
 
 extern buffer pipeline[NUM_THREADS - 1];
-extern buffer temp_pipeline[NUM_THREADS - 2];
+extern buffer temp_pipeline[NUM_THREADS - 1];
 extern instruction program[INSTRUCTION_MEM];
 extern signal control_signal;
 

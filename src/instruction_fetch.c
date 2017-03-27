@@ -15,12 +15,18 @@ void* instruction_fetch(void* data)
 {
   printf("Inside Instruction fetch\n");
   char input[100];
+  input[0] = 's';
+  input[1] = 't';
+  input[2] = 'e';
+  input[3] = 'p';
+  input[4] = '\0';
   int temp_pc;
 
   while (1)
   {
-    // printf("Looping CLOCK %d\n",CLOCK);
-    scanf("%s", input);
+    // scanf("%s", input);
+    sleep(1);
+    // input = "step\0";
     if (strcmp(input, "step") == 0)
     {
       if (PC >= MAX_PC)
@@ -37,13 +43,12 @@ void* instruction_fetch(void* data)
       pthread_mutex_unlock(&CLOCK_LOCK);
 
       int stall = control_signal.stall;
+      printf("Step = %d | Stall = %d\n", STEPS, stall);
       temp_pc = PC;
 
-      // update value of pc when not stalls
-      if (stall == 0)
-      {
-        PC += 4;
-      }
+      // update value of pc( not a problem in stalls as register_read
+      // automatically decrements pc)
+      PC += 4;
 
       // loop until reading stage has completed
       while (1)
@@ -58,16 +63,12 @@ void* instruction_fetch(void* data)
         pthread_mutex_unlock(&READ_LOCK);
       }
 
-      // if not stall then propagate new instruction
-      if (stall == 0)
+      if (control_signal.stall == 0)
       {
         // /printf("%d\n",PC );
         pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
         pipeline[0].pc = temp_pc;
-        printf("PC - %08x\n", temp_pc);
-        instruction_to_file("results/1_instruction_fetch.txt", pipeline[0]);
       }
-
       // wait for the rest of the threads to complete write stage
       while (1)
       {
@@ -83,6 +84,8 @@ void* instruction_fetch(void* data)
         pthread_mutex_unlock(&WRITE_LOCK);
       }
 
+      printf("PC - %08x\n", temp_pc);
+      instruction_to_file("results/1_instruction_fetch.txt", pipeline[0]);
       // make clock 0 thus marking the end of the instruction
       pthread_mutex_lock(&CLOCK_LOCK);
       CLOCK = 0;

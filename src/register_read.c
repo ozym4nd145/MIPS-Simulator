@@ -40,10 +40,32 @@ void* register_read(void* data)
       temp_pipeline[0] = pipeline[0];
       instruction_to_file("results/2_register_read.txt", temp_pipeline[0]);
 
-      // update that this thread has completed reading stage
+      // Setting stall signal to 1 if necessary
+      if (temp_pipeline[0].instr.Itype != NO_OP)
+      {
+        // Stalling cases
+        if ((pipeline[1].instr.Itype == LDR_BYTE ||
+             pipeline[1].instr.Itype == LDR_WORD ||
+             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
+            (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
+             pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
+        {
+          control_signal.stall = 1;
+        }
+        else
+        {
+          control_signal.stall = 0;
+        }
+      }
+      else
+      {
+        control_signal.stall = 0;
+      }
+
+      // update that this thread has  completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
-      printf("RR - Increased NUMREAD - %d\n", NUM_THREADS_READ);
+      // printf("RR - Increased NUMREAD - %d\n", NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
       // wait for all the threads to complete reading
@@ -59,19 +81,18 @@ void* register_read(void* data)
         pthread_mutex_unlock(&READ_LOCK);
       }
 
-      // Default value of stall is zero
-      control_signal.stall = 0;
-
       // Process instruction if its not NO_OP
       if (temp_pipeline[0].instr.Itype != NO_OP)
       {
         // Stalling cases
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
-             pipeline[1].instr.Itype == LDR_WORD) &&
+             pipeline[1].instr.Itype == LDR_WORD ||
+             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
-          control_signal.stall = 1;
+          // as PC value was incremented in read stage by instruction_fetch.
+          PC -= 4;
           pipeline[1].instr.Itype = NO_OP;
           pipeline[1].instr.Ctype = NO_OPERATION;
         }

@@ -1,7 +1,7 @@
 #include "global_vars.h"
 
 buffer pipeline[NUM_THREADS - 1];       // Pipelines in between different stages
-buffer temp_pipeline[NUM_THREADS - 2];  // Temporary pipeline for reading stage
+buffer temp_pipeline[NUM_THREADS - 1];  // Temporary pipeline for reading stage
 instruction program[INSTRUCTION_MEM];   // Array containing decoded instructions
 signal control_signal;                  // Control signals
 
@@ -11,7 +11,7 @@ int MAX_PC = 0;         // Max value of pc that can be attained
 int STEPS = 0;          // Number of clock cycles passed
 int CLOCK = 0;  // emulates the clock which all of the instructions follow
 double FREQUENCY = 0;
-unsigned int DELAY = 1000;       // sleep delay for each thread in micro seconds
+unsigned int DELAY = 100000;     // sleep delay for each thread in micro seconds
 int NUM_THREADS_READ = 0;        // threads that have completed the copy stage
                                  // from buffer
 int NUM_THREADS_WRITE = 0;       // threads that have completed processing for
