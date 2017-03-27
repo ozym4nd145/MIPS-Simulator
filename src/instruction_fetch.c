@@ -13,7 +13,7 @@
 */
 void* instruction_fetch(void* data)
 {
-  printf("Inside Instruction fetch\n");
+  // printf("Inside Instruction fetch\n");
   char input[100];
   input[0] = 's';
   input[1] = 't';
@@ -24,17 +24,17 @@ void* instruction_fetch(void* data)
 
   while (1)
   {
-    // scanf("%s", input);
-    sleep(1);
+    scanf("%s", input);
+    // sleep(1);
     // input = "step\0";
     if (strcmp(input, "step") == 0)
     {
-      if (PC >= MAX_PC)
-      {
-        printf("Program complete");
-        // TODO: Close all threads and free all memory
-        exit(0);
-      }
+      // if (PC >= MAX_PC)
+      // {
+      //   // printf("Program complete");
+      //   // TODO: Close all threads and free all memory
+      //   // exit(0);
+      // }
       STEPS++;
 
       // lock CLOCK for updating
@@ -65,8 +65,18 @@ void* instruction_fetch(void* data)
 
       if (control_signal.stall == 0)
       {
-        // /printf("%d\n",PC );
-        pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+        if (temp_pc > MAX_PC)
+        {
+          pipeline[0].instr.Itype = NO_OP;
+          pipeline[0].instr.Ctype = NO_OPERATION;
+          // printf("Program complete");
+          // TODO: Close all threads and free all memory
+          // exit(0);
+        }
+        else
+        {
+          pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+        }
         pipeline[0].pc = temp_pc;
       }
       // wait for the rest of the threads to complete write stage

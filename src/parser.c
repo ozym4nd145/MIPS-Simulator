@@ -18,7 +18,7 @@ int input(FILE *fl)
 
 instruction instruction_parse(int a)
 {
-  printf("Instruction %08x\n", a);
+  // printf("Instruction %08x\n", a);
   instruction *information = (instruction *)malloc(sizeof(instruction));
 
   int temp = 63;
@@ -32,9 +32,10 @@ instruction instruction_parse(int a)
   information->rd = lsr((a & (temp << 11)), 11);
   information->shf_amt = lsr((a & (temp << 6)), 6);
   information->function = a & ((temp << 1) | 1);
-  information->immediate =
-      information->rd | information->shf_amt | information->function;
-  information->immediate = (information->immediate << 16) >> 16;
+  // information->immediate =
+  // information->rd | information->shf_amt | information->function;
+  // information->immediate = (information->immediate << 16) >> 16;
+  information->immediate = a & (0xFFFF);
   information->target_address =
       information->immediate | information->rs | information->rt;
 
@@ -44,7 +45,7 @@ instruction instruction_parse(int a)
     information->Ctype = DP;
     information->Itype = ADD;
   }
-  else if(information->opcode==8)
+  else if (information->opcode == 8)
   {
     information->Ctype = DP;
     information->Itype = ADDI;
@@ -143,17 +144,18 @@ instruction instruction_parse(int a)
     information->Ctype = DT;
     information->Itype = STR_WORD;
   }
-  else if(information->opcode == 15)
+  else if (information->opcode == 15)
   {
     information->Ctype = DT;
     information->Itype = LDR_UPPER_IMMEDIATE;
   }
-  else if(information->opcode == 0 && information->shf_amt==0 && information->function==43)
+  else if (information->opcode == 0 && information->shf_amt == 0 &&
+           information->function == 43)
   {
     information->Ctype = DP;
     information->Itype = SLTU;
   }
-  else if(information->opcode==10)
+  else if (information->opcode == 10)
   {
     information->Ctype = DP;
     information->Itype = SLTI;

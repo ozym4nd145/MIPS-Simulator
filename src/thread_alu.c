@@ -186,8 +186,7 @@ void* alu_op(void* data)
             case LDR_BYTE:
             case STR_WORD:
             case STR_BYTE:
-              pipeline[2].alu_result =
-                  temp_pipeline[1].instr.immediate + temp_pipeline[1].rs_val;
+              pipeline[2].alu_result = temp_pipeline[1].instr.immediate + r1;
               break;
 
             case LDR_UPPER_IMMEDIATE:
@@ -207,7 +206,7 @@ void* alu_op(void* data)
           switch (temp_pipeline[1].instr.Itype)
           {
             case BRANCH_EQUAL:
-              if (temp_pipeline[1].rs_val == temp_pipeline[1].rt_val)
+              if (r1 == r2)
               {
                 PC += temp_pipeline[1].pc +
                       (temp_pipeline[1].instr.immediate << 2);
@@ -216,7 +215,7 @@ void* alu_op(void* data)
               break;
 
             case BRANCH_GREATER_OR_EQUAL:
-              if (temp_pipeline[1].rs_val >= 0)
+              if (r1 >= 0)
               {
                 PC += temp_pipeline[1].pc +
                       (temp_pipeline[1].instr.immediate << 2);
@@ -225,7 +224,7 @@ void* alu_op(void* data)
               break;
 
             case BRANCH_LESS_OR_EQUAL:
-              if (temp_pipeline[1].rs_val <= 0)
+              if (r1 <= 0)
               {
                 PC += temp_pipeline[1].pc +
                       (temp_pipeline[1].instr.immediate << 2);
@@ -234,7 +233,7 @@ void* alu_op(void* data)
               break;
 
             case BRANCH_GREATER:
-              if (temp_pipeline[1].rs_val > 0)
+              if (r1 > 0)
               {
                 PC += temp_pipeline[1].pc +
                       (temp_pipeline[1].instr.immediate << 2);
@@ -243,7 +242,7 @@ void* alu_op(void* data)
               break;
 
             case BRANCH_LESS:
-              if (temp_pipeline[1].rs_val < 0)
+              if (r1 < 0)
               {
                 PC += temp_pipeline[1].pc +
                       (temp_pipeline[1].instr.immediate << 2);
