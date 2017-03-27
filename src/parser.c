@@ -55,12 +55,12 @@ instruction instruction_parse(int a)
     information->Ctype = DP;
     information->Itype = AND;
   }
-  else if (information->opcode == 0 && information->target_address == 24)
+  else if (information->opcode == 0 && information->immediate == 24)
   {
     information->Ctype = DP;
     information->Itype = MULTIPLY;
   }
-  else if (information->opcode == 0 && information->target_address == 0)
+  else if (information->opcode == 28 && information->immediate == 0)
   {
     information->Ctype = DP;
     information->Itype = MULTIPLY_ADD;

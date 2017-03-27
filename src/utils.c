@@ -74,6 +74,17 @@ char *get_instruction_name(const instruction_type instr)
     case NO_OP:
       return "NO_OP";
       break;
+    case ADDI:
+      return "ADDI";
+    case ORI:
+      return "ORI";
+    case LDR_UPPER_IMMEDIATE:
+      return "LDR_UPPER_IMMEDIATE";
+    case SLTU:
+      return "SLTU";
+    case SLTI:
+      return "SLTI";
+      break;
   }
   return NULL;
 }
