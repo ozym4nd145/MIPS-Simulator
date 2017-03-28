@@ -103,6 +103,16 @@ void* instruction_fetch(void* data)
 
       // Implement READ_CLOCK_0 ?
     }
+    else if (strcmp(input, "regdump") == 0)
+    {
+      regdump();
+    }
+    else if (strcmp(input, "memdump") == 0)
+    {
+      int start, num;
+      scanf(" 0x%x %d", &start, &num);
+      memdump(start, num);
+    }
     usleep(DELAY);
   }
 }

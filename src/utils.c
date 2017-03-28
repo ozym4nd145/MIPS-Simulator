@@ -128,6 +128,41 @@ void int_to_binary(int au)
 }
 
 int lsr(int x, int n) { return (int)((unsigned int)x >> n); }
+void regdump()
+{
+  int i = 0;
+  for (i = 0; i < 32; i++)
+  {
+    printf("$%2d: 0x%08x\n", i, register_file[i]);
+  }
+  printf("hi: %08x\n", register_file[32]);
+  printf("lo: %08x\n", register_file[33]);
+  printf("pc: %08x\n", PC);
+}
+
+void memdump(int start, int num)
+{
+  printf("Inside memdump %08x %d\n", start, num);
+  int i = 0;
+  for (i = 0; i < num; i++)
+  {
+    printf("0x%08x: 0x%02x\n", (start + i), get_byte(start + i));
+  }
+}
+
+int get_byte(int addr)
+{
+  if (addr < BASE_ADDR || addr > END_ADDR)
+  {
+    throw_error("Illegal memory access");
+  }
+  int index = (addr - BASE_ADDR) / 4;
+  int offset = (addr - BASE_ADDR) % 4;
+  int value = Memory_Block[index];
+  int mask = 0xFF;
+  int shift = (3 - offset) << 3;
+  return lsr((value & (mask << shift)), shift);
+}
 void instruction_to_file(char *s, buffer instruct)
 {
   FILE *write = fopen(s, "a");
