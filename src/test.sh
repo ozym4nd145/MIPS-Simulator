@@ -7,5 +7,5 @@ make clean
 #do
 #echo Testcase$i
 i=3
-./simulator ./testcases/testcase$i/in$i.hex ./testcases/testcase$i/out.svg
+./simulator ../testcases/testcase$i/in$i.hex ../testcases/testcase$i/out.svg
 #done
