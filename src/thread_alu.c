@@ -285,8 +285,8 @@ void* alu_op(void* data)
           if (branched == 1)
           {
             printf("Branch Taken%s\n",get_instruction_name(pipeline[2].instr.Itype));
-            pipeline[3].instr.Itype = NO_OP;
-            pipeline[3].instr.Ctype = NO_OPERATION;
+            pipeline[2].instr.Itype = NO_OP;
+            pipeline[2].instr.Ctype = NO_OPERATION;
           }
 
           break;

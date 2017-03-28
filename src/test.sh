@@ -6,6 +6,6 @@ make clean
 #for i in {1..5}
 #do
 #echo Testcase$i
-i=1
+i=2
 ./simulator ./testcases/testcase$i/in$i.hex ./testcases/testcase$i/out.svg
 #done
