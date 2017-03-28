@@ -34,3 +34,4 @@
 ignore/
 .vscode/
 src/simulator
+src/results
