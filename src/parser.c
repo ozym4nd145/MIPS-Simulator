@@ -109,17 +109,17 @@ instruction instruction_parse(int a)
   }
   else if (information->opcode == 7 && information->rt == 0)
   {
-    information->Ctype = DT;
+    information->Ctype = BRANCH;
     information->Itype = BRANCH_GREATER;
   }
   else if (information->opcode == 6 && information->rt == 0)
   {
-    information->Ctype = DT;
+    information->Ctype = BRANCH;
     information->Itype = BRANCH_LESS_OR_EQUAL;
   }
   else if (information->opcode == 1 && information->rt == 0)
   {
-    information->Ctype = DT;
+    information->Ctype = BRANCH;
     information->Itype = BRANCH_LESS;
   }
   else if (information->opcode == 32)

@@ -284,6 +284,7 @@ void* alu_op(void* data)
           // If branch is successful filling bubbles/no-operation in Pipeline
           if (branched == 1)
           {
+            printf("Branch Taken%s\n",get_instruction_name(pipeline[2].instr.Itype));
             pipeline[3].instr.Itype = NO_OP;
             pipeline[3].instr.Ctype = NO_OPERATION;
           }
