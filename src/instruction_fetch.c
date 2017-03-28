@@ -21,6 +21,7 @@ void* instruction_fetch(void* data)
   input[3] = 'p';
   input[4] = '\0';
   int temp_pc;
+  
 
   while (1)
   {
@@ -92,6 +93,15 @@ void* instruction_fetch(void* data)
           break;
         }
         pthread_mutex_unlock(&WRITE_LOCK);
+      }
+
+      if(control_signal.branched==1)
+      {
+        pipeline[0].instr.Itype=NO_OP;
+        pipeline[0].instr.Ctype=NO_OPERATION;
+        pipeline[1].instr.Itype=NO_OP;
+        pipeline[1].instr.Ctype=NO_OPERATION;
+        control_signal.branched=0;
       }
 
       printf("PC - %08x\n", temp_pc);

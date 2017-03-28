@@ -1886,14 +1886,14 @@ Register RD 9
 Immediate 18464
 Register OPCODE 0
 Register SHT_AMT 0
-Register CTYPE DP
-Register ITYPE ADD
-Register RS_Val 6
-Register RT_Val 2
-Register RD_Val 1
-Register ALU_Result 8
+Register CTYPE NO_OPERATION
+Register ITYPE NO_OP
+Register RS_Val 0
+Register RT_Val 0
+Register RD_Val 0
+Register ALU_Result 0
 Register HI_Val 0
-Register LO_Val 48
+Register LO_Val 0
 Register PC_Val 00400064
 ---------------------------
 
@@ -1908,7 +1908,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -1945,7 +1945,7 @@ Register OPCODE 7
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
-Register RS_Val 8
+Register RS_Val 1
 Register RT_Val 0
 Register RD_Val 0
 Register ALU_Result 0
@@ -1965,7 +1965,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -1994,21 +1994,21 @@ Register HI: 0
 
 
 --------STEP  36--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18464
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
-Register RS_Val 8
-Register RT_Val 0
-Register RD_Val 0
+Register RS_Val 6
+Register RT_Val 2
+Register RD_Val 1
 Register ALU_Result 0
 Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 0040006c
+Register LO_Val 48
+Register PC_Val 00400064
 ---------------------------
 
 
@@ -2022,7 +2022,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2051,11 +2051,11 @@ Register HI: 0
 
 
 --------STEP  37--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2065,7 +2065,7 @@ Register RD_Val 0
 Register ALU_Result 0
 Register HI_Val 0
 Register LO_Val 0
-Register PC_Val 00400070
+Register PC_Val 00400068
 ---------------------------
 
 
@@ -2079,7 +2079,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2108,11 +2108,11 @@ Register HI: 0
 
 
 --------STEP  38--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2136,7 +2136,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2165,11 +2165,11 @@ Register HI: 0
 
 
 --------STEP  39--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2193,7 +2193,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2222,11 +2222,11 @@ Register HI: 0
 
 
 --------STEP  40--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2250,7 +2250,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2279,11 +2279,11 @@ Register HI: 0
 
 
 --------STEP  41--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2307,7 +2307,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2336,11 +2336,11 @@ Register HI: 0
 
 
 --------STEP  42--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2364,7 +2364,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2393,11 +2393,11 @@ Register HI: 0
 
 
 --------STEP  43--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2421,7 +2421,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2450,11 +2450,11 @@ Register HI: 0
 
 
 --------STEP  44--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2478,7 +2478,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2507,11 +2507,11 @@ Register HI: 0
 
 
 --------STEP  45--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2535,7 +2535,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2564,11 +2564,11 @@ Register HI: 0
 
 
 --------STEP  46--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2592,7 +2592,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2621,11 +2621,11 @@ Register HI: 0
 
 
 --------STEP  47--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2649,7 +2649,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2678,11 +2678,11 @@ Register HI: 0
 
 
 --------STEP  48--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2706,7 +2706,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2735,11 +2735,11 @@ Register HI: 0
 
 
 --------STEP  49--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2763,7 +2763,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2792,11 +2792,11 @@ Register HI: 0
 
 
 --------STEP  50--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2820,7 +2820,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2849,11 +2849,11 @@ Register HI: 0
 
 
 --------STEP  51--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2877,7 +2877,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2906,11 +2906,11 @@ Register HI: 0
 
 
 --------STEP  52--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2934,7 +2934,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6
@@ -2963,11 +2963,11 @@ Register HI: 0
 
 
 --------STEP  53--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
+Register RS 10
+Register RT 11
+Register RD 9
+Immediate 18466
+Register OPCODE 0
 Register SHT_AMT 0
 Register CTYPE NO_OPERATION
 Register ITYPE NO_OP
@@ -2991,577 +2991,7 @@ Register 5 :0
 Register 6 :0
 Register 7 :0
 Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  54--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000ac
----------------------------
-
-
---------STEP  54--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  55--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000b0
----------------------------
-
-
---------STEP  55--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  56--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000b4
----------------------------
-
-
---------STEP  56--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  57--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000b8
----------------------------
-
-
---------STEP  57--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  58--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000bc
----------------------------
-
-
---------STEP  58--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  59--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000c0
----------------------------
-
-
---------STEP  59--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  60--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000c4
----------------------------
-
-
---------STEP  60--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  61--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000c8
----------------------------
-
-
---------STEP  61--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  62--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000cc
----------------------------
-
-
---------STEP  62--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
-Register 10 :6
-Register 11 :2
-Register 12 :6
-Register 13 :268500992
-Register 14 :0
-Register 15 :0
-Register 16 :0
-Register 17 :0
-Register 18 :0
-Register 19 :0
-Register 20 :0
-Register 21 :0
-Register 22 :0
-Register 23 :0
-Register 24 :0
-Register 25 :0
-Register 26 :0
-Register 27 :0
-Register 28 :0
-Register 29 :0
-Register 30 :0
-Register 31 :0
-Register LO: 48
-Register HI: 0
----------------------------
-
-
---------STEP  63--------------
-Register RS 9
-Register RT 0
-Register RD 0
-Immediate 2
-Register OPCODE 7
-Register SHT_AMT 0
-Register CTYPE NO_OPERATION
-Register ITYPE NO_OP
-Register RS_Val 0
-Register RT_Val 0
-Register RD_Val 0
-Register ALU_Result 0
-Register HI_Val 0
-Register LO_Val 0
-Register PC_Val 004000d0
----------------------------
-
-
---------STEP  63--------------
-Register 0 :0
-Register 1 :0
-Register 2 :0
-Register 3 :0
-Register 4 :0
-Register 5 :0
-Register 6 :0
-Register 7 :0
-Register 8 :0
-Register 9 :8
+Register 9 :1
 Register 10 :6
 Register 11 :2
 Register 12 :6

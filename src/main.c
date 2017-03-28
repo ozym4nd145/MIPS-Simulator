@@ -61,6 +61,8 @@ int main(int argc, char* argv[])
     // register_file[i] = i + 1;  // Just for checking
     register_file[i] = 0;
   }
+  control_signal.stall=0;
+  control_signal.branched=0;
 
   // Initializing mutex locks
   pthread_mutex_init(&CLOCK_LOCK, NULL);

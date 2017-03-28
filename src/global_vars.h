@@ -59,6 +59,7 @@ typedef struct buffer
 typedef struct
 {
   int stall;
+  int branched;
 } signal;
 
 extern buffer pipeline[NUM_THREADS - 1];
