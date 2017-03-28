@@ -6,18 +6,24 @@
 /**
 * Instruction memory
 */
-#define INSTRUCTION_MEM 10000
+#define INSTRUCTION_MEM 0x00010000
 #define NUM_THREADS 5
-#define MEMORY_SIZE 1000000
+#define MEMORY_SIZE 1671168  // equals 64MB of memory
+#define BASE_ADDR 0x10010000
+#define END_ADDR 0x14010000
+#define BASE_PC_ADDR 0x00400000
+#define END_PC_ADDR 0x00410000
 
 typedef enum {
   ADD,
+  ADDI,
   SUB,
   AND,
   MULTIPLY,
   MULTIPLY_ADD,
   NOR,
   OR,
+  ORI,
   LOGIC_SHIFT_LEFT,
   LOGIC_SHIFT_LEFT_VARIABLE,
   BRANCH_GREATER_OR_EQUAL,
@@ -29,6 +35,9 @@ typedef enum {
   LDR_WORD,
   STR_BYTE,
   STR_WORD,
+  SLTU,
+  SLTI,
+  LDR_UPPER_IMMEDIATE,
   NO_OP
 } instruction_type;
 
@@ -50,6 +59,7 @@ typedef struct buffer
 typedef struct
 {
   int stall;
+  int branched;
 } signal;
 
 extern buffer pipeline[NUM_THREADS - 1];
@@ -57,23 +67,23 @@ extern buffer temp_pipeline[NUM_THREADS - 1];
 extern instruction program[INSTRUCTION_MEM];
 extern signal control_signal;
 
-extern int register_file[32];
+// register_file[32]= LO && register_file[33] = HIGH
+extern int register_file[34];
 extern int PC;
 extern int MAX_PC;
 extern int STEPS;
 extern int CLOCK;  // emulates the clock which all of the instructions follow
 extern double FREQUENCY;
 extern unsigned int DELAY;  // sleep delay for each thread in micro seconds
+extern int Memory_Block[MEMORY_SIZE];
 extern int
     NUM_THREADS_READ;  // number of threads that have completed the copy stage
                        // from buffer
 extern int
     NUM_THREADS_WRITE;  // number of threads that have completed processing for
                         // that particular cycle
+
 extern pthread_t threads[NUM_THREADS];
-
-extern int Memory_Block[MEMORY_SIZE];
-
 extern pthread_mutex_t CLOCK_LOCK;
 extern pthread_mutex_t READ_LOCK;
 extern pthread_mutex_t WRITE_LOCK;

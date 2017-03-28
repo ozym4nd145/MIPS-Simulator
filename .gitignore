@@ -26,13 +26,13 @@
 *.app
 *.i*86
 *.x86_64
-*.hex
 
 # Debug files
 *.dSYM/
 *.su
  
 ignore/
-*.txt
-*.svg
 .vscode/
+src/simulator
+src/results
+src/testcases

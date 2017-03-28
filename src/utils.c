@@ -74,6 +74,17 @@ char *get_instruction_name(const instruction_type instr)
     case NO_OP:
       return "NO_OP";
       break;
+    case ADDI:
+      return "ADDI";
+    case ORI:
+      return "ORI";
+    case LDR_UPPER_IMMEDIATE:
+      return "LDR_UPPER_IMMEDIATE";
+    case SLTU:
+      return "SLTU";
+    case SLTI:
+      return "SLTI";
+      break;
   }
   return NULL;
 }
@@ -117,15 +128,51 @@ void int_to_binary(int au)
 }
 
 int lsr(int x, int n) { return (int)((unsigned int)x >> n); }
+void regdump()
+{
+  int i = 0;
+  for (i = 0; i < 32; i++)
+  {
+    printf("$%2d: 0x%08x\n", i, register_file[i]);
+  }
+  printf("hi: %08x\n", register_file[32]);
+  printf("lo: %08x\n", register_file[33]);
+  printf("pc: %08x\n", PC);
+}
+
+void memdump(int start, int num)
+{
+  // printf("Inside memdump %08x %d\n", start, num);
+  int i = 0;
+  for (i = 0; i < num; i++)
+  {
+    printf("0x%08x: 0x%02x\n", (start + i), get_byte(start + i));
+  }
+}
+
+int get_byte(int addr)
+{
+  if (addr < BASE_ADDR || addr > END_ADDR)
+  {
+    throw_error("Illegal memory access");
+  }
+  int index = (addr - BASE_ADDR) / 4;
+  int offset = (addr - BASE_ADDR) % 4;
+  int value = Memory_Block[index];
+  int mask = 0xFF;
+  int shift = (3 - offset) << 3;
+  return lsr((value & (mask << shift)), shift);
+}
 void instruction_to_file(char *s, buffer instruct)
 {
   FILE *write = fopen(s, "a");
-  fprintf(write, "CLOCK %d\n",CLOCK );
-  fprintf(write, "Number Thread Read %d\n",NUM_THREADS_READ );
-
+  // fprintf(write, "CLOCK %d\n",CLOCK );
+  // fprintf(write, "Number Thread Read %d\n",NUM_THREADS_READ );
+  fprintf(write, "--------STEP  %d--------------\n", STEPS);
   fprintf(write, "Register RS %d\n", instruct.instr.rs);
   fprintf(write, "Register RT %d\n", instruct.instr.rt);
   fprintf(write, "Register RD %d\n", instruct.instr.rd);
+  fprintf(write, "Immediate %d\n", instruct.instr.immediate);
   fprintf(write, "Register OPCODE %d\n", instruct.instr.opcode);
   fprintf(write, "Register SHT_AMT %d\n", instruct.instr.shf_amt);
   fprintf(write, "Register CTYPE %s\n",
@@ -138,7 +185,8 @@ void instruction_to_file(char *s, buffer instruct)
   fprintf(write, "Register ALU_Result %d\n", instruct.alu_result);
   fprintf(write, "Register HI_Val %d\n", instruct.HI);
   fprintf(write, "Register LO_Val %d\n", instruct.LO);
-  fprintf(write, "Register PC_Val %d\n", instruct.pc);
+  fprintf(write, "Register PC_Val %08x\n", instruct.pc);
+  fprintf(write, "---------------------------\n");
   fprintf(write, "\n\n");
   fclose(write);
 }
@@ -147,9 +195,12 @@ void print_registers(char *s)
 {
   FILE *write = fopen(s, "a");
   int i;
-
+  fprintf(write, "--------STEP  %d--------------\n", STEPS);
   for (i = 0; i < 32; i++)
     fprintf(write, "Register %d :%d\n", i, register_file[i]);
+  fprintf(write, "Register LO: %d\n", register_file[32]);
+  fprintf(write, "Register HI: %d\n", register_file[33]);
+  fprintf(write, "---------------------------\n");
 
   fprintf(write, "\n\n");
   fclose(write);

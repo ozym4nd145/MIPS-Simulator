@@ -12,11 +12,10 @@ void* register_write(void* data)
   int clock_start = 0;
   int new_instruction = 1;
 
-  printf("Inside Register Write");
-  // Running it all the time
   while (1)
   {
     // does reading really require lock?
+    // wait for the new instruction to occur
     pthread_mutex_lock(&CLOCK_LOCK);
     if (CLOCK == 1)
     {
@@ -24,20 +23,31 @@ void* register_write(void* data)
     }
     if (CLOCK == 0)
     {
+      // indicates that the current instruction has ended
+      clock_start = 0;
       new_instruction = 1;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
 
     if (clock_start && new_instruction)
     {
+      temp_pipeline[3] = pipeline[3];
+      instruction_to_file("results/5_register_write.txt", temp_pipeline[3]);
       // If the instruction is not No Operation
       if (pipeline[3].instr.Itype != NO_OP)
       {
         // Write value into the Register file
         if (pipeline[3].instr.Itype == LDR_BYTE ||
-            pipeline[3].instr.Itype == LDR_WORD)
+            pipeline[3].instr.Itype == LDR_WORD ||
+            pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE)
         {
           register_file[pipeline[3].instr.rt] = pipeline[3].rt_val;
+        }
+        else if (pipeline[3].instr.Itype == MULTIPLY ||
+                 pipeline[3].instr.Itype == MULTIPLY_ADD)
+        {
+          register_file[32] = pipeline[3].LO;
+          register_file[33] = pipeline[3].HI;
         }
         else if (pipeline[3].instr.Ctype == DP)
         {
@@ -49,11 +59,17 @@ void* register_write(void* data)
         // do nothing
       }
 
+      // NOTE: we change the values of register file in the reading stage itself
+      // as the register file has to updated in the same clock cycle
+
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
+      // printf("RW - Increased NUMREAD - %d\n", NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
+      // Updating that processing stage is complete (NO processing needed as
+      // values were already updated)
       pthread_mutex_lock(&WRITE_LOCK);
       NUM_THREADS_WRITE++;
       pthread_mutex_unlock(&WRITE_LOCK);
@@ -61,10 +77,10 @@ void* register_write(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-                print_registers("results/register_write.txt");
-
+      print_registers("results/5_register_write.txt");
     }
 
+    // Adding delay before checking for new instruction
     usleep(DELAY);
   }
 }

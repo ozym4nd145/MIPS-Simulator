@@ -7,15 +7,20 @@
 #include "main_functions.h"
 #include "utils.h"
 
+/**
+* @description: Reads the values of register indicated from opcode into the next
+*               pipeline
+**/
 void* register_read(void* data)
 {
   int clock_start = 0;
   int new_instruction = 1;
 
-  printf("Inside Register Read");
   while (1)
   {
-    // does reading really require lock?
+    // NOTE: does reading really require lock?
+
+    // wait for the new instruction to occur
     pthread_mutex_lock(&CLOCK_LOCK);
     if (CLOCK == 1)
     {
@@ -23,25 +28,49 @@ void* register_read(void* data)
     }
     if (CLOCK == 0)
     {
+      // indicates that the current instruction has ended
       new_instruction = 1;
+      clock_start = 0;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
 
     if (clock_start && new_instruction)
     {
+      // copy previous pipeline : Reading stage
       temp_pipeline[0] = pipeline[0];
-       instruction_to_file("results/register_read.txt",temp_pipeline[0]);
+      instruction_to_file("results/2_register_read.txt", temp_pipeline[0]);
 
-      // updating that this thread has completed reading stage
+      // Setting stall signal to 1 if necessary
+      if (temp_pipeline[0].instr.Itype != NO_OP)
+      {
+        // Stalling cases
+        if ((pipeline[1].instr.Itype == LDR_BYTE ||
+             pipeline[1].instr.Itype == LDR_WORD ||
+             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
+            (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
+             pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
+        {
+          control_signal.stall = 1;
+        }
+        else
+        {
+          control_signal.stall = 0;
+        }
+      }
+      else
+      {
+        control_signal.stall = 0;
+      }
+
+      // update that this thread has  completed reading stage
       pthread_mutex_lock(&READ_LOCK);
       NUM_THREADS_READ++;
+      // printf("RR - Increased NUMREAD - %d\n", NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
-FILE *opener;
-opener=fopen("random.txt","a");
+      // wait for all the threads to complete reading
       while (1)
       {
-         fprintf(opener,"NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
         usleep(DELAY);
         pthread_mutex_lock(&READ_LOCK);
         if (NUM_THREADS_READ == (NUM_THREADS - 1))
@@ -50,22 +79,24 @@ opener=fopen("random.txt","a");
           break;
         }
         pthread_mutex_unlock(&READ_LOCK);
-        printf("NUM_THREADS_READ register_read %d\n",NUM_THREADS_READ );
       }
 
-      control_signal.stall = 0;
+      // Process instruction if its not NO_OP
       if (temp_pipeline[0].instr.Itype != NO_OP)
       {
-        // Reading stage
+        // Stalling cases
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
-             pipeline[1].instr.Itype == LDR_WORD) &&
+             pipeline[1].instr.Itype == LDR_WORD ||
+             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
-          control_signal.stall = 1;
+          // as PC value was incremented in read stage by instruction_fetch.
+          PC -= 4;
           pipeline[1].instr.Itype = NO_OP;
           pipeline[1].instr.Ctype = NO_OPERATION;
         }
+        // else write values of register into next pipeline
         else
         {
           // pipeline[1].instr = pipeline[0].instr;
@@ -114,13 +145,17 @@ opener=fopen("random.txt","a");
           pipeline[1].rs_val = register_file[temp_pipeline[0].instr.rs];
           pipeline[1].rt_val = register_file[temp_pipeline[0].instr.rt];
           pipeline[1].rd_val = register_file[temp_pipeline[0].instr.rd];
+          pipeline[1].LO = register_file[32];
+          pipeline[1].HI = register_file[33];
         }
       }
       else
       {
+        // if NO_OP then just propagate the instruction
         pipeline[1] = temp_pipeline[0];
       }
 
+      // update that this thread has completed processing
       pthread_mutex_lock(&WRITE_LOCK);
       NUM_THREADS_WRITE++;
       pthread_mutex_unlock(&WRITE_LOCK);
@@ -128,10 +163,10 @@ opener=fopen("random.txt","a");
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
-       instruction_to_file("results/register_read.txt",pipeline[1]);
+      instruction_to_file("results/2_register_read.txt", pipeline[1]);
     }
-   
 
+    // Adding delay before checking for new instruction
     usleep(DELAY);
   }
 }
