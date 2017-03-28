@@ -85,7 +85,7 @@ void* memory_op(void* data)
         else if ((temp_pipeline[3].instr.Ctype == DP) &&
                  temp_pipeline[3].instr.rd == temp_pipeline[2].instr.rt)
         {
-          write_val = temp_pipeline[3].rd_val;
+          write_val = temp_pipeline[3].alu_result;
         }
 
         switch (temp_pipeline[2].instr.Itype)
@@ -97,59 +97,61 @@ void* memory_op(void* data)
           }
           case LDR_BYTE:
           {
-          	int x=(offset - BASE_ADDR) % 4;
-          	int y= Memory_Block[(offset - BASE_ADDR) / 4];
-          	int z;
+            int x = (offset - BASE_ADDR) % 4;
+            int y = Memory_Block[(offset - BASE_ADDR) / 4];
+            int z;
 
-          	switch(x)
-          	{
-          		case 0:
-          		z=(y>>24);
-          		break;
-          		case 1:
-          		z=(y<<8)>>24;
-          		break;
-          		case 2:
-          		z=(y<<16)>>24;
-          		break;
-          		case 3:
-          		z=(y<<24)>>24;
-          		break;
-          	}
+            switch (x)
+            {
+              case 0:
+                z = (y >> 24);
+                break;
+              case 1:
+                z = (y << 8) >> 24;
+                break;
+              case 2:
+                z = (y << 16) >> 24;
+                break;
+              case 3:
+                z = (y << 24) >> 24;
+                break;
+            }
 
-
-            pipeline[3].rt_val =z ;
+            pipeline[3].rt_val = z;
             break;
           }
           case STR_WORD:
           {
+            printf(
+                "Inside store word.\nOffset - %08x\nBase - %08x\nWrite - %d\n",
+                offset, BASE_ADDR, write_val);
             Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
             break;
           }
           case STR_BYTE:
           {
-          	int byte_pos=(offset - BASE_ADDR) % 4;
-          	int index=(offset - BASE_ADDR) / 4;
-          	int write_val2=write_val & (0x0000FF);
-          	int temp=Memory_Block[index];
+            int byte_pos = (offset - BASE_ADDR) % 4;
+            int index = (offset - BASE_ADDR) / 4;
+            int write_val2 = write_val & (0x0000FF);
+            int temp = Memory_Block[index];
 
-          	switch (byte_pos)
-          	{
-          		case 0:
-          		temp=(temp&0x00FFFFFF)&(write_val2<<24);
-          		break;
-          		case 1:
-          		temp=(temp&0xFF00FFFF)&(write_val2<<16);
-          		break;
-          		case 2:
-          		temp=(temp&0xFFFF00FF)&(write_val2<<8);
-          		break;
-          		case 3:
-          		temp=(temp&0xFFFFFF00)&(write_val2);
-          		break;
-          	}
-          	Memory_Block[index]=temp;
-            
+            switch (byte_pos)
+            {
+              case 0:
+                temp = (temp & 0x00FFFFFF) & (write_val2 << 24);
+                break;
+              case 1:
+                temp = (temp & 0xFF00FFFF) & (write_val2 << 16);
+                break;
+              case 2:
+                temp = (temp & 0xFFFF00FF) & (write_val2 << 8);
+                break;
+              case 3:
+                temp = (temp & 0xFFFFFF00) & (write_val2);
+                break;
+            }
+            Memory_Block[index] = temp;
+
             break;
           }
           case LDR_UPPER_IMMEDIATE:

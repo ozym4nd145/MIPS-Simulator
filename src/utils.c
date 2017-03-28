@@ -142,7 +142,7 @@ void regdump()
 
 void memdump(int start, int num)
 {
-  printf("Inside memdump %08x %d\n", start, num);
+  // printf("Inside memdump %08x %d\n", start, num);
   int i = 0;
   for (i = 0; i < num; i++)
   {
