@@ -235,8 +235,8 @@ void* alu_op(void* data)
             case BRANCH_EQUAL:
               if (r1 == r2)
               {
-                PC += temp_pipeline[1].pc +
-                      (temp_pipeline[1].instr.immediate << 2);
+                PC = temp_pipeline[1].pc +
+                     (temp_pipeline[1].instr.immediate << 2);
                 branched = 1;
               }
               break;
@@ -244,8 +244,8 @@ void* alu_op(void* data)
             case BRANCH_GREATER_OR_EQUAL:
               if (r1 >= 0)
               {
-                PC += temp_pipeline[1].pc +
-                      (temp_pipeline[1].instr.immediate << 2);
+                PC = temp_pipeline[1].pc +
+                     (temp_pipeline[1].instr.immediate << 2);
                 branched = 1;
               }
               break;
@@ -253,8 +253,8 @@ void* alu_op(void* data)
             case BRANCH_LESS_OR_EQUAL:
               if (r1 <= 0)
               {
-                PC += temp_pipeline[1].pc +
-                      (temp_pipeline[1].instr.immediate << 2);
+                PC = temp_pipeline[1].pc +
+                     (temp_pipeline[1].instr.immediate << 2);
                 branched = 1;
               }
               break;
@@ -262,8 +262,8 @@ void* alu_op(void* data)
             case BRANCH_GREATER:
               if (r1 > 0)
               {
-                PC += temp_pipeline[1].pc +
-                      (temp_pipeline[1].instr.immediate << 2);
+                PC = temp_pipeline[1].pc +
+                     (temp_pipeline[1].instr.immediate << 2);
                 branched = 1;
               }
               break;
@@ -271,8 +271,8 @@ void* alu_op(void* data)
             case BRANCH_LESS:
               if (r1 < 0)
               {
-                PC += temp_pipeline[1].pc +
-                      (temp_pipeline[1].instr.immediate << 2);
+                PC = temp_pipeline[1].pc +
+                     (temp_pipeline[1].instr.immediate << 2);
                 branched = 1;
               }
               break;
