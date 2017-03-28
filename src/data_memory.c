@@ -97,7 +97,28 @@ void* memory_op(void* data)
           }
           case LDR_BYTE:
           {
-            pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
+          	int x=(offset - BASE_ADDR) % 4;
+          	int y= Memory_Block[(offset - BASE_ADDR) / 4];
+          	int z;
+
+          	switch(x)
+          	{
+          		case 0:
+          		z=(y>>24);
+          		break;
+          		case 1:
+          		z=(y<<8)>>24;
+          		break;
+          		case 2:
+          		z=(y<<16)>>24;
+          		break;
+          		case 3:
+          		z=(y<<24)>>24;
+          		break;
+          	}
+
+
+            pipeline[3].rt_val =z ;
             break;
           }
           case STR_WORD:
@@ -107,7 +128,28 @@ void* memory_op(void* data)
           }
           case STR_BYTE:
           {
-            Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
+          	int byte_pos=(offset - BASE_ADDR) % 4;
+          	int index=(offset - BASE_ADDR) / 4;
+          	int write_val2=write_val & (0x0000FF);
+          	int temp=Memory_Block[index];
+
+          	switch (byte_pos)
+          	{
+          		case 0:
+          		temp=(temp&0x00FFFFFF)&(write_val2<<24);
+          		break;
+          		case 1:
+          		temp=(temp&0xFF00FFFF)&(write_val2<<16);
+          		break;
+          		case 2:
+          		temp=(temp&0xFFFF00FF)&(write_val2<<8);
+          		break;
+          		case 3:
+          		temp=(temp&0xFFFFFF00)&(write_val2);
+          		break;
+          	}
+          	Memory_Block[index]=temp;
+            
             break;
           }
           case LDR_UPPER_IMMEDIATE:
