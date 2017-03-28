@@ -32,13 +32,11 @@ instruction instruction_parse(int a)
   information->rd = lsr((a & (temp << 11)), 11);
   information->shf_amt = lsr((a & (temp << 6)), 6);
   information->function = a & ((temp << 1) | 1);
-  // information->immediate =
-  // information->rd | information->shf_amt | information->function;
-  // information->immediate = (information->immediate << 16) >> 16;
   information->immediate = a & (0xFFFF);
-  information->target_address =
-      information->immediate | information->rs | information->rt;
-
+  information->immediate = (information->immediate << 16) >> 16;
+  //printf("%08x\n",information->immediate);
+  
+  information->target_address = a&(0x3FFFFFF);
   if (information->opcode == 0 && information->function == 32 &&
       information->shf_amt == 0)
   {
