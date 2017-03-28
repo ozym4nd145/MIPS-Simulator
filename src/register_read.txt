@@ -1,0 +1,16 @@
+Register RS 0
+Register RT 0
+Register RD 0
+Register OPCODE 0
+Register SHT_AMT 0
+Register CTYPE NO_OPERATION
+Register ITYPE NO_OP
+Register RS_Val 0
+Register RT_Val 0
+Register RD_Val 0
+Register ALU_Result 0
+Register HI_Val 0
+Register LO_Val 0
+Register PC_Val 0
+
+
