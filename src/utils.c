@@ -163,6 +163,8 @@ void print_registers(char *s)
   fprintf(write, "--------STEP  %d--------------\n", STEPS);
   for (i = 0; i < 32; i++)
     fprintf(write, "Register %d :%d\n", i, register_file[i]);
+  fprintf(write, "Register LO: %d\n", register_file[32]);
+  fprintf(write, "Register HI: %d\n", register_file[33]);
   fprintf(write, "---------------------------\n");
 
   fprintf(write, "\n\n");

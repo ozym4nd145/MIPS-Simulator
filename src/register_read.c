@@ -145,6 +145,8 @@ void* register_read(void* data)
           pipeline[1].rs_val = register_file[temp_pipeline[0].instr.rs];
           pipeline[1].rt_val = register_file[temp_pipeline[0].instr.rt];
           pipeline[1].rd_val = register_file[temp_pipeline[0].instr.rd];
+          pipeline[1].LO = register_file[32];
+          pipeline[1].HI = register_file[33];
         }
       }
       else

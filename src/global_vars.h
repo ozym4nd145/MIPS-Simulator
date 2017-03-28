@@ -66,7 +66,8 @@ extern buffer temp_pipeline[NUM_THREADS - 1];
 extern instruction program[INSTRUCTION_MEM];
 extern signal control_signal;
 
-extern int register_file[32];
+// register_file[32]= LO && register_file[33] = HIGH
+extern int register_file[34];
 extern int PC;
 extern int MAX_PC;
 extern int STEPS;

@@ -58,6 +58,20 @@ void* alu_op(void* data)
         pthread_mutex_unlock(&READ_LOCK);
       }
 
+      // Forwading in case of Multiply instruction
+      if (temp_pipeline[2].instr.Itype == MULTIPLY &&
+          temp_pipeline[2].instr.Itype == MULTIPLY_ADD)
+      {
+        temp_pipeline[1].HI = temp_pipeline[2].HI;
+        temp_pipeline[1].LO = temp_pipeline[2].LO;
+      }
+      else if (temp_pipeline[3].instr.Itype == MULTIPLY &&
+               temp_pipeline[3].instr.Itype == MULTIPLY_ADD)
+      {
+        temp_pipeline[1].HI = temp_pipeline[3].HI;
+        temp_pipeline[1].LO = temp_pipeline[3].LO;
+      }
+
       pipeline[2] = temp_pipeline[1];
       int r1 = temp_pipeline[1].rs_val;
       int r2 = temp_pipeline[1].rt_val;
