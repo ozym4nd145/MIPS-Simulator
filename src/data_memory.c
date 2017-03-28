@@ -43,6 +43,9 @@ void* memory_op(void* data)
       // printf("DM - Increased NUMREAD - %d\n", NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
 
+      // setting default display signal
+      ACTIVE_STAGE[3] = 1;
+
       // wait for all the threads to complete reading
       while (1)
       {
@@ -63,9 +66,10 @@ void* memory_op(void* data)
 
       if (temp_pipeline[2].instr.Itype == NO_OP)
       {
+        ACTIVE_STAGE[2] = 0;
         // sleep;
       }
-      if (temp_pipeline[2].instr.Ctype == DT)
+      else if (temp_pipeline[2].instr.Ctype == DT)
       {
         // instruction of class Data Transfer
         int write_val = temp_pipeline[2].rt_val;

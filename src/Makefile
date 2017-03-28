@@ -1,5 +1,5 @@
-simulator: main.o global_vars.o utils.o parser.o instruction_fetch.o register_read.o thread_alu.o data_memory.o register_write.o 
-	gcc -g -Wall -o simulator main.o global_vars.o utils.o parser.o instruction_fetch.o register_read.o thread_alu.o data_memory.o register_write.o -lpthread
+simulator: main.o global_vars.o utils.o parser.o instruction_fetch.o register_read.o thread_alu.o data_memory.o register_write.o display.o svg.o
+	gcc -g -Wall -o simulator main.o global_vars.o utils.o parser.o instruction_fetch.o register_read.o thread_alu.o data_memory.o register_write.o display.o svg.o -lpthread
 main.o: main.c
 	gcc -c main.c
 utils.o: utils.c
@@ -18,5 +18,9 @@ data_memory.o: data_memory.c
 	gcc -c data_memory.c
 register_write.o: register_write.c
 	gcc -c register_write.c
+display.o: display.c
+	gcc -c display.c
+svg.o: svg.c
+	gcc -c svg.c
 clean:
 	rm -f ./*.o

@@ -21,7 +21,6 @@ void* instruction_fetch(void* data)
   input[3] = 'p';
   input[4] = '\0';
   int temp_pc;
-  
 
   while (1)
   {
@@ -46,6 +45,9 @@ void* instruction_fetch(void* data)
       int stall = control_signal.stall;
       printf("Step = %d | Stall = %d\n", STEPS, stall);
       temp_pc = PC;
+
+      // Setting display
+      ACTIVE_STAGE[0] = 1;
 
       // update value of pc( not a problem in stalls as register_read
       // automatically decrements pc)
@@ -79,6 +81,11 @@ void* instruction_fetch(void* data)
           pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
         }
         pipeline[0].pc = temp_pc;
+
+      }
+      else
+      {
+        ACTIVE_STAGE[0] = 0;
       }
       // wait for the rest of the threads to complete write stage
       while (1)
@@ -95,13 +102,13 @@ void* instruction_fetch(void* data)
         pthread_mutex_unlock(&WRITE_LOCK);
       }
 
-      if(control_signal.branched==1)
+      if (control_signal.branched == 1)
       {
-        pipeline[0].instr.Itype=NO_OP;
-        pipeline[0].instr.Ctype=NO_OPERATION;
-        pipeline[1].instr.Itype=NO_OP;
-        pipeline[1].instr.Ctype=NO_OPERATION;
-        control_signal.branched=0;
+        pipeline[0].instr.Itype = NO_OP;
+        pipeline[0].instr.Ctype = NO_OPERATION;
+        pipeline[1].instr.Itype = NO_OP;
+        pipeline[1].instr.Ctype = NO_OPERATION;
+        control_signal.branched = 0;
       }
 
       printf("PC - %08x\n", temp_pc);

@@ -14,7 +14,6 @@ int main(int argc, char* argv[])
   if (argc == 3)
   {
     code = fopen(argv[1], "r");
-    svg = fopen(argv[2], "w");
   }
   else
   {
@@ -61,8 +60,8 @@ int main(int argc, char* argv[])
     // register_file[i] = i + 1;  // Just for checking
     register_file[i] = 0;
   }
-  control_signal.stall=0;
-  control_signal.branched=0;
+  control_signal.stall = 0;
+  control_signal.branched = 0;
 
   // Initializing mutex locks
   pthread_mutex_init(&CLOCK_LOCK, NULL);
@@ -75,14 +74,14 @@ int main(int argc, char* argv[])
   pthread_create(&threads[2], NULL, alu_op, (void*)NULL);
   pthread_create(&threads[3], NULL, memory_op, (void*)NULL);
   pthread_create(&threads[4], NULL, register_write, (void*)NULL);
-  // pthread_create(&threads[5], NULL, print_svg, (void*)NULL);
+  pthread_create(&threads[5], NULL, print_svg, (void*)(argv[2]));
 
   pthread_join(threads[0], NULL);
   pthread_join(threads[1], NULL);
   pthread_join(threads[2], NULL);
   pthread_join(threads[3], NULL);
   pthread_join(threads[4], NULL);
-  // pthread_join(threads[5], NULL);
+  pthread_join(threads[5], NULL);
 
   fclose(code);
   fclose(svg);

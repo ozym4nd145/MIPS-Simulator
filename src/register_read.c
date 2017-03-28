@@ -56,10 +56,15 @@ void* register_read(void* data)
         {
           control_signal.stall = 0;
         }
+
+        // setting display
+        ACTIVE_STAGE[1] = 1;
       }
       else
       {
         control_signal.stall = 0;
+        // setting display
+        ACTIVE_STAGE[1] = 0;
       }
 
       // update that this thread has  completed reading stage
@@ -99,47 +104,6 @@ void* register_read(void* data)
         // else write values of register into next pipeline
         else
         {
-          // pipeline[1].instr = pipeline[0].instr;
-          // pipeline[1].pc = pipeline[0].pc;
-          // pipeline[1].rs_val = register_file[pipeline[0].instr.rs];
-          // pipeline[1].rt_val = register_file[pipeline[0].instr.rt];
-          // pipeline[1].rd_val = register_file[pipeline[0].instr.rd];
-
-          // // if last pipeline contains useful variable
-
-          // // if the updating instruction was a data processing one
-          // if (pipeline[3].instr.Itype == DP)
-          // {
-          //   if (pipeline[3].instr.rd == pipeline[0].instr.rs)
-          //   {
-          //     pipeline[1].rs_val = pipeline[3].alu_result;
-          //   }
-          //   if (pipeline[3].instr.rd == pipeline[0].instr.rt)
-          //   {
-          //     pipeline[1].rt_val = pipeline[3].alu_result;
-          //   }
-          //   if (pipeline[3].instr.rd == pipeline[0].instr.rd)
-          //   {
-          //     pipeline[1].rd_val = pipeline[3].alu_result;
-          //   }
-          // }
-          // // if it was a Loading instruction
-          // else if (pipeline[3].instr.Itype == LDR_WORD ||
-          //          pipeline[3].instr.Itype == LDR_BYTE)
-          // {
-          //   if (pipeline[3].instr.rt == pipeline[0].instr.rs)
-          //   {
-          //     pipeline[1].rs_val = pipeline[3].rl_val;
-          //   }
-          //   if (pipeline[3].instr.rt == pipeline[0].instr.rt)
-          //   {
-          //     pipeline[1].rt_val = pipeline[3].rl_val;
-          //   }
-          //   if (pipeline[3].instr.rt == pipeline[0].instr.rd)
-          //   {
-          //     pipeline[1].rd_val = pipeline[3].rl_val;
-          //   }
-          // }
           pipeline[1].instr = temp_pipeline[0].instr;
           pipeline[1].pc = temp_pipeline[0].pc;
           pipeline[1].rs_val = register_file[temp_pipeline[0].instr.rs];
