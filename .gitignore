@@ -35,3 +35,4 @@ ignore/
 .vscode/
 src/simulator
 src/results
+src/testcases
