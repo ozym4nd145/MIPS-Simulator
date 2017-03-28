@@ -43,7 +43,7 @@ void* register_write(void* data)
         {
           register_file[pipeline[3].instr.rt] = pipeline[3].rt_val;
         }
-        else if (pipeline[3].instr.Itype == MULTIPLY &&
+        else if (pipeline[3].instr.Itype == MULTIPLY ||
                  pipeline[3].instr.Itype == MULTIPLY_ADD)
         {
           register_file[32] = pipeline[3].LO;

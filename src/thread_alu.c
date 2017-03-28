@@ -92,7 +92,13 @@ void* alu_op(void* data)
       {
         r1 = temp_pipeline[3].rt_val;
       }
-
+      else if (temp_pipeline[1].instr.rs == temp_pipeline[3].instr.rd &&
+               (temp_pipeline[3].instr.Ctype == DP &&
+                (temp_pipeline[3].instr.Itype != MULTIPLY ||
+                 temp_pipeline[3].instr.Itype != MULTIPLY_ADD)))
+      {
+        r1 = temp_pipeline[3].alu_result;
+      }
       // Similar check for operand2 of ALU
 
       if (temp_pipeline[1].instr.rt == temp_pipeline[2].instr.rd &&
@@ -106,6 +112,13 @@ void* alu_op(void* data)
                 temp_pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE))
       {
         r2 = temp_pipeline[3].rt_val;
+      }
+      else if (temp_pipeline[1].instr.rt == temp_pipeline[3].instr.rd &&
+               (temp_pipeline[3].instr.Ctype == DP &&
+                (temp_pipeline[3].instr.Itype != MULTIPLY ||
+                 temp_pipeline[3].instr.Itype != MULTIPLY_ADD)))
+      {
+        r2 = temp_pipeline[3].alu_result;
       }
 
       // processing instruction to perform ALU operations
