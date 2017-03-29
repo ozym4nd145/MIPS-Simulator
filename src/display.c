@@ -40,11 +40,23 @@ void* print_svg(void* data)
       FILE* svg = fopen(name, "w");
       start_svg(svg);
       draw_fetch(svg, ACTIVE_STAGE[0]);
-        draw_decode(svg, ACTIVE_STAGE[1]);
-        draw_alu(svg, ACTIVE_STAGE[2]);
-        draw_memory(svg, ACTIVE_STAGE[3]);
-        draw_write(svg, ACTIVE_STAGE[4]);
+      draw_decode(svg, ACTIVE_STAGE[1]);
+      draw_alu(svg, ACTIVE_STAGE[2]);
+      draw_memory(svg, ACTIVE_STAGE[3]);
+      draw_write(svg, ACTIVE_STAGE[4]);
       draw_control(svg);
+
+      draw_mem_read(svg,0);
+      draw_mem_write(svg,0);
+      draw_forward_toalu(svg,0);
+      draw_forward_fromalu(svg,0);
+      draw_forward_tomemory(svg,0);
+      draw_forward_frommemory(svg,0);
+      draw_pcsrc(svg,0);
+      draw_memtoreg(svg,0);
+      draw_writeback(svg,0);
+      draw_stall(svg,0);
+
       end_svg(svg);
       fclose(svg);
       new_fall = 0;

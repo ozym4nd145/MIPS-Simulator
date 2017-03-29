@@ -9,7 +9,7 @@ void draw_decode(FILE* ptr, int active);
 void draw_alu(FILE* ptr, int active);
 void draw_memory(FILE* ptr, int active);
 void draw_write(FILE* ptr, int active);
-
+void draw_control(FILE* ptr);
 void draw_mem_read(FILE* ptr, int active);
 void draw_mem_write(FILE* ptr, int active);
 void draw_forward_toalu(FILE* ptr, int active);
