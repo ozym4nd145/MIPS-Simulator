@@ -32,8 +32,8 @@ int main(int argc, char* argv[])
   }
   free(a);
 
-  // Making html for displaying svg
-  make_html(argv[2]);
+  // // Making html for displaying svg
+  // make_html(argv[2]);
 
   // Initializing MAX_PC
   MAX_PC = (4 * (i - 1)) + BASE_PC_ADDR;
