@@ -230,10 +230,10 @@ void print_result(char *s)
   double Ins_C=INSTRUCTION_COUNT;
   double IPC=Ins_C/cycles;
   double time_exe=cycles*0.5;
-  double idle_time=(STALL_COUNT)*0.5;
+  double idle_time=((double)(STALL_COUNT+4+BRANCH_CYCLE_WASTE))*0.5;
   double idle_time_percent=(idle_time/time_exe)*100;
   //fprintf(write, "Reached\n" );
-
+  //fprintf(write, "STALL_COUNT %d\n",STALL_COUNT );
   fprintf(write, "Instructions,%d\n",INSTRUCTION_COUNT);
   fprintf(write, "Cycles,%d\n",(int)cycles);
   fprintf(write, "IPC,%lf\n",IPC);

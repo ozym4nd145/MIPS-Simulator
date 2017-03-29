@@ -50,8 +50,7 @@ void* register_read(void* data)
       {
         // Stalling cases
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
-             pipeline[1].instr.Itype == LDR_WORD ||
-             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
+             pipeline[1].instr.Itype == LDR_WORD) &&
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
@@ -97,8 +96,7 @@ void* register_read(void* data)
       {
         // Stalling cases
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
-             pipeline[1].instr.Itype == LDR_WORD ||
-             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE ) &&
+             pipeline[1].instr.Itype == LDR_WORD ) &&
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
