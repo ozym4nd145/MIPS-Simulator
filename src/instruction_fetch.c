@@ -54,9 +54,10 @@ void* instruction_fetch(void* data)
       PC += 4;
       
 
-      if(PC >= MAX_PC + 5*4)
+      if(PC >= MAX_PC + 6*4)
       {
         STOP_THREAD=1;
+        printf("Instruction Thread Ended\n");
         break;
       }
 
@@ -87,6 +88,7 @@ void* instruction_fetch(void* data)
         else
         {
           INSTRUCTION_COUNT++;
+          printf("Instruction Count %d\n",INSTRUCTION_COUNT );
           pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
         }
         pipeline[0].pc = temp_pc;
@@ -113,12 +115,12 @@ void* instruction_fetch(void* data)
 
       if (control_signal.branched == 1)
       {
-        if(pipeline[0].instr.Itype!=NO_OP)
-          INSTRUCTION_COUNT--;
+        // if(pipeline[0].instr.Itype!=NO_OP)
+        //   INSTRUCTION_COUNT--;
         pipeline[0].instr.Itype = NO_OP;
         pipeline[0].instr.Ctype = NO_OPERATION;
-        if(pipeline[1].instr.Itype!=NO_OP)
-          INSTRUCTION_COUNT--;
+        // if(pipeline[1].instr.Itype!=NO_OP)
+        //   INSTRUCTION_COUNT--;
         pipeline[1].instr.Itype = NO_OP;
         pipeline[1].instr.Ctype = NO_OPERATION;
         control_signal.branched = 0;

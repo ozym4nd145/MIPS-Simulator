@@ -18,7 +18,10 @@ void* alu_op(void* data)
   while (1)
   {
     if(STOP_THREAD==1)
+    {
+      printf("ALU Thread Ended\n");
       break;
+    }
     // does reading really require lock?
 
     // wait for the new instruction to occur

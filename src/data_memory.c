@@ -133,9 +133,9 @@ void* memory_op(void* data)
           }
           case STR_WORD:
           {
-            printf(
-                "Inside store word.\nOffset - %08x\nBase - %08x\nWrite - %d\n",
-                offset, BASE_ADDR, write_val);
+            // printf(
+            //     "Inside store word.\nOffset - %08x\nBase - %08x\nWrite - %d\n",
+            //     offset, BASE_ADDR, write_val);
             Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
             DATA_MEM_ACCESS++;
             break;

@@ -85,6 +85,9 @@ int main(int argc, char* argv[])
   print_result("results.txt");
 
   fclose(code);
-  fclose(svg);
-  return 0;
+   //printf("Reached2\n");
+  //fclose(svg);
+  //printf("Reached3\n");
+
+  pthread_exit(NULL);
 }

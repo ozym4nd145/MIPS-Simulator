@@ -103,7 +103,7 @@ void* register_read(void* data)
         {
           // as PC value was incremented in read stage by instruction_fetch.
           PC -= 4;
-          INSTRUCTION_COUNT--;
+          //INSTRUCTION_COUNT--;
           pipeline[1].instr.Itype = NO_OP;
           pipeline[1].instr.Ctype = NO_OPERATION;
         }
