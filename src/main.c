@@ -57,6 +57,12 @@ int main(int argc, char* argv[])
     // register_file[i] = i + 1;  // Just for checking
     register_file[i] = 0;
   }
+
+  for (i = 0; i < 5; i++)
+  {
+    ACTIVE_STAGE[i] = 0;
+  }
+
   control_signal.stall = 0;
   control_signal.branched = 0;
 
@@ -85,9 +91,9 @@ int main(int argc, char* argv[])
   print_result(argv[3]);
 
   fclose(code);
-   //printf("Reached2\n");
-  //fclose(svg);
-  //printf("Reached3\n");
+  // printf("Reached2\n");
+  // fclose(svg);
+  // printf("Reached3\n");
 
   pthread_exit(NULL);
 }
