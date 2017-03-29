@@ -8,7 +8,6 @@
 int main(int argc, char* argv[])
 {
   FILE* code;
-  FILE* svg;
 
   // Input error handling
   if (argc == 3)
@@ -81,6 +80,5 @@ int main(int argc, char* argv[])
   pthread_join(threads[5], NULL);
 
   fclose(code);
-  fclose(svg);
   return 0;
 }
