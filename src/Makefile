@@ -13,8 +13,14 @@ OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 simulator: $(OBJS)
 	$(CC) $(LFLAGS) $(INCLUDE) -o $@ $^ $(LIBS)
 
-$(OBJDIR)/%.o: %.c $(HEADERS)
+$(OBJDIR)/%.o: %.c $(HEADERS) | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
 
+$(OBJDIR):
+	mkdir $(OBJDIR)
+
+.PHONY: clean
+
+
 clean:
-	rm -f ./$(OBJDIR)/*.o
+	rm -rf ./$(OBJDIR)
