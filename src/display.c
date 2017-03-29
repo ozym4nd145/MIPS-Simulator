@@ -40,11 +40,11 @@ void* print_svg(void* data)
       FILE* svg = fopen(name, "w");
       start_svg(svg);
       draw_fetch(svg, ACTIVE_STAGE[0]);
-      //   draw_decode(svg, ACTIVE_STAGE[1]);
-      //   draw_alu(svg, ACTIVE_STAGE[2]);
-      //   draw_memory(svg, ACTIVE_STAGE[3]);
-      //   draw_write(svg, ACTIVE_STAGE[4]);
-      // draw_control(svg);
+        draw_decode(svg, ACTIVE_STAGE[1]);
+        draw_alu(svg, ACTIVE_STAGE[2]);
+        draw_memory(svg, ACTIVE_STAGE[3]);
+        draw_write(svg, ACTIVE_STAGE[4]);
+      draw_control(svg);
       end_svg(svg);
       fclose(svg);
       new_fall = 0;
