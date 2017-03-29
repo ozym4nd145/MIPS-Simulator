@@ -9,9 +9,9 @@ int register_file[34];  // Register file
 int PC = BASE_PC_ADDR;  // Global value of pc
 int MAX_PC = 0;         // Max value of pc that can be attained
 int STEPS = 0;          // Number of clock cycles passed
-int CLOCK = 0;  // emulates the clock which all of the instructions follow
-int STOP_THREAD=0; // Signal to highlight end of threads
-int INSTRUCTION_COUNT=0; // Counts total instructions executed
+int CLOCK = 0;        // emulates the clock which all of the instructions follow
+int STOP_THREAD = 0;  // Signal to highlight end of threads
+int INSTRUCTION_COUNT = 0;  // Counts total instructions executed
 double FREQUENCY = 0;
 int DATA_MEM_ACCESS = 0;
 int STALL_COUNT = 0;
@@ -32,7 +32,7 @@ pthread_mutex_t WRITE_LOCK;  // Lock for syncing write update of all threads
 
 float SVG_HEIGHT = 210;
 float SVG_WIDTH = 297;
-float SVG_SATURATE = 0.2;
+float SVG_SATURATE = 0.0;
 
 // Display signals
 int ACTIVE_STAGE[5];    // [0..4]-> fetch,decode,alu,mem,write

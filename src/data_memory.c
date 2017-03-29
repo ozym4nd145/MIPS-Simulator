@@ -14,7 +14,7 @@ void* memory_op(void* data)
 
   while (1)
   {
-    if(STOP_THREAD==1)
+    if (STOP_THREAD == 1)
     {
       printf("Memory Thread Stopped\n");
       break;
@@ -71,7 +71,7 @@ void* memory_op(void* data)
 
       if (temp_pipeline[2].instr.Itype == NO_OP)
       {
-        ACTIVE_STAGE[2] = 0;
+        ACTIVE_STAGE[3] = 0;
         // sleep;
       }
       else if (temp_pipeline[2].instr.Ctype == DT)
@@ -134,7 +134,8 @@ void* memory_op(void* data)
           case STR_WORD:
           {
             // printf(
-            //     "Inside store word.\nOffset - %08x\nBase - %08x\nWrite - %d\n",
+            //     "Inside store word.\nOffset - %08x\nBase - %08x\nWrite -
+            //     %d\n",
             //     offset, BASE_ADDR, write_val);
             Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
             DATA_MEM_ACCESS++;
@@ -164,7 +165,6 @@ void* memory_op(void* data)
                 break;
             }
             Memory_Block[index] = temp;
-
 
             break;
           }
