@@ -17,6 +17,8 @@ void* alu_op(void* data)
   long long int temp;
   while (1)
   {
+    if(STOP_THREAD==1)
+      break;
     // does reading really require lock?
 
     // wait for the new instruction to occur
@@ -346,4 +348,5 @@ void* alu_op(void* data)
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

@@ -10,7 +10,11 @@ int PC = BASE_PC_ADDR;  // Global value of pc
 int MAX_PC = 0;         // Max value of pc that can be attained
 int STEPS = 0;          // Number of clock cycles passed
 int CLOCK = 0;  // emulates the clock which all of the instructions follow
+int STOP_THREAD=0; // Signal to highlight end of threads
+int INSTRUCTION_COUNT=0; // Counts total instructions executed
 double FREQUENCY = 0;
+int DATA_MEM_ACCESS = 0;
+int INSTRUCTION_MEM_ACCESS = 0;
 unsigned int DELAY = 1000;       // sleep delay for each thread in micro seconds
 int NUM_THREADS_READ = 0;        // threads that have completed the copy stage
                                  // from buffer

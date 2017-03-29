@@ -219,3 +219,31 @@ void make_html(char *svg_name)
   fprintf(html, "%s %s %s", html_upper, svg_name, html_lower);
   fclose(html);
 }
+
+void print_result(char *s)
+{
+  fprintf(stdout, "Reached\n" );
+  FILE *write=stdout;
+  //FILE *write = fopen("results2.txt", "w");
+  fprintf(write, "Reached\n" );
+  double cycles=(STEPS-1);
+  double Ins_C=INSTRUCTION_COUNT;
+  double IPC=Ins_C/cycles;
+  double time_exe=cycles*0.5;
+  double idle_time=(cycles-Ins_C)*0.5;
+  double idle_time_percent=(idle_time/time_exe)*100;
+  fprintf(write, "Reached\n" );
+
+  fprintf(write, "Instructions,%d\n",INSTRUCTION_COUNT);
+  fprintf(write, "Cycles,%d\n",STEPS-1);
+  fprintf(write, "IPC,%lf\n",IPC);
+  fprintf(write, "Time (ns),%lf\n",time_exe);
+  fprintf(write, "Idle Time (ns),%lf\n",idle_time);
+  fprintf(write, "Idle Time (%%),%lf%%\n",idle_time_percent);
+  fprintf(write, "Cache Summary\n");
+  fprintf(write, "Cache L1-I\n");
+  fprintf(write, "num cache accesses,%d\n",INSTRUCTION_MEM_ACCESS);
+  fprintf(write, "Cache L1-D\n");
+  fprintf(write, "num cache accesses,%d\n",DATA_MEM_ACCESS);
+ // fclose(write);
+}

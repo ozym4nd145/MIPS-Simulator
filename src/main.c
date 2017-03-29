@@ -80,6 +80,10 @@ int main(int argc, char* argv[])
   pthread_join(threads[4], NULL);
   pthread_join(threads[5], NULL);
 
+  printf("Control  Reached here\n");
+
+  print_result("results.txt");
+
   fclose(code);
   fclose(svg);
   return 0;

@@ -52,6 +52,13 @@ void* instruction_fetch(void* data)
       // update value of pc( not a problem in stalls as register_read
       // automatically decrements pc)
       PC += 4;
+      
+
+      if(PC >= MAX_PC + 5*4)
+      {
+        STOP_THREAD=1;
+        break;
+      }
 
       // loop until reading stage has completed
       while (1)
@@ -70,6 +77,7 @@ void* instruction_fetch(void* data)
       {
         if (temp_pc > MAX_PC)
         {
+          printf("Reached greater than PC\n");
           pipeline[0].instr.Itype = NO_OP;
           pipeline[0].instr.Ctype = NO_OPERATION;
           // printf("Program complete");
@@ -78,6 +86,7 @@ void* instruction_fetch(void* data)
         }
         else
         {
+          INSTRUCTION_COUNT++;
           pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
         }
         pipeline[0].pc = temp_pc;
@@ -104,8 +113,12 @@ void* instruction_fetch(void* data)
 
       if (control_signal.branched == 1)
       {
+        if(pipeline[0].instr.Itype!=NO_OP)
+          INSTRUCTION_COUNT--;
         pipeline[0].instr.Itype = NO_OP;
         pipeline[0].instr.Ctype = NO_OPERATION;
+        if(pipeline[1].instr.Itype!=NO_OP)
+          INSTRUCTION_COUNT--;
         pipeline[1].instr.Itype = NO_OP;
         pipeline[1].instr.Ctype = NO_OPERATION;
         control_signal.branched = 0;
@@ -132,4 +145,5 @@ void* instruction_fetch(void* data)
     }
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

@@ -14,6 +14,11 @@ void* register_write(void* data)
 
   while (1)
   {
+      if(STOP_THREAD==1)
+      {
+        printf("register_write thread ended\n");
+      break;
+    }
     // does reading really require lock?
     // wait for the new instruction to occur
     pthread_mutex_lock(&CLOCK_LOCK);
@@ -88,4 +93,5 @@ void* register_write(void* data)
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

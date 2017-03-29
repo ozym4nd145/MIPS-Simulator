@@ -18,6 +18,11 @@ void* register_read(void* data)
 
   while (1)
   {
+      if(STOP_THREAD==1)
+      {
+      printf("Register Read thread Stopped\n");  
+      break;
+    }
     // NOTE: does reading really require lock?
 
     // wait for the new instruction to occur
@@ -98,6 +103,7 @@ void* register_read(void* data)
         {
           // as PC value was incremented in read stage by instruction_fetch.
           PC -= 4;
+          INSTRUCTION_COUNT--;
           pipeline[1].instr.Itype = NO_OP;
           pipeline[1].instr.Ctype = NO_OPERATION;
         }
@@ -133,4 +139,5 @@ void* register_read(void* data)
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

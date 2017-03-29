@@ -16,6 +16,12 @@ void* print_svg(void* data)
 
   while (1)
   {
+
+    if(STOP_THREAD==1)
+    {
+      printf("Display thread Stopped\n");
+      break;
+    }
     pthread_mutex_lock(&CLOCK_LOCK);
     if (CLOCK == 0)
     {
@@ -45,4 +51,5 @@ void* print_svg(void* data)
     }
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

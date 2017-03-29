@@ -69,6 +69,10 @@ extern signal control_signal;
 
 // register_file[32]= LO && register_file[33] = HIGH
 extern int register_file[34];
+extern int STOP_THREAD;
+extern int INSTRUCTION_COUNT;
+extern int DATA_MEM_ACCESS;
+extern int INSTRUCTION_MEM_ACCESS;
 extern int PC;
 extern int MAX_PC;
 extern int STEPS;

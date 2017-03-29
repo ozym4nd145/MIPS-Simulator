@@ -14,6 +14,11 @@ void* memory_op(void* data)
 
   while (1)
   {
+    if(STOP_THREAD==1)
+    {
+      printf("Memory Thread Stopped\n");
+      break;
+    }
     // does reading really require lock?
 
     // wait for the new instruction to occur
@@ -97,12 +102,14 @@ void* memory_op(void* data)
           case LDR_WORD:
           {
             pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
+            DATA_MEM_ACCESS++;
             break;
           }
           case LDR_BYTE:
           {
             int x = (offset - BASE_ADDR) % 4;
             int y = Memory_Block[(offset - BASE_ADDR) / 4];
+            DATA_MEM_ACCESS++;
             int z;
 
             switch (x)
@@ -130,6 +137,7 @@ void* memory_op(void* data)
                 "Inside store word.\nOffset - %08x\nBase - %08x\nWrite - %d\n",
                 offset, BASE_ADDR, write_val);
             Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
+            DATA_MEM_ACCESS++;
             break;
           }
           case STR_BYTE:
@@ -138,6 +146,7 @@ void* memory_op(void* data)
             int index = (offset - BASE_ADDR) / 4;
             int write_val2 = write_val & (0x0000FF);
             int temp = Memory_Block[index];
+            DATA_MEM_ACCESS++;
 
             switch (byte_pos)
             {
@@ -155,6 +164,7 @@ void* memory_op(void* data)
                 break;
             }
             Memory_Block[index] = temp;
+
 
             break;
           }
@@ -184,4 +194,5 @@ void* memory_op(void* data)
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }
