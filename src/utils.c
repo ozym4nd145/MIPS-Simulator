@@ -226,16 +226,16 @@ void print_result(char *s)
   //FILE *write=stdout;
   FILE *write = fopen(s, "w");
   //fprintf(write, "Reached\n" );
-  double cycles=(STEPS-1-4);
+  double cycles=INSTRUCTION_COUNT+BRANCH_CYCLE_WASTE+STALL_COUNT+4;
   double Ins_C=INSTRUCTION_COUNT;
   double IPC=Ins_C/cycles;
   double time_exe=cycles*0.5;
-  double idle_time=(cycles-Ins_C)*0.5;
+  double idle_time=(STALL_COUNT)*0.5;
   double idle_time_percent=(idle_time/time_exe)*100;
   //fprintf(write, "Reached\n" );
 
   fprintf(write, "Instructions,%d\n",INSTRUCTION_COUNT);
-  fprintf(write, "Cycles,%d\n",STEPS-1-4);
+  fprintf(write, "Cycles,%d\n",(int)cycles);
   fprintf(write, "IPC,%lf\n",IPC);
   fprintf(write, "Time (ns),%lf\n",time_exe);
   fprintf(write, "Idle Time (ns),%lf\n",idle_time);

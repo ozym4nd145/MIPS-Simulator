@@ -56,6 +56,7 @@ void* register_read(void* data)
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
           control_signal.stall = 1;
+          STALL_COUNT++;
         }
         else
         {

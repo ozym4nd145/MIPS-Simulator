@@ -116,11 +116,17 @@ void* instruction_fetch(void* data)
       if (control_signal.branched == 1)
       {
         if(pipeline[0].instr.Itype!=NO_OP)
-          INSTRUCTION_COUNT--;
+          {
+            INSTRUCTION_COUNT--;
+            BRANCH_CYCLE_WASTE++;
+          }
         pipeline[0].instr.Itype = NO_OP;
         pipeline[0].instr.Ctype = NO_OPERATION;
         if(pipeline[1].instr.Itype!=NO_OP)
-          INSTRUCTION_COUNT--;
+          {
+            INSTRUCTION_COUNT--;
+            BRANCH_CYCLE_WASTE++;
+          }
         pipeline[1].instr.Itype = NO_OP;
         pipeline[1].instr.Ctype = NO_OPERATION;
         control_signal.branched = 0;

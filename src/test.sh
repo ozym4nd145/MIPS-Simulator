@@ -3,7 +3,7 @@ rm -rf ./results
 mkdir results
 make
 make clean
-for i in {4..4}
+for i in {1..5}
 do
 echo Testcase$i
 #i=3

@@ -73,6 +73,8 @@ extern int STOP_THREAD;
 extern int INSTRUCTION_COUNT;
 extern int DATA_MEM_ACCESS;
 extern int INSTRUCTION_MEM_ACCESS;
+extern int STALL_COUNT;
+extern int BRANCH_CYCLE_WASTE;
 extern int PC;
 extern int MAX_PC;
 extern int STEPS;
