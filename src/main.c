@@ -32,14 +32,11 @@ int main(int argc, char* argv[])
   }
   free(a);
 
+  // // Making html for displaying svg
+  // make_html(argv[2]);
+
   // Initializing MAX_PC
   MAX_PC = (4 * (i - 1)) + BASE_PC_ADDR;
-
-  // // Printing all instructions
-  // for (i = BASE_PC_ADDR; i <= MAX_PC; i += 4)
-  // {
-  //   print_instruction(&program[(i - BASE_PC_ADDR) / 4]);
-  // }
 
   // Initializing memory and pipeline buffer
   for (i = 0; i <= (NUM_THREADS - 1); i++)

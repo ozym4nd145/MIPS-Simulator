@@ -16,13 +16,19 @@ void start_svg(FILE* ptr)
       "xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"   "
       "width=\"%fmm\"   height=\"%fmm\"   viewBox=\"0 0 297 210\"   "
       "version=\"1.1\"   id=\"SVGRoot\"   inkscape:version=\"0.92.1 "
-      "unknown\">\n"
+      "unknown\" onload= \"refresh()\" >\n"
       "<filter id=\"colorsaturate\">    <feColorMatrix "
       "in=\"SourceGraphic\" type=\"saturate\" values=\"%f\" />  </filter>\n",
       SVG_WIDTH, SVG_HEIGHT, SVG_SATURATE);
 }
 
-void end_svg(FILE* ptr) { fprintf(ptr, "\n</svg>\n"); }
+void end_svg(FILE* ptr)
+{
+  fprintf(ptr,
+          "\n<script type=\"text/javascript\"> function refresh() { "
+          "setTimeout(function() {location.reload(true)},500); } "
+          "</script>\n</svg>\n");
+}
 void draw_fetch(FILE* ptr, int active)
 {
   char* header =
