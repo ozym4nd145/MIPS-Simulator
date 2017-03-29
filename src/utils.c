@@ -205,3 +205,17 @@ void print_registers(char *s)
   fprintf(write, "\n\n");
   fclose(write);
 }
+
+void make_html(char *svg_name)
+{
+  char *html_upper =
+      "<html>\n<head>\n    <title>MIPS Pipelined "
+      "Simulator</title>\n</head>\n<body>\n    <img id=\"processor\" "
+      "src=\"";
+  char *html_lower =
+      "\" />\n    <script "
+      "src=\"./refresh.js\"> </script>\n</body>\n</html>";
+  FILE *html = fopen("image.html", "w");
+  fprintf(html, "%s %s %s", html_upper, svg_name, html_lower);
+  fclose(html);
+}
