@@ -99,6 +99,10 @@ void* alu_op(void* data)
         FORWARDING_ALU[0] = 1;
         FORWARDING[0] = 1;
       }
+      // else if(temp_pipeline[1].instr.rs == temp_pipeline[2].instr.rt && temp_pipeline[2].instr.Itype==LDR_UPPER_IMMEDIATE)
+      // {
+      //   r1=temp_pipeline[2].alu_result;
+      // }
       // DATA Memory to ALU Data Forwarding (Path 2)
       else if (temp_pipeline[1].instr.rs == temp_pipeline[3].instr.rt &&
                (temp_pipeline[3].instr.Itype == LDR_BYTE ||
@@ -127,6 +131,10 @@ void* alu_op(void* data)
         FORWARDING_ALU[1] = 1;
         FORWARDING[0] = 1;
       }
+      //  else if(temp_pipeline[1].instr.rt == temp_pipeline[2].instr.rt && temp_pipeline[2].instr.Itype==LDR_UPPER_IMMEDIATE)
+      // {
+      //   r2=temp_pipeline[2].alu_result;
+      // }
       else if (temp_pipeline[1].instr.rt == temp_pipeline[3].instr.rt &&
                (temp_pipeline[3].instr.Itype == LDR_BYTE ||
                 temp_pipeline[3].instr.Itype == LDR_WORD ||

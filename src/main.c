@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
   FILE* svg;
 
   // Input error handling
-  if (argc == 3)
+  if (argc >= 3)
   {
     code = fopen(argv[1], "r");
   }
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 
   printf("Control  Reached here\n");
 
-  print_result("results.txt");
+  print_result(argv[3]);
 
   fclose(code);
    //printf("Reached2\n");
