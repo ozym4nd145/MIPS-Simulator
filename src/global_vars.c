@@ -5,6 +5,9 @@ buffer temp_pipeline[NUM_THREADS - 1];  // Temporary pipeline for reading stage
 instruction program[INSTRUCTION_MEM];   // Array containing decoded instructions
 signal control_signal;                  // Control signals
 
+instruction CURR_INSTR[NUM_THREADS];  // Lastest instruction read by
+                                      // each stage
+
 int register_file[34];  // Register file
 int PC = BASE_PC_ADDR;  // Global value of pc
 int MAX_PC = 0;         // Max value of pc that can be attained

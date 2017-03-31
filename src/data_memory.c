@@ -39,6 +39,8 @@ void* memory_op(void* data)
     {
       // copy previous pipeline : Reading stage
       temp_pipeline[2] = pipeline[2];
+      // Signal that was read
+      CURR_INSTR[3] = pipeline[2].instr;
       instruction_to_file("results/4_data_memory_thread.txt", temp_pipeline[2]);
       // printing for debugging
 
@@ -86,8 +88,8 @@ void* memory_op(void* data)
              temp_pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE) &&
             temp_pipeline[3].instr.rt == temp_pipeline[2].instr.rt)
         {
-          CONTROL_SIGN.FWD_DM=1;
-          CONTROL_SIGN.TO_DM=1;
+          CONTROL_SIGN.FWD_DM = 1;
+          CONTROL_SIGN.TO_DM = 1;
           write_val = temp_pipeline[3].rt_val;
         }
         // Data forwarding from exit of Data Memory to input of Data Memory for
@@ -96,8 +98,8 @@ void* memory_op(void* data)
         else if ((temp_pipeline[3].instr.Ctype == DP) &&
                  temp_pipeline[3].instr.rd == temp_pipeline[2].instr.rt)
         {
-          CONTROL_SIGN.FWD_DM=1;
-          CONTROL_SIGN.TO_DM=1;
+          CONTROL_SIGN.FWD_DM = 1;
+          CONTROL_SIGN.TO_DM = 1;
           write_val = temp_pipeline[3].alu_result;
         }
 
@@ -107,7 +109,7 @@ void* memory_op(void* data)
           {
             pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
             DATA_MEM_ACCESS++;
-            CONTROL_SIGN.MemRd=1;
+            CONTROL_SIGN.MemRd = 1;
             break;
           }
           case LDR_BYTE:
@@ -115,7 +117,7 @@ void* memory_op(void* data)
             int x = (offset - BASE_ADDR) % 4;
             int y = Memory_Block[(offset - BASE_ADDR) / 4];
             DATA_MEM_ACCESS++;
-            CONTROL_SIGN.MemRd=1;
+            CONTROL_SIGN.MemRd = 1;
             int z;
 
             switch (x)
@@ -145,7 +147,7 @@ void* memory_op(void* data)
             //     offset, BASE_ADDR, write_val);
             Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
             DATA_MEM_ACCESS++;
-            CONTROL_SIGN.MemWr=1;
+            CONTROL_SIGN.MemWr = 1;
             break;
           }
           case STR_BYTE:
@@ -155,7 +157,7 @@ void* memory_op(void* data)
             int write_val2 = write_val & (0x0000FF);
             int temp = Memory_Block[index];
             DATA_MEM_ACCESS++;
-            CONTROL_SIGN.MemWr=1;
+            CONTROL_SIGN.MemWr = 1;
 
             switch (byte_pos)
             {
@@ -179,7 +181,7 @@ void* memory_op(void* data)
           case LDR_UPPER_IMMEDIATE:
           {
             pipeline[3].rt_val = temp_pipeline[2].alu_result;
-            CONTROL_SIGN.MemRd=1;
+            CONTROL_SIGN.MemRd = 1;
             break;
           }
           default:

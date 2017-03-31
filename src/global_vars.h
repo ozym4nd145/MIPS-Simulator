@@ -48,6 +48,7 @@ typedef struct
   int rs, rt, rd, shf_amt, opcode, target_address, function, immediate;
   instruction_type Itype;
   class_type Ctype;
+  int index;
 } instruction;
 
 typedef struct buffer
@@ -64,13 +65,15 @@ typedef struct
 
 typedef struct
 {
-  int MemWr,MemRd,PCsrc,RegW,FWD_ALU,FWD_DM,TO_ALU,TO_DM,M2R,FLUSH,STALL_C;
+  int MemWr, MemRd, PCsrc, RegW, FWD_ALU, FWD_DM, TO_ALU, TO_DM, M2R, FLUSH,
+      STALL_C;
 } control;
 
 extern control CONTROL_SIGN;
 extern buffer pipeline[NUM_THREADS - 1];
 extern buffer temp_pipeline[NUM_THREADS - 1];
 extern instruction program[INSTRUCTION_MEM];
+extern instruction CURR_INSTR[NUM_THREADS];
 extern signal control_signal;
 
 // register_file[32]= LO && register_file[33] = HIGH

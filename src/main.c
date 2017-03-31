@@ -47,7 +47,9 @@ int main(int argc, char* argv[])
   while (fscanf(code, "%s", a) != EOF)
   {
     int num = (int)strtol(a, NULL, 16);
-    program[i++] = instruction_parse(num);
+    program[i] = instruction_parse(num);
+    program[i].index = i + 1;
+    i++;
   }
   free(a);
 
@@ -77,9 +79,11 @@ int main(int argc, char* argv[])
     register_file[i] = 0;
   }
 
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < NUM_THREADS; i++)
   {
     ACTIVE_STAGE[i] = 0;
+    CURR_INSTR[i].Itype = NO_OP;
+    CURR_INSTR[i].Ctype = NO_OPERATION;
   }
 
   control_signal.stall = 0;
