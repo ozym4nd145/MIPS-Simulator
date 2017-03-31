@@ -1,5 +1,4 @@
 #include "utils.h"
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "global_vars.h"
@@ -166,7 +165,7 @@ int get_byte(int addr)
 void instruction_to_file(char *s, buffer instruct)
 {
   FILE *write = fopen(s, "a");
-  if (errno)
+  if (write == NULL)
   {
     throw_error("Error in opening output file");
   }
@@ -198,7 +197,7 @@ void instruction_to_file(char *s, buffer instruct)
 void print_registers(char *s)
 {
   FILE *write = fopen(s, "a");
-  if (errno)
+  if (write == NULL)
   {
     throw_error("Error in opening output file");
   }
@@ -233,7 +232,7 @@ void print_result(char *s)
   // fprintf(stdout, "Reached\n" );
   // FILE *write=stdout;
   FILE *write = fopen(s, "w");
-  if (errno)
+  if (write == NULL)
   {
     throw_error("Error in opening result file");
   }
