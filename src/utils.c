@@ -27,10 +27,10 @@ char *get_instruction_name(const instruction_type instr)
       return "AND";
       break;
     case MULTIPLY:
-      return "MULTIPLY";
+      return "MUL";
       break;
     case MULTIPLY_ADD:
-      return "MULTIPLY_ADD";
+      return "MADD";
       break;
     case NOR:
       return "NOR";
@@ -39,37 +39,37 @@ char *get_instruction_name(const instruction_type instr)
       return "OR";
       break;
     case LOGIC_SHIFT_LEFT:
-      return "LOGIC_SHIFT_LEFT";
+      return "SLL";
       break;
     case LOGIC_SHIFT_LEFT_VARIABLE:
-      return "LOGIC_SHIFT_LEFT_VARIABLE";
+      return "SLLV";
       break;
     case BRANCH_GREATER_OR_EQUAL:
-      return "BRANCH_GREATER_OR_EQUAL";
+      return "BGEZ";
       break;
     case BRANCH_GREATER:
-      return "BRANCH_GREATER";
+      return "BGTZ";
       break;
     case BRANCH_LESS_OR_EQUAL:
-      return "BRANCH_LESS_OR_EQUAL";
+      return "BLEZ";
       break;
     case BRANCH_LESS:
-      return "BRANCH_LESS";
+      return "BLTZ";
       break;
     case BRANCH_EQUAL:
-      return "BRANCH_EQUAL";
+      return "BEQ";
       break;
     case LDR_BYTE:
-      return "LDR_BYTE";
+      return "LB";
       break;
     case LDR_WORD:
-      return "LDR_WORD";
+      return "LW";
       break;
     case STR_BYTE:
-      return "STR_BYTE";
+      return "SB";
       break;
     case STR_WORD:
-      return "STR_WORD";
+      return "SW";
       break;
     case NO_OP:
       return "NO_OP";
@@ -79,7 +79,7 @@ char *get_instruction_name(const instruction_type instr)
     case ORI:
       return "ORI";
     case LDR_UPPER_IMMEDIATE:
-      return "LDR_UPPER_IMMEDIATE";
+      return "LUI";
     case SLTU:
       return "SLTU";
     case SLTI:
@@ -218,4 +218,34 @@ void make_html(char *svg_name)
   FILE *html = fopen("image.html", "w");
   fprintf(html, "%s %s %s", html_upper, svg_name, html_lower);
   fclose(html);
+}
+
+void print_result(char *s)
+{
+  // fprintf(stdout, "Reached\n" );
+  // FILE *write=stdout;
+  FILE *write = fopen(s, "w");
+  // fprintf(write, "Reached\n" );
+  double cycles = STEPS - 1;
+  double Ins_C = INSTRUCTION_COUNT;
+  double IPC = Ins_C / cycles;
+  double time_exe = cycles * 0.5;
+  double idle_time = ((double)(-Ins_C + cycles)) * 0.5;
+  double idle_time_percent = (idle_time / time_exe) * 100;
+  printf("BRANCH_CYCLE_WASTE%d\n", BRANCH_CYCLE_WASTE);
+  printf("STALL_WASTE%d\n", STALL_COUNT);
+  // fprintf(write, "Reached\n" );
+  // fprintf(write, "STALL_COUNT %d\n",STALL_COUNT );
+  fprintf(write, "Instructions,%d\n", INSTRUCTION_COUNT);
+  fprintf(write, "Cycles,%d\n", (int)cycles);
+  fprintf(write, "IPC,%lf\n", IPC);
+  fprintf(write, "Time (ns),%lf\n", time_exe);
+  fprintf(write, "Idle Time (ns),%lf\n", idle_time);
+  fprintf(write, "Idle Time (%%),%lf%%\n", idle_time_percent);
+  fprintf(write, "Cache Summary\n");
+  fprintf(write, "Cache L1-I\n");
+  fprintf(write, "num cache accesses,%d\n", INSTRUCTION_COUNT);
+  fprintf(write, "Cache L1-D\n");
+  fprintf(write, "num cache accesses,%d\n", DATA_MEM_ACCESS);
+  fclose(write);
 }

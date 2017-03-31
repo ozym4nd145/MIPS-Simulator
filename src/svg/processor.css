@@ -1,0 +1,97 @@
+svg {
+  background-color: beige;
+}
+
+.signal{
+    stroke:cornflowerblue;
+    stroke-width: 0.3;
+}
+.text_label{
+    font-size: 5px;
+}
+
+#fetch
+{
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
+}
+#decode
+{
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
+}
+#execute
+{
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
+}
+#memory
+{
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
+}
+#writeback
+{
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
+}
+#signal_write{
+    stroke: firebrick;
+    stroke-width: 0.5;
+}
+#signal_read{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_forward_from_alu{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_forward_from_dm{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_forward_to_alu{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_forward_to_dm{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_m2r{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_flush{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_pcsrc{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_writeback{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_stall{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+
+#t1 {
+    display: none;
+}
+#t2 {
+    display: inline;
+}
+#t3 {
+    display: inline;
+}
+#t4 {
+    display: inline;
+}
+#t5 {
+    display: inline;
+}

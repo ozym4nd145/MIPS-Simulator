@@ -1,16 +1,17 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "global_vars.h"
 #include "main_functions.h"
+#include "svg.h"
 #include "utils.h"
-
 int main(int argc, char* argv[])
 {
   FILE* code;
-
+  FILE* svg;
   // Input error handling
-  if (argc == 3)
+  if (argc >= 3)
   {
     code = fopen(argv[1], "r");
   }
@@ -20,6 +21,24 @@ int main(int argc, char* argv[])
     throw_error("");
   }
 
+  // Drawing the svg
+  svg = fopen(argv[2], "w");
+  draw_svg(svg);
+  fclose(svg);
+
+  // Calculating base path of svg
+  char* base_name = strdup(argv[2]);
+  int name_start_index = strlen(argv[2]) - 1;
+  while (name_start_index >= 0)
+  {
+    if (argv[2][name_start_index] == '/')
+    {
+      break;
+    }
+    name_start_index--;
+  }
+  base_name[name_start_index + 1] = '\0';
+
   char* a = malloc(sizeof(char) * 10);
   int i = 0;
 
@@ -27,7 +46,9 @@ int main(int argc, char* argv[])
   while (fscanf(code, "%s", a) != EOF)
   {
     int num = (int)strtol(a, NULL, 16);
-    program[i++] = instruction_parse(num);
+    program[i] = instruction_parse(num);
+    program[i].index = i + 1;
+    i++;
   }
   free(a);
 
@@ -56,6 +77,14 @@ int main(int argc, char* argv[])
     // register_file[i] = i + 1;  // Just for checking
     register_file[i] = 0;
   }
+
+  for (i = 0; i < NUM_THREADS; i++)
+  {
+    ACTIVE_STAGE[i] = 0;
+    CURR_INSTR[i].Itype = NO_OP;
+    CURR_INSTR[i].Ctype = NO_OPERATION;
+  }
+
   control_signal.stall = 0;
   control_signal.branched = 0;
 
@@ -70,7 +99,7 @@ int main(int argc, char* argv[])
   pthread_create(&threads[2], NULL, alu_op, (void*)NULL);
   pthread_create(&threads[3], NULL, memory_op, (void*)NULL);
   pthread_create(&threads[4], NULL, register_write, (void*)NULL);
-  pthread_create(&threads[5], NULL, print_svg, (void*)(argv[2]));
+  pthread_create(&threads[5], NULL, print_svg, (void*)(base_name));
 
   pthread_join(threads[0], NULL);
   pthread_join(threads[1], NULL);
@@ -79,6 +108,12 @@ int main(int argc, char* argv[])
   pthread_join(threads[4], NULL);
   pthread_join(threads[5], NULL);
 
+  printf("Control  Reached here\n");
+
+  print_result(argv[3]);
+
+  free(base_name);
   fclose(code);
+
   return 0;
 }

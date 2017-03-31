@@ -18,6 +18,11 @@ void* register_read(void* data)
 
   while (1)
   {
+    if (STOP_THREAD == 1)
+    {
+      printf("Register Read thread Stopped\n");
+      break;
+    }
     // NOTE: does reading really require lock?
 
     // wait for the new instruction to occur
@@ -38,6 +43,8 @@ void* register_read(void* data)
     {
       // copy previous pipeline : Reading stage
       temp_pipeline[0] = pipeline[0];
+      // Signal that was read
+      CURR_INSTR[1] = pipeline[0].instr;
       instruction_to_file("results/2_register_read.txt", temp_pipeline[0]);
 
       // Setting stall signal to 1 if necessary
@@ -45,12 +52,12 @@ void* register_read(void* data)
       {
         // Stalling cases
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
-             pipeline[1].instr.Itype == LDR_WORD ||
-             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
+             pipeline[1].instr.Itype == LDR_WORD) &&
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
           control_signal.stall = 1;
+          STALL_COUNT++;
         }
         else
         {
@@ -86,18 +93,19 @@ void* register_read(void* data)
         pthread_mutex_unlock(&READ_LOCK);
       }
 
+      
       // Process instruction if its not NO_OP
       if (temp_pipeline[0].instr.Itype != NO_OP)
       {
         // Stalling cases
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
-             pipeline[1].instr.Itype == LDR_WORD ||
-             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
+             pipeline[1].instr.Itype == LDR_WORD) &&
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
           // as PC value was incremented in read stage by instruction_fetch.
           PC -= 4;
+          // INSTRUCTION_COUNT--;
           pipeline[1].instr.Itype = NO_OP;
           pipeline[1].instr.Ctype = NO_OPERATION;
         }
@@ -133,4 +141,5 @@ void* register_read(void* data)
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

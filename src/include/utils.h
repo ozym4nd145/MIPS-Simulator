@@ -15,4 +15,5 @@ void memdump(int start, int num);
 int get_byte(int addr);
 void regdump();
 void make_html(char *svg_name);
+void print_result(char *s);
 #endif
