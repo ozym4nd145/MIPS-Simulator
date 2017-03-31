@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -54,7 +55,15 @@ void* print_svg(void* data)
     if ((clock_fall && new_fall) || (flag && STOP_THREAD))
     {
       FILE* css = fopen(css_name, "w");
+      if (errno)
+      {
+        throw_error("Error in opening output css file");
+      }
       FILE* js = fopen(js_name, "w");
+      if (errno)
+      {
+        throw_error("Error in opening output js file");
+      }
 
       for (i = 0; i < 5; i++)
       {

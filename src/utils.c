@@ -1,8 +1,8 @@
 #include "utils.h"
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "global_vars.h"
-
 void throw_error(char *a)
 {
   fprintf(stderr, "%s\n", a);
@@ -166,6 +166,10 @@ int get_byte(int addr)
 void instruction_to_file(char *s, buffer instruct)
 {
   FILE *write = fopen(s, "a");
+  if (errno)
+  {
+    throw_error("Error in opening output file");
+  }
   // fprintf(write, "CLOCK %d\n",CLOCK );
   // fprintf(write, "Number Thread Read %d\n",NUM_THREADS_READ );
   fprintf(write, "--------STEP  %d--------------\n", STEPS);
@@ -194,6 +198,10 @@ void instruction_to_file(char *s, buffer instruct)
 void print_registers(char *s)
 {
   FILE *write = fopen(s, "a");
+  if (errno)
+  {
+    throw_error("Error in opening output file");
+  }
   int i;
   fprintf(write, "--------STEP  %d--------------\n", STEPS);
   for (i = 0; i < 32; i++)
@@ -225,6 +233,10 @@ void print_result(char *s)
   // fprintf(stdout, "Reached\n" );
   // FILE *write=stdout;
   FILE *write = fopen(s, "w");
+  if (errno)
+  {
+    throw_error("Error in opening result file");
+  }
   // fprintf(write, "Reached\n" );
   double cycles = STEPS - 1;
   double Ins_C = INSTRUCTION_COUNT;

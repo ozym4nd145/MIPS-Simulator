@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +7,7 @@
 #include "main_functions.h"
 #include "svg.h"
 #include "utils.h"
+
 int main(int argc, char* argv[])
 {
   FILE* code;
@@ -21,8 +23,18 @@ int main(int argc, char* argv[])
     throw_error("");
   }
 
+  if (errno)
+  {
+    throw_error("Error in opening instruction file");
+  }
   // Drawing the svg
   svg = fopen(argv[2], "w");
+
+  if (errno)
+  {
+    throw_error("Error in opening svg file");
+  }
+
   draw_svg(svg);
   fclose(svg);
 
