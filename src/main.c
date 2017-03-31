@@ -119,9 +119,10 @@ int main(int argc, char* argv[])
   pthread_join(threads[4], NULL);
   pthread_join(threads[5], NULL);
 
+#ifdef DEBUG
   printf("Control  Reached here\n");
-
   print_result(argv[3]);
+#endif
 
   free(base_name);
   fclose(code);

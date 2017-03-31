@@ -16,7 +16,10 @@ void* memory_op(void* data)
   {
     if (STOP_THREAD == 1)
     {
+#ifdef DEBUG
       printf("Memory Thread Stopped\n");
+#endif
+
       break;
     }
     // does reading really require lock?
@@ -41,7 +44,10 @@ void* memory_op(void* data)
       temp_pipeline[2] = pipeline[2];
       // Signal that was read
       CURR_INSTR[3] = pipeline[2].instr;
+#ifdef DEBUG
       instruction_to_file("results/4_data_memory_thread.txt", temp_pipeline[2]);
+#endif
+
       // printing for debugging
 
       // updating that this thread has completed reading stage
@@ -199,7 +205,9 @@ void* memory_op(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+#ifdef DEBUG
       instruction_to_file("results/4_data_memory_thread.txt", pipeline[3]);
+#endif
     }
 
     // Adding delay before checking for new instruction

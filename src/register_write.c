@@ -16,7 +16,10 @@ void* register_write(void* data)
   {
     if (STOP_THREAD == 1)
     {
+#ifdef DEBUG
       printf("register_write thread ended\n");
+#endif
+
       break;
     }
     // does reading really require lock?
@@ -39,7 +42,9 @@ void* register_write(void* data)
       temp_pipeline[3] = pipeline[3];
       // Signal that was read
       CURR_INSTR[4] = pipeline[3].instr;
+#ifdef DEBUG
       instruction_to_file("results/5_register_write.txt", temp_pipeline[3]);
+#endif
 
       // setting default display signal
       ACTIVE_STAGE[4] = 1;
@@ -93,7 +98,9 @@ void* register_write(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+#ifdef DEBUG
       print_registers("results/5_register_write.txt");
+#endif
     }
 
     // Adding delay before checking for new instruction

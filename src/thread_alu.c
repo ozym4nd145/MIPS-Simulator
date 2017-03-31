@@ -19,7 +19,10 @@ void* alu_op(void* data)
   {
     if (STOP_THREAD == 1)
     {
+#ifdef DEBUG
       printf("ALU Thread Ended\n");
+#endif
+
       break;
     }
     // does reading really require lock?
@@ -44,7 +47,9 @@ void* alu_op(void* data)
       temp_pipeline[1] = pipeline[1];
       // Signal that was read
       CURR_INSTR[2] = pipeline[1].instr;
+#ifdef DEBUG
       instruction_to_file("results/3_alu_thread.txt", temp_pipeline[1]);
+#endif
 
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
@@ -343,8 +348,11 @@ void* alu_op(void* data)
           {
             control_signal.branched = 1;
             PC += 4;
+#ifdef DEBUG
             printf("Branch Taken%s\n",
                    get_instruction_name(pipeline[2].instr.Itype));
+#endif
+
             pipeline[2] = temp_pipeline[1];
           }
 
@@ -376,7 +384,9 @@ void* alu_op(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+#ifdef DEBUG
       instruction_to_file("results/3_alu_thread.txt", pipeline[2]);
+#endif
     }
 
     // Adding delay before checking for new instruction

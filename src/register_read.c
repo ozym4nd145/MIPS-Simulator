@@ -20,7 +20,9 @@ void* register_read(void* data)
   {
     if (STOP_THREAD == 1)
     {
+#ifdef DEBUG
       printf("Register Read thread Stopped\n");
+#endif
       break;
     }
     // NOTE: does reading really require lock?
@@ -45,7 +47,9 @@ void* register_read(void* data)
       temp_pipeline[0] = pipeline[0];
       // Signal that was read
       CURR_INSTR[1] = pipeline[0].instr;
+#ifdef DEBUG
       instruction_to_file("results/2_register_read.txt", temp_pipeline[0]);
+#endif
 
       // Setting stall signal to 1 if necessary
       if (temp_pipeline[0].instr.Itype != NO_OP)
@@ -93,7 +97,7 @@ void* register_read(void* data)
         pthread_mutex_unlock(&READ_LOCK);
       }
 
-            // Process instruction if its not NO_OP
+      // Process instruction if its not NO_OP
       if (temp_pipeline[0].instr.Itype != NO_OP)
       {
         // Stalling cases
@@ -134,7 +138,9 @@ void* register_read(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+#ifdef DEBUG
       instruction_to_file("results/2_register_read.txt", pipeline[1]);
+#endif
     }
 
     // Adding delay before checking for new instruction

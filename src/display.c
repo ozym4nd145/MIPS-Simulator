@@ -126,10 +126,6 @@ void* print_svg(void* data)
 
       if (CONTROL_SIGN.STALL_C) activate(css, "signal_stall");
 
-      // Hides corresponding thread from active thread box
-
-      //
-
       // Draws the upper box labels that show instructions in the stage
       draw_js(js, labels);
 
@@ -141,7 +137,10 @@ void* print_svg(void* data)
     {
       free(css_name);
       free(js_name);
+#ifdef DEBUG
       printf("Display Thread Ended\n");
+#endif
+
       break;
     }
     usleep(DELAY);
