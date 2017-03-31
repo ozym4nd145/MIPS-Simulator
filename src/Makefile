@@ -1,13 +1,13 @@
 CC = gcc
-INCLUDE = -I "./include"
 DEBUG = -g
+OBJDIR = obj
+HEADER_DIR = include
 CFLAGS = -Wall -c $(DEBUG)
 LFLAGS = -Wall $(DEBUG)
 LIBS = "-lpthread"
-HEADER_DIR = include
+INCLUDE = -I $(HEADER_DIR)
 HEADERS = $(wildcard $(HEADER_DIR)/*.h)
 SRCS = main.c global_vars.c utils.c parser.c instruction_fetch.c register_read.c thread_alu.c data_memory.c register_write.c display.c svg.c
-OBJDIR = obj
 OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 
 simulator: $(OBJS)
