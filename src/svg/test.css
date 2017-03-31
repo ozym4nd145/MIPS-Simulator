@@ -1,0 +1,76 @@
+/*** SVG demonstration ***/
+
+/* page */
+svg {
+  background-color: beige;
+  }
+
+#fetch
+{
+    /*filter: saturate(30%);*/
+    /*opacity: 0.1;*/
+}
+#decode
+{
+    /*filter: saturate(30%);*/
+    /*opacity: 0.1;*/
+}
+#execute
+{
+    /*filter: saturate(30%);*/
+    /*opacity: 0.1;*/
+}
+#memory
+{
+    /*filter: saturate(30%);*/
+    /*opacity: 0.1;*/
+}
+#writeback
+{
+    /*filter: saturate(30%);*/
+    /*opacity: 0.1;*/
+}
+#control
+{
+}
+
+#signal_write{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_read{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_forward_from_alu{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_forward_from_dm{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_forward_to_alu{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_forward_to_dm{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_m2r{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_pcsrc{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_writeback{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
+#signal_stall{
+    stroke:#89dcf7;
+    /*stroke: red;*/
+}
