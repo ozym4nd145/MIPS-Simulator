@@ -25,9 +25,11 @@ void draw_svg(FILE* ptr)
       "width=\"252mm\"\n   height=\"178mm\"\n   viewBox=\"0 0 297 210\"\n   "
       "version=\"1.1\"\n   id=\"SVGRoot\"\n   inkscape:version=\"0.91 "
       "r13725\"\n   sodipodi:docname=\"processor.svg\" "
-      "onload=\"add_text()\">\n  <script type=\"text/ecmascript\" "
-      "xlink:href=\"processor.js\" />\n\n  <filter id=\"colorsaturate\">\n  "
-      "   "
+      "onload=\"refresh()\">\n  <script type=\"text/ecmascript\" "
+      "xlink:href=\"processor.js\" />\n\n<script type=\"text/javascript\"> "
+      "function refresh() { add_text();"
+      "setTimeout(function() {location.reload(true)},500); } "
+      "</script>\n\n  <filter id=\"colorsaturate\">\n  "
       " <feColorMatrix in=\"SourceGraphic\" type=\"saturate\" values=\"0.2\" "
       "/>\n  </filter>\n\n  <sodipodi:namedview\n     id=\"base\"\n     "
       "pagecolor=\"#ffffff\"\n     bordercolor=\"#666666\"\n     "
@@ -2409,7 +2411,7 @@ void draw_svg(FILE* ptr)
       "opacity:1;marker-start:url(#DotM);marker-end:url(#Arrow1Mend)\"\n       "
       "d=\"m 88.499409,45.657862 -55.202602,0.194717 0.292078,61.238861\"\n    "
       "   id=\"path1752\"\n       inkscape:connector-curvature=\"0\" />\n  "
-      "</g>\n</svg>\n");
+      "</g></svg>\n");
 }
 /**
   Prints the required CSS file initial part.
@@ -2440,7 +2442,7 @@ void draw_js(FILE* ptr, char* text[])
           "document.querySelector(\"#text_write\");\n    t1.textContent = "
           "\"%s\";\n    t2.textContent = \"%s\";\n    t3.textContent = "
           "\"%s\";\n    t4.textContent = \"%s\";\n    t5.textContent = "
-          "\"%s\";\n setTimeout(function() {location.reload(true)},500);\n}",
+          "\"%s\";}",
           text[0], text[1], text[2], text[3], text[4]);
 }
 
