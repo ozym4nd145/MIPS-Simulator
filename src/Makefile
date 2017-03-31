@@ -13,6 +13,10 @@ OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 simulator: $(OBJS)
 	$(CC) $(LFLAGS) $(INCLUDE) -o $@ $^ $(LIBS)
 
+debug: CFLAGS += -DDEBUG
+debug: LFLAGS += -DDEBUG
+debug: simulator
+
 $(OBJDIR)/%.o: %.c $(HEADERS) | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
 
