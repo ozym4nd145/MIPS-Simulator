@@ -18,6 +18,13 @@ void* register_read(void* data)
 
   while (1)
   {
+    if (STOP_THREAD == 1)
+    {
+#ifdef DEBUG
+      printf("Register Read thread Stopped\n");
+#endif
+      break;
+    }
     // NOTE: does reading really require lock?
 
     // wait for the new instruction to occur
@@ -38,28 +45,37 @@ void* register_read(void* data)
     {
       // copy previous pipeline : Reading stage
       temp_pipeline[0] = pipeline[0];
+      // Signal that was read
+      CURR_INSTR[1] = pipeline[0].instr;
+#ifdef DEBUG
       instruction_to_file("results/2_register_read.txt", temp_pipeline[0]);
+#endif
 
       // Setting stall signal to 1 if necessary
       if (temp_pipeline[0].instr.Itype != NO_OP)
       {
         // Stalling cases
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
-             pipeline[1].instr.Itype == LDR_WORD ||
-             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
+             pipeline[1].instr.Itype == LDR_WORD) &&
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
           control_signal.stall = 1;
+          STALL_COUNT++;
         }
         else
         {
           control_signal.stall = 0;
         }
+
+        // setting display
+        ACTIVE_STAGE[1] = 1;
       }
       else
       {
         control_signal.stall = 0;
+        // setting display
+        ACTIVE_STAGE[1] = 0;
       }
 
       // update that this thread has  completed reading stage
@@ -86,60 +102,19 @@ void* register_read(void* data)
       {
         // Stalling cases
         if ((pipeline[1].instr.Itype == LDR_BYTE ||
-             pipeline[1].instr.Itype == LDR_WORD ||
-             pipeline[1].instr.Itype == LDR_UPPER_IMMEDIATE) &&
+             pipeline[1].instr.Itype == LDR_WORD) &&
             (pipeline[1].instr.rt == temp_pipeline[0].instr.rs ||
              pipeline[1].instr.rt == temp_pipeline[0].instr.rt))
         {
           // as PC value was incremented in read stage by instruction_fetch.
           PC -= 4;
+          // INSTRUCTION_COUNT--;
           pipeline[1].instr.Itype = NO_OP;
           pipeline[1].instr.Ctype = NO_OPERATION;
         }
         // else write values of register into next pipeline
         else
         {
-          // pipeline[1].instr = pipeline[0].instr;
-          // pipeline[1].pc = pipeline[0].pc;
-          // pipeline[1].rs_val = register_file[pipeline[0].instr.rs];
-          // pipeline[1].rt_val = register_file[pipeline[0].instr.rt];
-          // pipeline[1].rd_val = register_file[pipeline[0].instr.rd];
-
-          // // if last pipeline contains useful variable
-
-          // // if the updating instruction was a data processing one
-          // if (pipeline[3].instr.Itype == DP)
-          // {
-          //   if (pipeline[3].instr.rd == pipeline[0].instr.rs)
-          //   {
-          //     pipeline[1].rs_val = pipeline[3].alu_result;
-          //   }
-          //   if (pipeline[3].instr.rd == pipeline[0].instr.rt)
-          //   {
-          //     pipeline[1].rt_val = pipeline[3].alu_result;
-          //   }
-          //   if (pipeline[3].instr.rd == pipeline[0].instr.rd)
-          //   {
-          //     pipeline[1].rd_val = pipeline[3].alu_result;
-          //   }
-          // }
-          // // if it was a Loading instruction
-          // else if (pipeline[3].instr.Itype == LDR_WORD ||
-          //          pipeline[3].instr.Itype == LDR_BYTE)
-          // {
-          //   if (pipeline[3].instr.rt == pipeline[0].instr.rs)
-          //   {
-          //     pipeline[1].rs_val = pipeline[3].rl_val;
-          //   }
-          //   if (pipeline[3].instr.rt == pipeline[0].instr.rt)
-          //   {
-          //     pipeline[1].rt_val = pipeline[3].rl_val;
-          //   }
-          //   if (pipeline[3].instr.rt == pipeline[0].instr.rd)
-          //   {
-          //     pipeline[1].rd_val = pipeline[3].rl_val;
-          //   }
-          // }
           pipeline[1].instr = temp_pipeline[0].instr;
           pipeline[1].pc = temp_pipeline[0].pc;
           pipeline[1].rs_val = register_file[temp_pipeline[0].instr.rs];
@@ -163,10 +138,13 @@ void* register_read(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+#ifdef DEBUG
       instruction_to_file("results/2_register_read.txt", pipeline[1]);
+#endif
     }
 
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

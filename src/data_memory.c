@@ -14,6 +14,14 @@ void* memory_op(void* data)
 
   while (1)
   {
+    if (STOP_THREAD == 1)
+    {
+#ifdef DEBUG
+      printf("Memory Thread Stopped\n");
+#endif
+
+      break;
+    }
     // does reading really require lock?
 
     // wait for the new instruction to occur
@@ -34,7 +42,12 @@ void* memory_op(void* data)
     {
       // copy previous pipeline : Reading stage
       temp_pipeline[2] = pipeline[2];
+      // Signal that was read
+      CURR_INSTR[3] = pipeline[2].instr;
+#ifdef DEBUG
       instruction_to_file("results/4_data_memory_thread.txt", temp_pipeline[2]);
+#endif
+
       // printing for debugging
 
       // updating that this thread has completed reading stage
@@ -42,6 +55,9 @@ void* memory_op(void* data)
       NUM_THREADS_READ++;
       // printf("DM - Increased NUMREAD - %d\n", NUM_THREADS_READ);
       pthread_mutex_unlock(&READ_LOCK);
+
+      // setting default display signal
+      ACTIVE_STAGE[3] = 1;
 
       // wait for all the threads to complete reading
       while (1)
@@ -63,9 +79,10 @@ void* memory_op(void* data)
 
       if (temp_pipeline[2].instr.Itype == NO_OP)
       {
+        ACTIVE_STAGE[3] = 0;
         // sleep;
       }
-      if (temp_pipeline[2].instr.Ctype == DT)
+      else if (temp_pipeline[2].instr.Ctype == DT)
       {
         // instruction of class Data Transfer
         int write_val = temp_pipeline[2].rt_val;
@@ -77,6 +94,8 @@ void* memory_op(void* data)
              temp_pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE) &&
             temp_pipeline[3].instr.rt == temp_pipeline[2].instr.rt)
         {
+          CONTROL_SIGN.FWD_DM = 1;
+          CONTROL_SIGN.TO_DM = 1;
           write_val = temp_pipeline[3].rt_val;
         }
         // Data forwarding from exit of Data Memory to input of Data Memory for
@@ -85,6 +104,8 @@ void* memory_op(void* data)
         else if ((temp_pipeline[3].instr.Ctype == DP) &&
                  temp_pipeline[3].instr.rd == temp_pipeline[2].instr.rt)
         {
+          CONTROL_SIGN.FWD_DM = 1;
+          CONTROL_SIGN.TO_DM = 1;
           write_val = temp_pipeline[3].alu_result;
         }
 
@@ -93,12 +114,16 @@ void* memory_op(void* data)
           case LDR_WORD:
           {
             pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
+            DATA_MEM_ACCESS++;
+            CONTROL_SIGN.MemRd = 1;
             break;
           }
           case LDR_BYTE:
           {
             int x = (offset - BASE_ADDR) % 4;
             int y = Memory_Block[(offset - BASE_ADDR) / 4];
+            DATA_MEM_ACCESS++;
+            CONTROL_SIGN.MemRd = 1;
             int z;
 
             switch (x)
@@ -122,10 +147,13 @@ void* memory_op(void* data)
           }
           case STR_WORD:
           {
-            printf(
-                "Inside store word.\nOffset - %08x\nBase - %08x\nWrite - %d\n",
-                offset, BASE_ADDR, write_val);
+            // printf(
+            //     "Inside store word.\nOffset - %08x\nBase - %08x\nWrite -
+            //     %d\n",
+            //     offset, BASE_ADDR, write_val);
             Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
+            DATA_MEM_ACCESS++;
+            CONTROL_SIGN.MemWr = 1;
             break;
           }
           case STR_BYTE:
@@ -134,6 +162,8 @@ void* memory_op(void* data)
             int index = (offset - BASE_ADDR) / 4;
             int write_val2 = write_val & (0x0000FF);
             int temp = Memory_Block[index];
+            DATA_MEM_ACCESS++;
+            CONTROL_SIGN.MemWr = 1;
 
             switch (byte_pos)
             {
@@ -157,6 +187,7 @@ void* memory_op(void* data)
           case LDR_UPPER_IMMEDIATE:
           {
             pipeline[3].rt_val = temp_pipeline[2].alu_result;
+            CONTROL_SIGN.MemRd = 1;
             break;
           }
           default:
@@ -174,10 +205,13 @@ void* memory_op(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+#ifdef DEBUG
       instruction_to_file("results/4_data_memory_thread.txt", pipeline[3]);
+#endif
     }
 
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

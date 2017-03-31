@@ -21,7 +21,6 @@ void* instruction_fetch(void* data)
   input[3] = 'p';
   input[4] = '\0';
   int temp_pc;
-  
 
   while (1)
   {
@@ -37,6 +36,17 @@ void* instruction_fetch(void* data)
       //   // exit(0);
       // }
       STEPS++;
+      CONTROL_SIGN.MemWr = 0;
+      CONTROL_SIGN.MemRd = 0;
+      CONTROL_SIGN.FWD_ALU = 0;
+      CONTROL_SIGN.FWD_DM = 0;
+      CONTROL_SIGN.TO_ALU = 0;
+      CONTROL_SIGN.TO_DM = 0;
+      CONTROL_SIGN.M2R = 0;
+      CONTROL_SIGN.FLUSH = 0;
+      CONTROL_SIGN.PCsrc = 0;
+      CONTROL_SIGN.RegW = 0;
+      CONTROL_SIGN.STALL_C = 0;
 
       // lock CLOCK for updating
       pthread_mutex_lock(&CLOCK_LOCK);
@@ -44,12 +54,25 @@ void* instruction_fetch(void* data)
       pthread_mutex_unlock(&CLOCK_LOCK);
 
       int stall = control_signal.stall;
-      printf("Step = %d | Stall = %d\n", STEPS, stall);
+      printf("Step = %d\n", STEPS);
+
       temp_pc = PC;
+
+      // Setting display
+      // ACTIVE_STAGE[0] = 1;
 
       // update value of pc( not a problem in stalls as register_read
       // automatically decrements pc)
       PC += 4;
+
+      if (PC >= MAX_PC + 6 * 4)
+      {
+        STOP_THREAD = 1;
+#ifdef DEBUG
+        printf("Instruction Thread Ended\n");
+#endif
+        break;
+      }
 
       // loop until reading stage has completed
       while (1)
@@ -64,21 +87,35 @@ void* instruction_fetch(void* data)
         pthread_mutex_unlock(&READ_LOCK);
       }
 
-      if (control_signal.stall == 0)
+      if (stall == 0)
       {
         if (temp_pc > MAX_PC)
         {
+          ACTIVE_STAGE[0] = 0;
+#ifdef DEBUG
+          printf("Reached greater than PC\n");
+#endif
           pipeline[0].instr.Itype = NO_OP;
           pipeline[0].instr.Ctype = NO_OPERATION;
-          // printf("Program complete");
-          // TODO: Close all threads and free all memory
-          // exit(0);
+          CURR_INSTR[0].Itype = NO_OP;
+          CURR_INSTR[0].Ctype = NO_OPERATION;
         }
         else
         {
+          ACTIVE_STAGE[0] = 1;
+#ifdef DEBUG
+          printf("Instruction Count %d\n", INSTRUCTION_COUNT);
+#endif
+
           pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+          CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
         }
         pipeline[0].pc = temp_pc;
+      }
+      else
+      {
+        CONTROL_SIGN.STALL_C = 1;
+        ACTIVE_STAGE[0] = 0;
       }
       // wait for the rest of the threads to complete write stage
       while (1)
@@ -95,17 +132,31 @@ void* instruction_fetch(void* data)
         pthread_mutex_unlock(&WRITE_LOCK);
       }
 
-      if(control_signal.branched==1)
+      if (control_signal.branched == 1)
       {
-        pipeline[0].instr.Itype=NO_OP;
-        pipeline[0].instr.Ctype=NO_OPERATION;
-        pipeline[1].instr.Itype=NO_OP;
-        pipeline[1].instr.Ctype=NO_OPERATION;
-        control_signal.branched=0;
+        CONTROL_SIGN.FLUSH = 1;
+        CONTROL_SIGN.PCsrc = 1;
+        if (pipeline[0].instr.Itype != NO_OP)
+        {
+          // INSTRUCTION_COUNT--;
+          BRANCH_CYCLE_WASTE++;
+        }
+        pipeline[0].instr.Itype = NO_OP;
+        pipeline[0].instr.Ctype = NO_OPERATION;
+        if (pipeline[1].instr.Itype != NO_OP)
+        {
+          // INSTRUCTION_COUNT--;
+          BRANCH_CYCLE_WASTE++;
+        }
+        pipeline[1].instr.Itype = NO_OP;
+        pipeline[1].instr.Ctype = NO_OPERATION;
+        control_signal.branched = 0;
       }
-
+#ifdef DEBUG
       printf("PC - %08x\n", temp_pc);
+      printf("BRANCH_CYCLE_WASTE %d\n", BRANCH_CYCLE_WASTE);
       instruction_to_file("results/1_instruction_fetch.txt", pipeline[0]);
+#endif
       // make clock 0 thus marking the end of the instruction
       pthread_mutex_lock(&CLOCK_LOCK);
       CLOCK = 0;
@@ -125,4 +176,5 @@ void* instruction_fetch(void* data)
     }
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

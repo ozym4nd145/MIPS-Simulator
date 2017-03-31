@@ -14,6 +14,14 @@ void* register_write(void* data)
 
   while (1)
   {
+    if (STOP_THREAD == 1)
+    {
+#ifdef DEBUG
+      printf("register_write thread ended\n");
+#endif
+
+      break;
+    }
     // does reading really require lock?
     // wait for the new instruction to occur
     pthread_mutex_lock(&CLOCK_LOCK);
@@ -32,30 +40,43 @@ void* register_write(void* data)
     if (clock_start && new_instruction)
     {
       temp_pipeline[3] = pipeline[3];
+      // Signal that was read
+      CURR_INSTR[4] = pipeline[3].instr;
+#ifdef DEBUG
       instruction_to_file("results/5_register_write.txt", temp_pipeline[3]);
+#endif
+
+      // setting default display signal
+      ACTIVE_STAGE[4] = 1;
+
       // If the instruction is not No Operation
       if (pipeline[3].instr.Itype != NO_OP)
       {
+        INSTRUCTION_COUNT++;
         // Write value into the Register file
         if (pipeline[3].instr.Itype == LDR_BYTE ||
             pipeline[3].instr.Itype == LDR_WORD ||
             pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE)
         {
           register_file[pipeline[3].instr.rt] = pipeline[3].rt_val;
+          CONTROL_SIGN.RegW = 1;
         }
         else if (pipeline[3].instr.Itype == MULTIPLY ||
                  pipeline[3].instr.Itype == MULTIPLY_ADD)
         {
           register_file[32] = pipeline[3].LO;
           register_file[33] = pipeline[3].HI;
+          CONTROL_SIGN.RegW = 1;
         }
         else if (pipeline[3].instr.Ctype == DP)
         {
           register_file[pipeline[3].instr.rd] = pipeline[3].alu_result;
+          CONTROL_SIGN.RegW = 1;
         }
       }
       else
       {
+        ACTIVE_STAGE[4] = 0;
         // do nothing
       }
 
@@ -77,10 +98,13 @@ void* register_write(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+#ifdef DEBUG
       print_registers("results/5_register_write.txt");
+#endif
     }
 
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }

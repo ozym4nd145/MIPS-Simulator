@@ -48,6 +48,7 @@ typedef struct
   int rs, rt, rd, shf_amt, opcode, target_address, function, immediate;
   instruction_type Itype;
   class_type Ctype;
+  int index;
 } instruction;
 
 typedef struct buffer
@@ -62,13 +63,27 @@ typedef struct
   int branched;
 } signal;
 
+typedef struct
+{
+  int MemWr, MemRd, PCsrc, RegW, FWD_ALU, FWD_DM, TO_ALU, TO_DM, M2R, FLUSH,
+      STALL_C;
+} control;
+
+extern control CONTROL_SIGN;
 extern buffer pipeline[NUM_THREADS - 1];
 extern buffer temp_pipeline[NUM_THREADS - 1];
 extern instruction program[INSTRUCTION_MEM];
+extern instruction CURR_INSTR[NUM_THREADS];
 extern signal control_signal;
 
 // register_file[32]= LO && register_file[33] = HIGH
 extern int register_file[34];
+extern int STOP_THREAD;
+extern int INSTRUCTION_COUNT;
+extern int DATA_MEM_ACCESS;
+extern int INSTRUCTION_MEM_ACCESS;
+extern int STALL_COUNT;
+extern int BRANCH_CYCLE_WASTE;
 extern int PC;
 extern int MAX_PC;
 extern int STEPS;
@@ -88,4 +103,12 @@ extern pthread_mutex_t CLOCK_LOCK;
 extern pthread_mutex_t READ_LOCK;
 extern pthread_mutex_t WRITE_LOCK;
 
+extern float SVG_HEIGHT;
+extern float SVG_WIDTH;
+extern float SVG_SATURATE;
+
+// Display signals
+extern int ACTIVE_STAGE[5];    // [0..4]-> fetch,decode,alu,mem,write
+extern int FORWARDING[3];      // [0..2] -> alu-alu, mem-alu, mem-mem
+extern int FORWARDING_ALU[2];  // Forwarding to rt or rs
 #endif

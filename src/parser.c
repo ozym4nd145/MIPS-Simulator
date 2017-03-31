@@ -34,9 +34,9 @@ instruction instruction_parse(int a)
   information->function = a & ((temp << 1) | 1);
   information->immediate = a & (0xFFFF);
   information->immediate = (information->immediate << 16) >> 16;
-  //printf("%08x\n",information->immediate);
-  
-  information->target_address = a&(0x3FFFFFF);
+  // printf("%08x\n",information->immediate);
+
+  information->target_address = a & (0x3FFFFFF);
   if (information->opcode == 0 && information->function == 32 &&
       information->shf_amt == 0)
   {

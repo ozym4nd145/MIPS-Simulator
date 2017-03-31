@@ -17,6 +17,14 @@ void* alu_op(void* data)
   long long int temp;
   while (1)
   {
+    if (STOP_THREAD == 1)
+    {
+#ifdef DEBUG
+      printf("ALU Thread Ended\n");
+#endif
+
+      break;
+    }
     // does reading really require lock?
 
     // wait for the new instruction to occur
@@ -37,7 +45,11 @@ void* alu_op(void* data)
     {
       // copy previous pipeline : Reading stage
       temp_pipeline[1] = pipeline[1];
+      // Signal that was read
+      CURR_INSTR[2] = pipeline[1].instr;
+#ifdef DEBUG
       instruction_to_file("results/3_alu_thread.txt", temp_pipeline[1]);
+#endif
 
       // updating that this thread has completed reading stage
       pthread_mutex_lock(&READ_LOCK);
@@ -59,17 +71,21 @@ void* alu_op(void* data)
       }
 
       // Forwading in case of Multiply instruction
-      if (temp_pipeline[2].instr.Itype == MULTIPLY &&
+      if (temp_pipeline[2].instr.Itype == MULTIPLY ||
           temp_pipeline[2].instr.Itype == MULTIPLY_ADD)
       {
         temp_pipeline[1].HI = temp_pipeline[2].HI;
         temp_pipeline[1].LO = temp_pipeline[2].LO;
+        CONTROL_SIGN.FWD_ALU = 1;
+        CONTROL_SIGN.TO_ALU = 1;
       }
-      else if (temp_pipeline[3].instr.Itype == MULTIPLY &&
+      else if (temp_pipeline[3].instr.Itype == MULTIPLY ||
                temp_pipeline[3].instr.Itype == MULTIPLY_ADD)
       {
         temp_pipeline[1].HI = temp_pipeline[3].HI;
         temp_pipeline[1].LO = temp_pipeline[3].LO;
+        CONTROL_SIGN.FWD_DM = 1;
+        CONTROL_SIGN.TO_ALU = 1;
       }
 
       pipeline[2] = temp_pipeline[1];
@@ -77,12 +93,31 @@ void* alu_op(void* data)
       int r2 = temp_pipeline[1].rt_val;
       // values loaded for operation to support data forwarding
 
+      // Setting display functions to default value
+      FORWARDING_ALU[0] = 0;
+      FORWARDING_ALU[1] = 0;
+      FORWARDING[0] = 0;
+      FORWARDING[1] = 0;
+      FORWARDING[2] = 0;
+      ACTIVE_STAGE[2] = 1;
+
       // ALU to ALU Data Forwarding (Path1)
 
       if (temp_pipeline[1].instr.rs == temp_pipeline[2].instr.rd &&
           temp_pipeline[2].instr.Ctype == DP)
       {
         r1 = temp_pipeline[2].alu_result;
+        FORWARDING_ALU[0] = 1;
+        FORWARDING[0] = 1;
+        CONTROL_SIGN.FWD_ALU = 1;
+        CONTROL_SIGN.TO_ALU = 1;
+      }
+      else if (temp_pipeline[1].instr.rs == temp_pipeline[2].instr.rt &&
+               temp_pipeline[2].instr.Itype == LDR_UPPER_IMMEDIATE)
+      {
+        r1 = temp_pipeline[2].alu_result;
+        CONTROL_SIGN.FWD_ALU = 1;
+        CONTROL_SIGN.TO_ALU = 1;
       }
       // DATA Memory to ALU Data Forwarding (Path 2)
       else if (temp_pipeline[1].instr.rs == temp_pipeline[3].instr.rt &&
@@ -91,6 +126,10 @@ void* alu_op(void* data)
                 temp_pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE))
       {
         r1 = temp_pipeline[3].rt_val;
+        FORWARDING_ALU[0] = 1;
+        FORWARDING[1] = 1;
+        CONTROL_SIGN.FWD_DM = 1;
+        CONTROL_SIGN.TO_ALU = 1;
       }
       else if (temp_pipeline[1].instr.rs == temp_pipeline[3].instr.rd &&
                (temp_pipeline[3].instr.Ctype == DP &&
@@ -98,6 +137,10 @@ void* alu_op(void* data)
                  temp_pipeline[3].instr.Itype != MULTIPLY_ADD)))
       {
         r1 = temp_pipeline[3].alu_result;
+        FORWARDING_ALU[0] = 1;
+        FORWARDING[2] = 1;
+        CONTROL_SIGN.FWD_DM = 1;
+        CONTROL_SIGN.TO_ALU = 1;
       }
       // Similar check for operand2 of ALU
 
@@ -105,6 +148,17 @@ void* alu_op(void* data)
           temp_pipeline[2].instr.Ctype == DP)
       {
         r2 = temp_pipeline[2].alu_result;
+        FORWARDING_ALU[1] = 1;
+        FORWARDING[0] = 1;
+        CONTROL_SIGN.FWD_ALU = 1;
+        CONTROL_SIGN.TO_ALU = 1;
+      }
+      else if (temp_pipeline[1].instr.rt == temp_pipeline[2].instr.rt &&
+               temp_pipeline[2].instr.Itype == LDR_UPPER_IMMEDIATE)
+      {
+        r2 = temp_pipeline[2].alu_result;
+        CONTROL_SIGN.FWD_ALU = 1;
+        CONTROL_SIGN.TO_ALU = 1;
       }
       else if (temp_pipeline[1].instr.rt == temp_pipeline[3].instr.rt &&
                (temp_pipeline[3].instr.Itype == LDR_BYTE ||
@@ -112,6 +166,10 @@ void* alu_op(void* data)
                 temp_pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE))
       {
         r2 = temp_pipeline[3].rt_val;
+        FORWARDING_ALU[1] = 1;
+        FORWARDING[1] = 1;
+        CONTROL_SIGN.FWD_DM = 1;
+        CONTROL_SIGN.TO_ALU = 1;
       }
       else if (temp_pipeline[1].instr.rt == temp_pipeline[3].instr.rd &&
                (temp_pipeline[3].instr.Ctype == DP &&
@@ -119,6 +177,10 @@ void* alu_op(void* data)
                  temp_pipeline[3].instr.Itype != MULTIPLY_ADD)))
       {
         r2 = temp_pipeline[3].alu_result;
+        FORWARDING_ALU[1] = 1;
+        FORWARDING[2] = 1;
+        CONTROL_SIGN.FWD_DM = 1;
+        CONTROL_SIGN.TO_ALU = 1;
       }
 
       // processing instruction to perform ALU operations
@@ -284,11 +346,14 @@ void* alu_op(void* data)
           // If branch is successful filling bubbles/no-operation in Pipeline
           if (branched == 1)
           {
-            control_signal.branched=1;
-            PC+=4;
-            printf("Branch Taken%s\n",get_instruction_name(pipeline[2].instr.Itype));
-            pipeline[2].instr.Itype = NO_OP;
-            pipeline[2].instr.Ctype = NO_OPERATION;
+            control_signal.branched = 1;
+            PC += 4;
+#ifdef DEBUG
+            printf("Branch Taken%s\n",
+                   get_instruction_name(pipeline[2].instr.Itype));
+#endif
+
+            pipeline[2] = temp_pipeline[1];
           }
 
           break;
@@ -297,6 +362,7 @@ void* alu_op(void* data)
         case NO_OPERATION:
         {
           // Make thread sleep/Wait
+          ACTIVE_STAGE[2] = 0;
           break;
         }
 
@@ -318,10 +384,13 @@ void* alu_op(void* data)
       // Indicates that this instruction is completed and not to again run loop
       // for same instruction
       new_instruction = 0;
+#ifdef DEBUG
       instruction_to_file("results/3_alu_thread.txt", pipeline[2]);
+#endif
     }
 
     // Adding delay before checking for new instruction
     usleep(DELAY);
   }
+  pthread_exit(NULL);
 }
