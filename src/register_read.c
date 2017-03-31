@@ -93,8 +93,7 @@ void* register_read(void* data)
         pthread_mutex_unlock(&READ_LOCK);
       }
 
-      
-      // Process instruction if its not NO_OP
+            // Process instruction if its not NO_OP
       if (temp_pipeline[0].instr.Itype != NO_OP)
       {
         // Stalling cases
