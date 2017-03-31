@@ -87,7 +87,7 @@ void* instruction_fetch(void* data)
         }
         else
         {
-          INSTRUCTION_COUNT++;
+          //INSTRUCTION_COUNT++;
           printf("Instruction Count %d\n",INSTRUCTION_COUNT );
           pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
         }
@@ -117,14 +117,14 @@ void* instruction_fetch(void* data)
       {
         if(pipeline[0].instr.Itype!=NO_OP)
           {
-            INSTRUCTION_COUNT--;
+            //INSTRUCTION_COUNT--;
             BRANCH_CYCLE_WASTE++;
           }
         pipeline[0].instr.Itype = NO_OP;
         pipeline[0].instr.Ctype = NO_OPERATION;
         if(pipeline[1].instr.Itype!=NO_OP)
           {
-            INSTRUCTION_COUNT--;
+            //INSTRUCTION_COUNT--;
             BRANCH_CYCLE_WASTE++;
           }
         pipeline[1].instr.Itype = NO_OP;
@@ -133,6 +133,7 @@ void* instruction_fetch(void* data)
       }
 
       printf("PC - %08x\n", temp_pc);
+      printf("BRANCH_CYCLE_WASTE %d\n",BRANCH_CYCLE_WASTE );
       instruction_to_file("results/1_instruction_fetch.txt", pipeline[0]);
       // make clock 0 thus marking the end of the instruction
       pthread_mutex_lock(&CLOCK_LOCK);

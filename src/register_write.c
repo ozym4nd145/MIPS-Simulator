@@ -45,6 +45,7 @@ void* register_write(void* data)
       // If the instruction is not No Operation
       if (pipeline[3].instr.Itype != NO_OP)
       {
+        INSTRUCTION_COUNT++;
         // Write value into the Register file
         if (pipeline[3].instr.Itype == LDR_BYTE ||
             pipeline[3].instr.Itype == LDR_WORD ||
