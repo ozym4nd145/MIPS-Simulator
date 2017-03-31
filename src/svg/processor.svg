@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 
-<?xml-stylesheet type="text/css" href="test.css" ?>
+<?xml-stylesheet type="text/css" href="processor.css" ?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
@@ -18,7 +18,8 @@
    version="1.1"
    id="SVGRoot"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="fetch.svg.2017_03_29_18_49_36.0.svg">
+   sodipodi:docname="processor.svg" onload="add_text()">
+  <script type="text/ecmascript" xlink:href="processor.js" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -656,7 +657,8 @@
        id="text6552"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan6554"
+         id="text_fetch"
+         class="text_label"
          x="45.699524"
          y="18.130732">Add L1 L2 L3</tspan></text>
   </g>
@@ -680,9 +682,10 @@
        id="path7657"
        inkscape:connector-curvature="0" />
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#13f1d0;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker2870);marker-end:url(#Arrow2Mend)"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker2870);marker-end:url(#Arrow2Mend)"
        d="m 138.44381,49.595179 -0.13768,-14.663615 -35.52313,0.275373 0,8.123506"
        id="path2860"
+       class="signal"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />
     <rect
@@ -781,9 +784,10 @@
        id="path4606"
        inkscape:connector-curvature="0" />
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#15f3e3;stroke-width:0.28222221px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 183.30333,81.871111 11.99445,0"
        id="path4489"
+       class="signal"
        inkscape:connector-curvature="0" />
     <path
        style="display:inline;fill:#262c22;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.04714599px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -1019,9 +1023,10 @@
        id="path4709"
        inkscape:connector-curvature="0" />
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#07f8d1;stroke-width:0.28222221px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 161.29,57.458889 0,45.296671 1.69333,0 0,3.10444"
-       id="path4711"
+       id="signal_alusrc"
+       class="signal"
        inkscape:connector-curvature="0" />
     <ellipse
        style="fill:#55ddff;fill-opacity:1;stroke:#030201;stroke-width:0.29670012;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -1045,13 +1050,15 @@
          y="70.968376">Branch</tspan></text>
     <path
        inkscape:connector-curvature="0"
-       id="path4592"
+       id="signal_aluop"
+       class="signal"
        d="m 133.77333,57.317778 50.8,0 0,67.733332 -3.38666,0"
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#0af5d6;stroke-width:0.28222221px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#08f4eb;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 172.32558,92.292862 0,-10.806858 2.07163,0.01804"
        id="path1611"
+       class="signal"
        inkscape:connector-curvature="0" />
     <path
        style="display:inline;fill:#262c22;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.04714599px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -1148,7 +1155,8 @@
        id="text6552-7"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan6554-5"
+         id="text_alu"
+         class="text_label"
          x="165.24248"
          y="18.130732">Add L1 L2 L3</tspan></text>
   </g>
@@ -1484,7 +1492,8 @@
        id="text6552-3"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan6554-6"
+         id="text_mem"
+         class="text_label"
          x="229.30164"
          y="18.130732">Add L1 L2 L3</tspan></text>
   </g>
@@ -1613,10 +1622,11 @@
        sodipodi:linespacing="125%"
        transform="scale(0.92735202,1.0783392)"><tspan
          sodipodi:role="line"
-         id="tspan6554-1"
+         id="text_write"
+         class="text_label"
          x="300.19794"
          y="17.451136"
-         style="font-size:5.69383327px">Add L1 L2 L3</tspan></text>
+         >Add L1 L2 L3</tspan></text>
   </g>
   <!--Decode-->
   <g
@@ -2039,9 +2049,10 @@
        id="path6268-3-5-6-7-5"
        inkscape:connector-curvature="0" />
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke:#89dcf7;stroke-width:0.28222221px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 87.912222,48.71 -11.853334,0 0,11.571111"
        id="path4449"
+       class="signal"
        inkscape:connector-curvature="0" />
     <g
        style="display:inline"
@@ -2150,7 +2161,8 @@
        id="text6552-35"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan6554-62"
+         id="text_decode"
+         class="text_label"
          x="105.17455"
          y="18.130732">Add L1 L2 L3</tspan></text>
   </g>
@@ -2450,25 +2462,25 @@
        id="text6608"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan6610"
+         id="t1"
          x="17.76095"
          y="170.68643">Thread 1</tspan><tspan
          sodipodi:role="line"
          x="17.76095"
          y="175.9781"
-         id="tspan6612">Thread 2</tspan><tspan
+         id="t2">Thread 2</tspan><tspan
          sodipodi:role="line"
          x="17.76095"
          y="181.26976"
-         id="tspan6614">Thread 3</tspan><tspan
+         id="t3">Thread 3</tspan><tspan
          sodipodi:role="line"
          x="17.76095"
          y="186.56143"
-         id="tspan6616">Thread 4</tspan><tspan
+         id="t4">Thread 4</tspan><tspan
          sodipodi:role="line"
          x="17.76095"
          y="191.8531"
-         id="tspan6618">Thread 5</tspan></text>
+         id="t5">Thread 5</tspan></text>
     <text
        xml:space="preserve"
        style="display:inline;font-style:normal;font-weight:normal;font-size:5.64444447px;line-height:125%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -2485,10 +2497,11 @@
   <g
      inkscape:groupmode="layer"
      id="signal_write"
+     class="signal"
      inkscape:label="MemWrite"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.29229507px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 201.35983,55.148126 35.16283,-0.09354 0.28063,19.685766 0.0734,2.245064 0,7.493182"
        id="path4713"
        inkscape:connector-curvature="0"
@@ -2498,10 +2511,11 @@
   <g
      inkscape:groupmode="layer"
      id="signal_read"
+     class="signal"
      inkscape:label="MemRead"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.28222221px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 201.55686,57.934329 2.39473,0 0,61.464861 32.32893,0 0,-5.18859"
        id="path4441"
        inkscape:connector-curvature="0" />
@@ -2510,10 +2524,11 @@
   <g
      inkscape:groupmode="layer"
      id="signal_forward_from_alu"
+     class="signal"
      inkscape:label="FromALU"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker2315);marker-end:url(#marker2373)"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker2315);marker-end:url(#marker2373)"
        d="m 203.91861,49.454866 -0.0487,112.157664 -14.40915,0"
        id="path2311"
        inkscape:connector-curvature="0" />
@@ -2522,10 +2537,11 @@
   <g
      inkscape:groupmode="layer"
      id="signal_forward_from_dm"
+     class="signal"
      inkscape:label="FromDM"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.28054926px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 260.63074,56.302782 4.76048,0 0,112.709608 -75.88763,0"
        id="path4445"
        inkscape:connector-curvature="0" />
@@ -2534,15 +2550,16 @@
   <g
      inkscape:groupmode="layer"
      id="signal_forward_to_alu"
+     class="signal"
      inkscape:label="ToALU"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.25910807px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 161.27012,151.72811 0,-28.83397 -5.10677,0 0,-9.78112"
        id="path4703"
        inkscape:connector-curvature="0" />
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.28222221px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 155.65777,158.11408 -14.36841,0 0,-69.447318 15.36622,0 0,3.39254"
        id="path4705"
        inkscape:connector-curvature="0" />
@@ -2550,11 +2567,12 @@
   <!--MEMORY TO REGISTER SIGNAL-->
   <g
      inkscape:groupmode="layer"
+     class="signal"
      id="signal_m2r"
      inkscape:label="MemtoReg"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.28792906px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 260.49255,53.935433 16.93048,0 0,42.894924"
        id="path4443"
        inkscape:connector-curvature="0" />
@@ -2562,11 +2580,12 @@
   <!--PcSRC SIGNAL-->
   <g
      inkscape:groupmode="layer"
+     class="signal"
      id="signal_pcsrc"
      inkscape:label="PcSrc"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 20.396728,117.31415 -0.146038,-86.844305 182.45093,0.389435 0.19472,51.016161 -1.89851,-0.04868"
        id="path740"
        inkscape:connector-curvature="0" />
@@ -2579,11 +2598,12 @@
   <!--FORWARDING TO DM-->
   <g
      inkscape:groupmode="layer"
+     class="signal"
      id="signal_forward_to_dm"
      inkscape:label="ToDM"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.28222221px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 188.80667,166.11444 24.97666,0 0,-52.21111"
        id="path4707"
        inkscape:connector-curvature="0" />
@@ -2591,11 +2611,12 @@
   <!--WRITE BACK REGISTER SIGNAL-->
   <g
      inkscape:groupmode="layer"
+     class="signal"
      id="signal_writeback"
      inkscape:label="WriteReg"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.28222221px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 265.7158,56.138278 0,-16.962707 -150.76852,0 0,47.495578 -10.77631,0 0,6.385958"
        id="path4447"
        inkscape:connector-curvature="0" />
@@ -2603,11 +2624,12 @@
   <!--STALL SIGNAL-->
   <g
      inkscape:groupmode="layer"
+     class="signal"
      id="signal_stall"
      inkscape:label="Stall"
      style="display:inline">
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#DotM);marker-end:url(#Arrow1Mend)"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#DotM);marker-end:url(#Arrow1Mend)"
        d="m 88.499409,45.657862 -55.202602,0.194717 0.292078,61.238861"
        id="path1752"
        inkscape:connector-curvature="0" />
