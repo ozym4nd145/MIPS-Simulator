@@ -24,6 +24,8 @@ int NUM_THREADS_WRITE = 0;       // threads that have completed processing for
                                  // that particular cycle
 pthread_t threads[NUM_THREADS];  // Totals running threads
 
+control CONTROL_SIGN;
+
 int Memory_Block[MEMORY_SIZE];  // Memory Block
 
 pthread_mutex_t CLOCK_LOCK;  // Lock for syncing clock signal

@@ -62,6 +62,12 @@ typedef struct
   int branched;
 } signal;
 
+typedef struct
+{
+  int MemWr,MemRd,PCsrc,RegW,FWD_ALU,FWD_DM,TO_ALU,TO_DM,M2R,FLUSH,STALL_C;
+} control;
+
+extern control CONTROL_SIGN;
 extern buffer pipeline[NUM_THREADS - 1];
 extern buffer temp_pipeline[NUM_THREADS - 1];
 extern instruction program[INSTRUCTION_MEM];

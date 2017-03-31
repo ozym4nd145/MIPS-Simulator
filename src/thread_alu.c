@@ -69,12 +69,16 @@ void* alu_op(void* data)
       {
         temp_pipeline[1].HI = temp_pipeline[2].HI;
         temp_pipeline[1].LO = temp_pipeline[2].LO;
+          CONTROL_SIGN.FWD_ALU=1;
+          CONTROL_SIGN.TO_ALU=1;
       }
       else if (temp_pipeline[3].instr.Itype == MULTIPLY ||
                temp_pipeline[3].instr.Itype == MULTIPLY_ADD)
       {
         temp_pipeline[1].HI = temp_pipeline[3].HI;
         temp_pipeline[1].LO = temp_pipeline[3].LO;
+        CONTROL_SIGN.FWD_DM=1;
+        CONTROL_SIGN.TO_ALU=1;
       }
 
       pipeline[2] = temp_pipeline[1];
@@ -98,10 +102,14 @@ void* alu_op(void* data)
         r1 = temp_pipeline[2].alu_result;
         FORWARDING_ALU[0] = 1;
         FORWARDING[0] = 1;
+        CONTROL_SIGN.FWD_ALU=1;
+        CONTROL_SIGN.TO_ALU=1;
       }
       else if(temp_pipeline[1].instr.rs == temp_pipeline[2].instr.rt && temp_pipeline[2].instr.Itype==LDR_UPPER_IMMEDIATE)
       {
         r1=temp_pipeline[2].alu_result;
+        CONTROL_SIGN.FWD_ALU=1;
+        CONTROL_SIGN.TO_ALU=1;
       }
       // DATA Memory to ALU Data Forwarding (Path 2)
       else if (temp_pipeline[1].instr.rs == temp_pipeline[3].instr.rt &&
@@ -112,6 +120,8 @@ void* alu_op(void* data)
         r1 = temp_pipeline[3].rt_val;
         FORWARDING_ALU[0] = 1;
         FORWARDING[1] = 1;
+        CONTROL_SIGN.FWD_DM=1;
+        CONTROL_SIGN.TO_ALU=1;
       }
       else if (temp_pipeline[1].instr.rs == temp_pipeline[3].instr.rd &&
                (temp_pipeline[3].instr.Ctype == DP &&
@@ -121,6 +131,8 @@ void* alu_op(void* data)
         r1 = temp_pipeline[3].alu_result;
         FORWARDING_ALU[0] = 1;
         FORWARDING[2] = 1;
+        CONTROL_SIGN.FWD_DM=1;
+          CONTROL_SIGN.TO_ALU=1;
       }
       // Similar check for operand2 of ALU
 
@@ -130,10 +142,14 @@ void* alu_op(void* data)
         r2 = temp_pipeline[2].alu_result;
         FORWARDING_ALU[1] = 1;
         FORWARDING[0] = 1;
+        CONTROL_SIGN.FWD_ALU=1;
+          CONTROL_SIGN.TO_ALU=1;
       }
        else if(temp_pipeline[1].instr.rt == temp_pipeline[2].instr.rt && temp_pipeline[2].instr.Itype==LDR_UPPER_IMMEDIATE)
       {
         r2=temp_pipeline[2].alu_result;
+        CONTROL_SIGN.FWD_ALU=1;
+          CONTROL_SIGN.TO_ALU=1;
       }
       else if (temp_pipeline[1].instr.rt == temp_pipeline[3].instr.rt &&
                (temp_pipeline[3].instr.Itype == LDR_BYTE ||
@@ -143,6 +159,8 @@ void* alu_op(void* data)
         r2 = temp_pipeline[3].rt_val;
         FORWARDING_ALU[1] = 1;
         FORWARDING[1] = 1;
+        CONTROL_SIGN.FWD_DM=1;
+          CONTROL_SIGN.TO_ALU=1;
       }
       else if (temp_pipeline[1].instr.rt == temp_pipeline[3].instr.rd &&
                (temp_pipeline[3].instr.Ctype == DP &&
@@ -152,6 +170,8 @@ void* alu_op(void* data)
         r2 = temp_pipeline[3].alu_result;
         FORWARDING_ALU[1] = 1;
         FORWARDING[2] = 1;
+        CONTROL_SIGN.FWD_DM=1;
+          CONTROL_SIGN.TO_ALU=1;
       }
 
       // processing instruction to perform ALU operations

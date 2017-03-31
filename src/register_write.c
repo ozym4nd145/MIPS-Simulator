@@ -52,16 +52,19 @@ void* register_write(void* data)
             pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE)
         {
           register_file[pipeline[3].instr.rt] = pipeline[3].rt_val;
+          CONTROL_SIGN.RegW=1;
         }
         else if (pipeline[3].instr.Itype == MULTIPLY ||
                  pipeline[3].instr.Itype == MULTIPLY_ADD)
         {
           register_file[32] = pipeline[3].LO;
           register_file[33] = pipeline[3].HI;
+          CONTROL_SIGN.RegW=1;
         }
         else if (pipeline[3].instr.Ctype == DP)
         {
           register_file[pipeline[3].instr.rd] = pipeline[3].alu_result;
+          CONTROL_SIGN.RegW=1;
         }
       }
       else
