@@ -22,7 +22,7 @@ void draw_svg(FILE* ptr)
       "xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n   "
       "xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n "
       "  xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n   "
-      "width=\"297mm\"\n   height=\"210mm\"\n   viewBox=\"0 0 297 210\"\n   "
+      "width=\"252mm\"\n   height=\"178mm\"\n   viewBox=\"0 0 297 210\"\n   "
       "version=\"1.1\"\n   id=\"SVGRoot\"\n   inkscape:version=\"0.91 "
       "r13725\"\n   sodipodi:docname=\"processor.svg\" "
       "onload=\"add_text()\">\n  <script type=\"text/ecmascript\" "
