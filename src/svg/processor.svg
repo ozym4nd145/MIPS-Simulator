@@ -12,17 +12,19 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="297mm"
-   height="210mm"
+   width="252mm"
+   height="178mm"
    viewBox="0 0 297 210"
    version="1.1"
    id="SVGRoot"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="processor.svg" onload="add_text()">
+   sodipodi:docname="processor.svg" onload="refresh()">
   <script type="text/ecmascript" xlink:href="processor.js" />
 
+<script type="text/javascript"> function refresh() { add_text();setTimeout(function() {location.reload(true)},500); } </script>
+
   <filter id="colorsaturate">
-      <feColorMatrix in="SourceGraphic" type="saturate" values="0.2" />
+   <feColorMatrix in="SourceGraphic" type="saturate" values="0.2" />
   </filter>
 
   <sodipodi:namedview
@@ -2639,8 +2641,4 @@
        d="m 88.499409,45.657862 -55.202602,0.194717 0.292078,61.238861"
        id="path1752"
        inkscape:connector-curvature="0" />
-  </g>
-</svg>
-
-<!--</body>-->
-<!--</html>-->
+  </g></svg>
