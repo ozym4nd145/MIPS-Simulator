@@ -11,4 +11,6 @@ function add_text()
     t3.textContent = "ALU Stage";
     t4.textContent = "Memory Stage";
     t5.textContent = "WriteBack Stage";
+
+    setTimeout(function() {location.reload(true)},500);
 }

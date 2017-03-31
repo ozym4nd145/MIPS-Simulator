@@ -16,8 +16,7 @@ void* print_svg(void* data)
 
   while (1)
   {
-
-    if(STOP_THREAD==1)
+    if (STOP_THREAD == 1)
     {
       printf("Display thread Stopped\n");
       break;
@@ -37,28 +36,67 @@ void* print_svg(void* data)
 
     if (clock_fall && new_fall)
     {
-      FILE* svg = fopen(name, "w");
-      start_svg(svg);
-      draw_fetch(svg, ACTIVE_STAGE[0]);
-      draw_decode(svg, ACTIVE_STAGE[1]);
-      draw_alu(svg, ACTIVE_STAGE[2]);
-      draw_memory(svg, ACTIVE_STAGE[3]);
-      draw_write(svg, ACTIVE_STAGE[4]);
-      draw_control(svg);
+      char* labels[5] = {"foo", "bar", "bletch", "luffy", "naruto"};
 
-      draw_mem_read(svg,0);
-      draw_mem_write(svg,0);
-      draw_forward_toalu(svg,0);
-      draw_forward_fromalu(svg,0);
-      draw_forward_tomemory(svg,0);
-      draw_forward_frommemory(svg,0);
-      draw_pcsrc(svg,0);
-      draw_memtoreg(svg,0);
-      draw_writeback(svg,0);
-      draw_stall(svg,0);
+      char* css_name = (char*)malloc(sizeof(char) * (strlen(name) + 20));
+      char* js_name = (char*)malloc(sizeof(char) * (strlen(name) + 20));
+      strcpy(css_name, name);
+      strcpy(js_name, name);
+      sprintf(css_name, "%sprocessor.css", name);
+      sprintf(js_name, "%sprocessor.js", name);
+      FILE* css = fopen(css_name, "w");
+      FILE* js = fopen(js_name, "w");
+      free(css_name);
+      free(js_name);
 
-      end_svg(svg);
-      fclose(svg);
+      start_css(css);
+
+      if (!ACTIVE_STAGE[0])
+      {
+        fade(css, "fetch");
+      }
+      if (!ACTIVE_STAGE[1])
+      {
+        fade(css, "decode");
+      }
+      if (!ACTIVE_STAGE[2])
+      {
+        fade(css, "execute");
+      }
+      if (!ACTIVE_STAGE[3])
+      {
+        fade(css, "memory");
+      }
+      if (!ACTIVE_STAGE[4])
+      {
+        fade(css, "writeback");
+      }
+
+      // Activates the corresponding signals
+      activate(css, "signal_write");
+      // activate(css, "signal_read");
+      // activate(css, "signal_forward_from_alu");
+      // activate(css, "signal_forward_from_dm");
+      // activate(css, "signal_forward_to_alu");
+      // activate(css, "signal_forward_to_dm");
+      // activate(css, "signal_m2r");
+      // activate(css, "signal_flush");
+      activate(css, "signal_pcsrc");
+      // activate(css, "signal_writeback");
+      // activate(css, "signal_stall");
+
+      // Hides corresponding thread from active thread box
+      hide(css, "t1");
+      hide(css, "t2");
+      hide(css, "t3");
+      hide(css, "t4");
+      // hide(css,"t5");
+
+      // Draws the upper box labels that show instructions in the stage
+      draw_js(js, labels);
+
+      fclose(js);
+      fclose(css);
       new_fall = 0;
     }
     usleep(DELAY);

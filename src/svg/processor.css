@@ -1,9 +1,9 @@
 svg {
   background-color: beige;
-  }
+}
 
 .signal{
-    stroke:coral;
+    stroke:cornflowerblue;
     stroke-width: 0.3;
 }
 .text_label{
@@ -12,57 +12,76 @@ svg {
 
 #fetch
 {
-    /*opacity: 0.1;*/
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
 }
 #decode
 {
-    /*opacity: 0.1;*/
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
 }
 #execute
 {
-    /*opacity: 0.1;*/
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
 }
 #memory
 {
-    /*opacity: 0.1;*/
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
 }
 #writeback
 {
-    /*opacity: 0.1;*/
+    /*filter: url("#colorsaturate");*/
+    /*opacity: 0.5;*/
 }
 #signal_write{
-    /*stroke: red;*/
+    stroke: firebrick;
+    stroke-width: 0.5;
 }
 #signal_read{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 #signal_forward_from_alu{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 #signal_forward_from_dm{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 #signal_forward_to_alu{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 #signal_forward_to_dm{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 #signal_m2r{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
+}
+#signal_flush{
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 #signal_pcsrc{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 #signal_writeback{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 #signal_stall{
-    /*stroke: red;*/
+    /*stroke: firebrick;*/
+    /*stroke-width: 0.5;*/
 }
 
 #t1 {
-    display: inline;
+    display: none;
 }
 #t2 {
     display: inline;

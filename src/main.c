@@ -1,10 +1,11 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "global_vars.h"
 #include "main_functions.h"
+#include "svg.h"
 #include "utils.h"
-
 int main(int argc, char* argv[])
 {
   FILE* code;
@@ -20,6 +21,24 @@ int main(int argc, char* argv[])
     fprintf(stderr, "Usage: %s <instruction_file> <svg_output>\n", argv[0]);
     throw_error("");
   }
+
+  // Drawing the svg
+  svg = fopen(argv[2], "w");
+  draw_svg(svg);
+  fclose(svg);
+
+  // Calculating base path of svg
+  char* base_name = strdup(argv[2]);
+  int name_start_index = strlen(argv[2]) - 1;
+  while (name_start_index >= 0)
+  {
+    if (argv[2][name_start_index] == '/')
+    {
+      break;
+    }
+    name_start_index--;
+  }
+  base_name[name_start_index + 1] = '\0';
 
   char* a = malloc(sizeof(char) * 10);
   int i = 0;
@@ -77,7 +96,7 @@ int main(int argc, char* argv[])
   pthread_create(&threads[2], NULL, alu_op, (void*)NULL);
   pthread_create(&threads[3], NULL, memory_op, (void*)NULL);
   pthread_create(&threads[4], NULL, register_write, (void*)NULL);
-  pthread_create(&threads[5], NULL, print_svg, (void*)(argv[2]));
+  pthread_create(&threads[5], NULL, print_svg, (void*)(base_name));
 
   pthread_join(threads[0], NULL);
   pthread_join(threads[1], NULL);
@@ -90,6 +109,7 @@ int main(int argc, char* argv[])
 
   print_result(argv[3]);
 
+  free(base_name);
   fclose(code);
   // printf("Reached2\n");
   // fclose(svg);

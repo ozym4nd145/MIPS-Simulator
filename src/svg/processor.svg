@@ -20,6 +20,11 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="processor.svg" onload="add_text()">
   <script type="text/ecmascript" xlink:href="processor.js" />
+
+  <filter id="colorsaturate">
+      <feColorMatrix in="SourceGraphic" type="saturate" values="0.2" />
+  </filter>
+
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -2590,9 +2595,10 @@
        id="path740"
        inkscape:connector-curvature="0" />
     <path
-       style="display:inline;fill:none;fill-rule:evenodd;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker3447);marker-end:url(#marker3565)"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker3447);marker-end:url(#marker3565)"
        d="m 107.68542,69.241666 2.91041,0.264584 -0.0264,-30.318204 -103.1610668,-0.108879 0,102.658333 65.3520828,-0.26458"
-       id="path3437"
+       id="signal_flush"
+       class="signal"
        inkscape:connector-curvature="0" />
   </g>
   <!--FORWARDING TO DM-->
