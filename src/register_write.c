@@ -19,7 +19,7 @@ void* register_write(void* data)
 #ifdef DEBUG
       printf("register_write thread ended\n");
 #endif
-
+      regdump();
       break;
     }
     // does reading really require lock?

@@ -24,7 +24,10 @@ void* instruction_fetch(void* data)
 
   while (1)
   {
-    scanf("%s", input);
+    if ( scanf("%s", input) == -1 )
+    {
+      continue;
+    }
     // sleep(1);
     // input = "step\0";
     if (strcmp(input, "step") == 0)
@@ -173,6 +176,10 @@ void* instruction_fetch(void* data)
       int start, num;
       scanf(" 0x%x %d", &start, &num);
       memdump(start, num);
+    }
+    else
+    {
+      printf("Unrecognized command\n");
     }
     usleep(DELAY);
   }
