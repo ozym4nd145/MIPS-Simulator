@@ -36,6 +36,16 @@ void* instruction_fetch(void* data)
       //   // exit(0);
       // }
       STEPS++;
+
+      if (PC >= MAX_PC + 5 * 4)
+      {
+        STOP_THREAD = 1;
+#ifdef DEBUG
+        printf("Instruction Thread Ended\n");
+#endif
+        break;
+      }
+
       CONTROL_SIGN.MemWr = 0;
       CONTROL_SIGN.MemRd = 0;
       CONTROL_SIGN.FWD_ALU = 0;
@@ -49,6 +59,8 @@ void* instruction_fetch(void* data)
       CONTROL_SIGN.STALL_C = 0;
 
       // lock CLOCK for updating
+
+
       pthread_mutex_lock(&CLOCK_LOCK);
       CLOCK = 1;
       pthread_mutex_unlock(&CLOCK_LOCK);
@@ -65,14 +77,7 @@ void* instruction_fetch(void* data)
       // automatically decrements pc)
       PC += 4;
 
-      if (PC >= MAX_PC + 6 * 4)
-      {
-        STOP_THREAD = 1;
-#ifdef DEBUG
-        printf("Instruction Thread Ended\n");
-#endif
-        break;
-      }
+      
 
       // loop until reading stage has completed
       while (1)
