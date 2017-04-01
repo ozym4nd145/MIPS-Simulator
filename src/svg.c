@@ -2460,7 +2460,7 @@ void fade(FILE* ptr, char* label)
 // Activates the corresponding signal in the svg
 void activate(FILE* ptr, char* label)
 {
-  fprintf(ptr, "#%s{\n    stroke: firebrick;\n    stroke-width: 0.5;\n}",
+  fprintf(ptr, "#%s{\n    stroke: red;\n    stroke-width: 0.6;\n}",
           label);
 }
 
