@@ -53,6 +53,12 @@ void* register_write(void* data)
       if (pipeline[3].instr.Itype != NO_OP)
       {
         INSTRUCTION_COUNT++;
+        #ifdef DEBUG
+      printf("%s\n",get_instruction_name(temp_pipeline[3].instr.Itype) );
+                printf("Instruction Count %d\n", INSTRUCTION_COUNT);
+
+#endif
+
         // Write value into the Register file
         if (pipeline[3].instr.Itype == LDR_BYTE ||
             pipeline[3].instr.Itype == LDR_WORD ||

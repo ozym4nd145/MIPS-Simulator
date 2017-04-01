@@ -243,8 +243,8 @@ void print_result(char *s)
   double time_exe = cycles * 0.5;
   double idle_time = ((double)(-Ins_C + cycles)) * 0.5;
   double idle_time_percent = (idle_time / time_exe) * 100;
-  printf("BRANCH_CYCLE_WASTE%d\n", BRANCH_CYCLE_WASTE);
-  printf("STALL_WASTE%d\n", STALL_COUNT);
+  //printf("BRANCH_CYCLE_WASTE%d\n", BRANCH_CYCLE_WASTE);
+  //printf("STALL_WASTE%d\n", STALL_COUNT);
   // fprintf(write, "Reached\n" );
   // fprintf(write, "STALL_COUNT %d\n",STALL_COUNT );
   fprintf(write, "Instructions,%d\n", INSTRUCTION_COUNT);
@@ -255,7 +255,7 @@ void print_result(char *s)
   fprintf(write, "Idle Time (%%),%lf%%\n", idle_time_percent);
   fprintf(write, "Cache Summary\n");
   fprintf(write, "Cache L1-I\n");
-  fprintf(write, "num cache accesses,%d\n", INSTRUCTION_COUNT);
+  fprintf(write, "num cache accesses,%d\n", INSTRUCTION_MEM_ACCESS);
   fprintf(write, "Cache L1-D\n");
   fprintf(write, "num cache accesses,%d\n", DATA_MEM_ACCESS);
   fclose(write);
