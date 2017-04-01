@@ -121,8 +121,8 @@ int main(int argc, char* argv[])
 
 #ifdef DEBUG
   printf("Control  Reached here\n");
-  print_result(argv[3]);
 #endif
+  print_result(argv[3]);
 
   free(base_name);
   fclose(code);

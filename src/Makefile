@@ -17,6 +17,10 @@ debug: CFLAGS += -DDEBUG
 debug: LFLAGS += -DDEBUG
 debug: simulator
 
+time: CFLAGS += -DTIME
+time: LFLAGS += -DTIME
+time: simulator
+
 $(OBJDIR)/%.o: %.c $(HEADERS) | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
 

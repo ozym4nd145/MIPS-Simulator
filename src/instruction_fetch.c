@@ -24,10 +24,17 @@ void* instruction_fetch(void* data)
 
   while (1)
   {
-    if ( scanf("%s", input) == -1 )
+    if (scanf("%s", input) == -1)
     {
       continue;
     }
+
+#ifdef TIME
+    double time_spent;
+    struct timespec begin;
+    struct timespec end;
+#endif
+
     // sleep(1);
     // input = "step\0";
     if (strcmp(input, "step") == 0)
@@ -40,6 +47,9 @@ void* instruction_fetch(void* data)
       // }
       STEPS++;
 
+#ifdef TIME
+      clock_gettime(CLOCK_REALTIME, &begin);
+#endif
       if (PC >= MAX_PC + 5 * 4)
       {
         STOP_THREAD = 1;
@@ -63,7 +73,6 @@ void* instruction_fetch(void* data)
 
       // lock CLOCK for updating
 
-
       pthread_mutex_lock(&CLOCK_LOCK);
       CLOCK = 1;
       pthread_mutex_unlock(&CLOCK_LOCK);
@@ -79,8 +88,6 @@ void* instruction_fetch(void* data)
       // update value of pc( not a problem in stalls as register_read
       // automatically decrements pc)
       PC += 4;
-
-      
 
       // loop until reading stage has completed
       while (1)
@@ -169,6 +176,15 @@ void* instruction_fetch(void* data)
       pthread_mutex_lock(&CLOCK_LOCK);
       CLOCK = 0;
       pthread_mutex_unlock(&CLOCK_LOCK);
+
+#ifdef TIME
+      clock_gettime(CLOCK_REALTIME, &end);
+      time_spent = (double)((end.tv_sec - begin.tv_sec) * (1e9) +
+                            (double)(end.tv_nsec - begin.tv_nsec));
+      printf("Half cycle time - %lf\n", time_spent);
+      printf("Time Period - %lf\n", 2 * time_spent);
+      printf("Frequency - %lfGHz\n", 1.0 / (2 * time_spent));
+#endif
 
       // Implement READ_CLOCK_0 ?
     }
