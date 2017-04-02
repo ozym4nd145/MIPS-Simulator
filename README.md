@@ -1,5 +1,5 @@
 # MIPS Pipelined Processor Simulator.
-#### *Submitted by - Ankesh Gupta (2015CS1), Suyash Agrawal (2015CS10262)*
+#### *Submitted by - Ankesh Gupta (2015CS10435), Suyash Agrawal (2015CS10262)*
 
 ### Usage
 * Run `make` to compile the source code.
