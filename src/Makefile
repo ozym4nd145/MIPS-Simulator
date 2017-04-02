@@ -15,11 +15,11 @@ processor_simulator: $(OBJS)
 
 debug: CFLAGS += -DDEBUG
 debug: LFLAGS += -DDEBUG
-debug: simulator
+debug: processor_simulator
 
 time: CFLAGS += -DTIME
 time: LFLAGS += -DTIME
-time: simulator
+time: processor_simulator
 
 $(OBJDIR)/%.o: %.c $(HEADERS) | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
