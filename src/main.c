@@ -12,13 +12,16 @@ int main(int argc, char* argv[])
   FILE* code;
   FILE* svg;
   // Input error handling
-  if (argc >= 3)
+  if (argc >= 4)
   {
     code = fopen(argv[1], "r");
   }
   else
   {
-    fprintf(stderr, "Usage: %s <instruction_file> <svg_output>\n", argv[0]);
+    fprintf(
+        stderr,
+        "Usage: %s <input_HEX_file> <output_SVG_file> <output_results_file>\n",
+        argv[0]);
     throw_error("");
   }
 
