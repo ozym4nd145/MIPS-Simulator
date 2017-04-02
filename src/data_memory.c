@@ -199,7 +199,7 @@ void* memory_op(void* data)
           case LDR_UPPER_IMMEDIATE:
           {
             pipeline[3].rt_val = temp_pipeline[2].alu_result;
-            CONTROL_SIGN.MemRd = 1;
+            // CONTROL_SIGN.MemRd = 1;
             break;
           }
           default:
