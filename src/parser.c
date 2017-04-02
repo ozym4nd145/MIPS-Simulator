@@ -20,9 +20,7 @@ instruction instruction_parse(int a)
 {
   // printf("Instruction %08x\n", a);
   instruction *information = (instruction *)malloc(sizeof(instruction));
-
   int temp = 63;
-
   information->opcode = lsr((a & (temp << 26)), 26);
 
   // printf("%d\n",information->opcode);
@@ -160,8 +158,12 @@ instruction instruction_parse(int a)
   }
   else
   {
+    free(information);
     throw_error("Wrong Instruction Set.");
   }
 
-  return *information;
+  instruction info = *information;
+  free(information);
+
+  return info;
 }

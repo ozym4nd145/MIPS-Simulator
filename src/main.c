@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
   FILE* code;
   FILE* svg;
   // Input error handling
-  if (argc >= 4)
+  if (argc == 4)
   {
     code = fopen(argv[1], "r");
   }

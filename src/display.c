@@ -119,27 +119,16 @@ void* print_svg(void* data)
       }
 
       // Activates the corresponding signals
-
       if (CONTROL_SIGN.MemWr) activate(css, "signal_write");
-
       if (CONTROL_SIGN.MemRd) activate(css, "signal_read");
-
       if (CONTROL_SIGN.FWD_ALU) activate(css, "signal_forward_from_alu");
-
       if (CONTROL_SIGN.FWD_DM) activate(css, "signal_forward_from_dm");
-
       if (CONTROL_SIGN.TO_ALU) activate(css, "signal_forward_to_alu");
-
       if (CONTROL_SIGN.TO_DM) activate(css, "signal_forward_to_dm");
-
       if (CONTROL_SIGN.M2R) activate(css, "signal_m2r");
-
       if (CONTROL_SIGN.FLUSH) activate(css, "signal_flush");
-
       if (CONTROL_SIGN.PCsrc) activate(css, "signal_pcsrc");
-
       if (CONTROL_SIGN.RegW) activate(css, "signal_writeback");
-
       if (CONTROL_SIGN.STALL_C) activate(css, "signal_stall");
 
       // Draws the upper box labels that show instructions in the stage
@@ -153,6 +142,7 @@ void* print_svg(void* data)
     {
       free(css_name);
       free(js_name);
+      for (i = 0; i < 5; i++) free(labels[i]);
 #ifdef DEBUG
       printf("Display Thread Ended\n");
 #endif
