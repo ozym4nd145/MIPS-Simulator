@@ -53,6 +53,7 @@ void* instruction_fetch(void* data)
       if (PC >= MAX_PC + 5 * 4)
       {
         STOP_THREAD = 1;
+        ACTIVE_STAGE[0] = 0;
 #ifdef DEBUG
         printf("Instruction Thread Ended\n");
 #endif
@@ -126,25 +127,25 @@ void* instruction_fetch(void* data)
 #ifdef DEBUG
 //          printf("Instruction Count %d\n", INSTRUCTION_COUNT);
 #endif
-          if(control_signal.stall==0)
+          if (control_signal.stall == 0)
           {
-          pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
-          CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
+            pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+            CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
           }
           else
           {
-          pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4 -1];
-          CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4 ];
+            pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4 - 1];
+            CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
           }
           INSTRUCTION_MEM_ACCESS++;
         }
-        if(control_signal.stall==0)
-        pipeline[0].pc = temp_pc;
+        if (control_signal.stall == 0)
+          pipeline[0].pc = temp_pc;
         else
-        pipeline[0].pc=temp_pc-4;
+          pipeline[0].pc = temp_pc - 4;
 #ifdef DEBUG
-          printf("Instruction Mem Access %d %s\n", INSTRUCTION_MEM_ACCESS,get_instruction_name(CURR_INSTR[0].Itype
-        ));
+        printf("Instruction Mem Access %d %s\n", INSTRUCTION_MEM_ACCESS,
+               get_instruction_name(CURR_INSTR[0].Itype));
 #endif
       }
       else
@@ -190,7 +191,6 @@ void* instruction_fetch(void* data)
         pipeline[1].instr.Ctype = NO_OPERATION;
         control_signal.branched = 0;
       }
-
 
 #ifdef DEBUG
       printf("PC - %08x\n", temp_pc);

@@ -108,7 +108,5 @@ extern float SVG_WIDTH;
 extern float SVG_SATURATE;
 
 // Display signals
-extern int ACTIVE_STAGE[5];    // [0..4]-> fetch,decode,alu,mem,write
-extern int FORWARDING[3];      // [0..2] -> alu-alu, mem-alu, mem-mem
-extern int FORWARDING_ALU[2];  // Forwarding to rt or rs
+extern int ACTIVE_STAGE[5];  // [0..4]-> fetch,decode,alu,mem,write
 #endif

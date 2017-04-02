@@ -36,6 +36,22 @@ void* print_svg(void* data)
       ACTIVE_STAGE[2] = 0;
       ACTIVE_STAGE[3] = 0;
       ACTIVE_STAGE[4] = 0;
+      CONTROL_SIGN.MemWr = 0;
+      CONTROL_SIGN.MemRd = 0;
+      CONTROL_SIGN.FWD_ALU = 0;
+      CONTROL_SIGN.FWD_DM = 0;
+      CONTROL_SIGN.TO_ALU = 0;
+      CONTROL_SIGN.TO_DM = 0;
+      CONTROL_SIGN.M2R = 0;
+      CONTROL_SIGN.FLUSH = 0;
+      CONTROL_SIGN.PCsrc = 0;
+      CONTROL_SIGN.RegW = 0;
+      CONTROL_SIGN.STALL_C = 0;
+      CURR_INSTR[0].Itype = NO_OP;
+      CURR_INSTR[1].Itype = NO_OP;
+      CURR_INSTR[2].Itype = NO_OP;
+      CURR_INSTR[3].Itype = NO_OP;
+      CURR_INSTR[4].Itype = NO_OP;
       flag = 1;
     }
     pthread_mutex_lock(&CLOCK_LOCK);

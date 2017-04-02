@@ -16,6 +16,14 @@ void* memory_op(void* data)
   {
     if (STOP_THREAD == 1)
     {
+      pipeline[2].instr.Itype = NO_OP;
+      pipeline[2].instr.Ctype = NO_OP;
+      temp_pipeline[2].instr.Itype = NO_OP;
+      temp_pipeline[2].instr.Ctype = NO_OPERATION;
+      ACTIVE_STAGE[3] = 0;
+      CONTROL_SIGN.FWD_DM = 0;
+      CONTROL_SIGN.TO_DM = 0;
+
 #ifdef DEBUG
       printf("Memory Thread Stopped\n");
 #endif
@@ -58,6 +66,8 @@ void* memory_op(void* data)
 
       // setting default display signal
       ACTIVE_STAGE[3] = 1;
+      CONTROL_SIGN.FWD_DM = 0;
+      CONTROL_SIGN.TO_DM = 0;
 
       // wait for all the threads to complete reading
       while (1)
@@ -80,6 +90,8 @@ void* memory_op(void* data)
       if (temp_pipeline[2].instr.Itype == NO_OP)
       {
         ACTIVE_STAGE[3] = 0;
+        CONTROL_SIGN.FWD_DM = 0;
+        CONTROL_SIGN.TO_DM = 0;
         // sleep;
       }
       else if (temp_pipeline[2].instr.Ctype == DT)

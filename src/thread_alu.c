@@ -19,6 +19,14 @@ void* alu_op(void* data)
   {
     if (STOP_THREAD == 1)
     {
+      pipeline[1].instr.Itype = NO_OP;
+      pipeline[1].instr.Ctype = NO_OP;
+      temp_pipeline[1].instr.Itype = NO_OP;
+      temp_pipeline[1].instr.Ctype = NO_OPERATION;
+      ACTIVE_STAGE[2] = 0;
+      CONTROL_SIGN.FWD_ALU = 0;
+      CONTROL_SIGN.TO_ALU = 0;
+      CONTROL_SIGN.FWD_DM = 0;
 #ifdef DEBUG
       printf("ALU Thread Ended\n");
 #endif
@@ -70,6 +78,12 @@ void* alu_op(void* data)
         pthread_mutex_unlock(&READ_LOCK);
       }
 
+      // Setting display functions to default value
+      CONTROL_SIGN.FWD_ALU = 0;
+      CONTROL_SIGN.TO_ALU = 0;
+      CONTROL_SIGN.FWD_DM = 0;
+      ACTIVE_STAGE[2] = 1;
+
       // Forwading in case of Multiply instruction
       if (temp_pipeline[2].instr.Itype == MULTIPLY ||
           temp_pipeline[2].instr.Itype == MULTIPLY_ADD)
@@ -93,22 +107,12 @@ void* alu_op(void* data)
       int r2 = temp_pipeline[1].rt_val;
       // values loaded for operation to support data forwarding
 
-      // Setting display functions to default value
-      FORWARDING_ALU[0] = 0;
-      FORWARDING_ALU[1] = 0;
-      FORWARDING[0] = 0;
-      FORWARDING[1] = 0;
-      FORWARDING[2] = 0;
-      ACTIVE_STAGE[2] = 1;
-
       // ALU to ALU Data Forwarding (Path1)
 
       if (temp_pipeline[1].instr.rs == temp_pipeline[2].instr.rd &&
           temp_pipeline[2].instr.Ctype == DP)
       {
         r1 = temp_pipeline[2].alu_result;
-        FORWARDING_ALU[0] = 1;
-        FORWARDING[0] = 1;
         CONTROL_SIGN.FWD_ALU = 1;
         CONTROL_SIGN.TO_ALU = 1;
       }
@@ -126,8 +130,6 @@ void* alu_op(void* data)
                 temp_pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE))
       {
         r1 = temp_pipeline[3].rt_val;
-        FORWARDING_ALU[0] = 1;
-        FORWARDING[1] = 1;
         CONTROL_SIGN.FWD_DM = 1;
         CONTROL_SIGN.TO_ALU = 1;
       }
@@ -137,8 +139,6 @@ void* alu_op(void* data)
                  temp_pipeline[3].instr.Itype != MULTIPLY_ADD)))
       {
         r1 = temp_pipeline[3].alu_result;
-        FORWARDING_ALU[0] = 1;
-        FORWARDING[2] = 1;
         CONTROL_SIGN.FWD_DM = 1;
         CONTROL_SIGN.TO_ALU = 1;
       }
@@ -148,8 +148,6 @@ void* alu_op(void* data)
           temp_pipeline[2].instr.Ctype == DP)
       {
         r2 = temp_pipeline[2].alu_result;
-        FORWARDING_ALU[1] = 1;
-        FORWARDING[0] = 1;
         CONTROL_SIGN.FWD_ALU = 1;
         CONTROL_SIGN.TO_ALU = 1;
       }
@@ -166,8 +164,6 @@ void* alu_op(void* data)
                 temp_pipeline[3].instr.Itype == LDR_UPPER_IMMEDIATE))
       {
         r2 = temp_pipeline[3].rt_val;
-        FORWARDING_ALU[1] = 1;
-        FORWARDING[1] = 1;
         CONTROL_SIGN.FWD_DM = 1;
         CONTROL_SIGN.TO_ALU = 1;
       }
@@ -177,8 +173,6 @@ void* alu_op(void* data)
                  temp_pipeline[3].instr.Itype != MULTIPLY_ADD)))
       {
         r2 = temp_pipeline[3].alu_result;
-        FORWARDING_ALU[1] = 1;
-        FORWARDING[2] = 1;
         CONTROL_SIGN.FWD_DM = 1;
         CONTROL_SIGN.TO_ALU = 1;
       }
@@ -363,6 +357,8 @@ void* alu_op(void* data)
         {
           // Make thread sleep/Wait
           ACTIVE_STAGE[2] = 0;
+          CONTROL_SIGN.FWD_ALU = 0;
+          CONTROL_SIGN.TO_ALU = 0;
           break;
         }
 

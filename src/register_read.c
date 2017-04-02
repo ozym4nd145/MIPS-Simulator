@@ -20,6 +20,11 @@ void* register_read(void* data)
   {
     if (STOP_THREAD == 1)
     {
+      pipeline[0].instr.Itype = NO_OP;
+      pipeline[0].instr.Ctype = NO_OP;
+      temp_pipeline[0].instr.Itype = NO_OP;
+      temp_pipeline[0].instr.Ctype = NO_OPERATION;
+      ACTIVE_STAGE[1] = 0;
 #ifdef DEBUG
       printf("Register Read thread Stopped\n");
 #endif

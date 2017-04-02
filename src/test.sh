@@ -1,7 +1,7 @@
 #! /bin/bash
 rm -rf ./results
 mkdir results
-make
+make debug
 make clean
 for i in {1..6}
 do
