@@ -125,7 +125,8 @@ void* memory_op(void* data)
         {
           case LDR_WORD:
           {
-            pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
+            //pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
+            pipeline[3].rt_val = program_memory_interface(0,offset,1);
             DATA_MEM_ACCESS++;
             CONTROL_SIGN.MemRd = 1;
             break;
@@ -133,7 +134,8 @@ void* memory_op(void* data)
           case LDR_BYTE:
           {
             int x = (offset - BASE_ADDR) % 4;
-            int y = Memory_Block[(offset - BASE_ADDR) / 4];
+            // int y = Memory_Block[(offset - BASE_ADDR) / 4];
+            int y = program_memory_interface(0,offset,1);
             DATA_MEM_ACCESS++;
             CONTROL_SIGN.MemRd = 1;
             int z;
@@ -163,7 +165,8 @@ void* memory_op(void* data)
             //     "Inside store word.\nOffset - %08x\nBase - %08x\nWrite -
             //     %d\n",
             //     offset, BASE_ADDR, write_val);
-            Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
+            // Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
+            program_memory_interface(write_val,offset,2);
             DATA_MEM_ACCESS++;
             CONTROL_SIGN.MemWr = 1;
             break;
@@ -171,9 +174,10 @@ void* memory_op(void* data)
           case STR_BYTE:
           {
             int byte_pos = (offset - BASE_ADDR) % 4;
-            int index = (offset - BASE_ADDR) / 4;
+            //int index = (offset - BASE_ADDR) / 4;
             int write_val2 = write_val & (0x0000FF);
-            int temp = Memory_Block[index];
+            // int temp = Memory_Block[index];
+            int temp = program_memory_interface(0,offset,1);
             DATA_MEM_ACCESS++;
             CONTROL_SIGN.MemWr = 1;
 
@@ -192,7 +196,8 @@ void* memory_op(void* data)
                 temp = (temp & 0xFFFFFF00) & (write_val2);
                 break;
             }
-            Memory_Block[index] = temp;
+            // Memory_Block[index] = temp;
+            program_memory_interface(temp,offset,2);
 
             break;
           }

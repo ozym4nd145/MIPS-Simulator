@@ -260,3 +260,22 @@ void print_result(char *s)
   fprintf(write, "num cache accesses,%d\n", DATA_MEM_ACCESS);
   fclose(write);
 }
+
+// Mode =1 => read from memory| Mode !=1 => write to memory
+int program_memory_interface(int val,int address,int mode)
+{
+  if(address<BASE_ADDR ||  address>END_ADDR)
+  {
+    throw_error("Illegal Memory Access");
+  }
+
+  if(mode==1)
+  {
+    return Memory_Block[(address-BASE_ADDR)/4];
+  }
+  else
+  {
+    Memory_Block[(address-BASE_ADDR)/4]=val;
+    return 1;
+  }
+}

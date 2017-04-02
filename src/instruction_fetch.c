@@ -60,6 +60,7 @@ void* instruction_fetch(void* data)
         break;
       }
 
+
       CONTROL_SIGN.MemWr = 0;
       CONTROL_SIGN.MemRd = 0;
       CONTROL_SIGN.FWD_ALU = 0;
@@ -80,6 +81,11 @@ void* instruction_fetch(void* data)
 
       int stall = control_signal.stall;
       printf("Step = %d\n", STEPS);
+
+      if(PC<BASE_PC_ADDR)
+      {
+        throw_error("Wrong Branch Address");
+      }
 
       temp_pc = PC;
 
