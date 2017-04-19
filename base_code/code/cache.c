@@ -2,10 +2,9 @@
  * cache.c
  */
 
-
-#include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "cache.h"
 #include "main.h"
@@ -13,7 +12,7 @@
 /* cache configuration parameters */
 static int cache_split = 0;
 static int cache_usize = DEFAULT_CACHE_SIZE;
-static int cache_isize = DEFAULT_CACHE_SIZE; 
+static int cache_isize = DEFAULT_CACHE_SIZE;
 static int cache_dsize = DEFAULT_CACHE_SIZE;
 static int cache_block_size = DEFAULT_CACHE_BLOCK_SIZE;
 static int words_per_block = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
@@ -29,95 +28,149 @@ static cache c2;
 static cache_stat cache_stat_inst;
 static cache_stat cache_stat_data;
 
+/* declarations for unified cache */
+static Pcache ucache;
+static cache c0;
+static cache_stat cache_stat_unif;
+
 /************************************************************/
-void set_cache_param(param, value)
-  int param;
-  int value;
+void set_cache_param(param, value) int param;
+int value;
 {
-
-  switch (param) {
-  case CACHE_PARAM_BLOCK_SIZE:
-    cache_block_size = value;
-    words_per_block = value / WORD_SIZE;
-    break;
-  case CACHE_PARAM_USIZE:
-    cache_split = FALSE;
-    cache_usize = value;
-    break;
-  case CACHE_PARAM_ISIZE:
-    cache_split = TRUE;
-    cache_isize = value;
-    break;
-  case CACHE_PARAM_DSIZE:
-    cache_split = TRUE;
-    cache_dsize = value;
-    break;
-  case CACHE_PARAM_ASSOC:
-    cache_assoc = value;
-    break;
-  case CACHE_PARAM_WRITEBACK:
-    cache_writeback = TRUE;
-    break;
-  case CACHE_PARAM_WRITETHROUGH:
-    cache_writeback = FALSE;
-    break;
-  case CACHE_PARAM_WRITEALLOC:
-    cache_writealloc = TRUE;
-    break;
-  case CACHE_PARAM_NOWRITEALLOC:
-    cache_writealloc = FALSE;
-    break;
-  default:
-    printf("error set_cache_param: bad parameter value\n");
-    exit(-1);
+  switch (param)
+  {
+    case CACHE_PARAM_BLOCK_SIZE:
+      cache_block_size = value;
+      words_per_block = value / WORD_SIZE;
+      break;
+    case CACHE_PARAM_USIZE:
+      cache_split = FALSE;
+      cache_usize = value;
+      break;
+    case CACHE_PARAM_ISIZE:
+      cache_split = TRUE;
+      cache_isize = value;
+      break;
+    case CACHE_PARAM_DSIZE:
+      cache_split = TRUE;
+      cache_dsize = value;
+      break;
+    case CACHE_PARAM_ASSOC:
+      cache_assoc = value;
+      break;
+    case CACHE_PARAM_WRITEBACK:
+      cache_writeback = TRUE;
+      break;
+    case CACHE_PARAM_WRITETHROUGH:
+      cache_writeback = FALSE;
+      break;
+    case CACHE_PARAM_WRITEALLOC:
+      cache_writealloc = TRUE;
+      break;
+    case CACHE_PARAM_NOWRITEALLOC:
+      cache_writealloc = FALSE;
+      break;
+    default:
+      printf("error set_cache_param: bad parameter value\n");
+      exit(-1);
   }
-
 }
 /************************************************************/
 
 /************************************************************/
 void init_cache()
 {
-
   /* initialize the cache, and cache statistics data structures */
+  ucache = &c0;
+  icache = &c1;
+  dcache = &c2;
 
+  /* Setting all fields zero */
+  memset(&c0, 0, sizeof(cache));
+  memset(&c1, 0, sizeof(cache));
+  memset(&c2, 0, sizeof(cache));
+  memset(&cache_stat_unif, 0, sizeof(cache_stat));
+  memset(&cache_stat_inst, 0, sizeof(cache_stat));
+  memset(&cache_stat_data, 0, sizeof(cache_stat));
+
+  // TODO: set index_mask and index_mask_offset
 }
 /************************************************************/
 
 /************************************************************/
-void perform_access(addr, access_type)
-  unsigned addr, access_type;
+void perform_access(addr, access_type) unsigned addr, access_type;
 {
+  /* Assuming Unified cache for now */
+  if (1)
+  {
+    int index = (addr & (ucache->index_mask)) >> (ucache->index_mask_offset);
+    Pcache_set cache_set = (ucache->cache_set)[index];
+    int tag = (addr & (ucache->tag_mask)) >> (ucache->tag_mask_offset);
 
-  /* handle an access to the cache */
-
+    if (cache_set == NULL)
+    {
+      (ucache->cache_set)[index] = allocate_cache_set();
+    }
+    /* handle an access to the cache */
+    switch (access_type)
+    {
+      case TRACE_INST_LOAD:
+      case TRACE_DATA_LOAD:
+        // update variables
+        break;
+      case TRACE_DATA_STORE:
+        if (cache_writeback)
+        {
+          int mem_access = lru_operation(tag, cache_set, true);
+          (cache_set->head)->dirty = 1;
+          // update variables
+        }
+        else
+        {
+          int mem_access;
+          if (cache_writealloc)
+          {
+            mem_access = lru_operation(tag, cache_set, true);
+          }
+          else
+          {
+            mem_access = 1;
+            lru_operation(tag, cache_set, false);
+          }
+          // update variables
+        }
+        break;
+      default:
+        printf("skipping access, unknown type(%d)\n", access_type);
+    }
+  }
 }
 /************************************************************/
 
 /************************************************************/
-void flush()
-{
-
-  /* flush the cache */
-
-}
+void flush() { /* flush the cache */}
 /************************************************************/
 
 /************************************************************/
-void delete(head, tail, item)
-  Pcache_line *head, *tail;
-  Pcache_line item;
+void delete (head, tail, item)Pcache_line *head, *tail;
+Pcache_line item;
 {
-  if (item->LRU_prev) {
+  if (item->LRU_prev)
+  {
     item->LRU_prev->LRU_next = item->LRU_next;
-  } else {
+  }
+  else
+  {
     /* item at head */
     *head = item->LRU_next;
   }
 
-  if (item->LRU_next) {
+  if (item->LRU_next)
+  {
     item->LRU_next->LRU_prev = item->LRU_prev;
-  } else {
+  }
+  else
+  {
     /* item at tail */
     *tail = item->LRU_prev;
   }
@@ -126,9 +179,8 @@ void delete(head, tail, item)
 
 /************************************************************/
 /* inserts at the head of the list */
-void insert(head, tail, item)
-  Pcache_line *head, *tail;
-  Pcache_line item;
+void insert(head, tail, item) Pcache_line *head, *tail;
+Pcache_line item;
 {
   item->LRU_next = *head;
   item->LRU_prev = (Pcache_line)NULL;
@@ -146,20 +198,23 @@ void insert(head, tail, item)
 void dump_settings()
 {
   printf("*** CACHE SETTINGS ***\n");
-  if (cache_split) {
+  if (cache_split)
+  {
     printf("  Split I- D-cache\n");
     printf("  I-cache size: \t%d\n", cache_isize);
     printf("  D-cache size: \t%d\n", cache_dsize);
-  } else {
+  }
+  else
+  {
     printf("  Unified I- D-cache\n");
     printf("  Size: \t%d\n", cache_usize);
   }
   printf("  Associativity: \t%d\n", cache_assoc);
   printf("  Block size: \t%d\n", cache_block_size);
-  printf("  Write policy: \t%s\n", 
-	 cache_writeback ? "WRITE BACK" : "WRITE THROUGH");
+  printf("  Write policy: \t%s\n",
+         cache_writeback ? "WRITE BACK" : "WRITE THROUGH");
   printf("  Allocation policy: \t%s\n",
-	 cache_writealloc ? "WRITE ALLOCATE" : "WRITE NO ALLOCATE");
+         cache_writealloc ? "WRITE ALLOCATE" : "WRITE NO ALLOCATE");
 }
 /************************************************************/
 
@@ -172,28 +227,30 @@ void print_stats()
   printf("  accesses:  %d\n", cache_stat_inst.accesses);
   printf("  misses:    %d\n", cache_stat_inst.misses);
   if (!cache_stat_inst.accesses)
-    printf("  miss rate: 0 (0)\n"); 
+    printf("  miss rate: 0 (0)\n");
   else
-    printf("  miss rate: %2.4f (hit rate %2.4f)\n", 
-	 (float)cache_stat_inst.misses / (float)cache_stat_inst.accesses,
-	 1.0 - (float)cache_stat_inst.misses / (float)cache_stat_inst.accesses);
+    printf(
+        "  miss rate: %2.4f (hit rate %2.4f)\n",
+        (float)cache_stat_inst.misses / (float)cache_stat_inst.accesses,
+        1.0 - (float)cache_stat_inst.misses / (float)cache_stat_inst.accesses);
   printf("  replace:   %d\n", cache_stat_inst.replacements);
 
   printf(" DATA\n");
   printf("  accesses:  %d\n", cache_stat_data.accesses);
   printf("  misses:    %d\n", cache_stat_data.misses);
   if (!cache_stat_data.accesses)
-    printf("  miss rate: 0 (0)\n"); 
+    printf("  miss rate: 0 (0)\n");
   else
-    printf("  miss rate: %2.4f (hit rate %2.4f)\n", 
-	 (float)cache_stat_data.misses / (float)cache_stat_data.accesses,
-	 1.0 - (float)cache_stat_data.misses / (float)cache_stat_data.accesses);
+    printf(
+        "  miss rate: %2.4f (hit rate %2.4f)\n",
+        (float)cache_stat_data.misses / (float)cache_stat_data.accesses,
+        1.0 - (float)cache_stat_data.misses / (float)cache_stat_data.accesses);
   printf("  replace:   %d\n", cache_stat_data.replacements);
 
   printf(" TRAFFIC (in words)\n");
-  printf("  demand fetch:  %d\n", cache_stat_inst.demand_fetches + 
-	 cache_stat_data.demand_fetches);
-  printf("  copies back:   %d\n", cache_stat_inst.copies_back +
-	 cache_stat_data.copies_back);
+  printf("  demand fetch:  %d\n",
+         cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches);
+  printf("  copies back:   %d\n",
+         cache_stat_inst.copies_back + cache_stat_data.copies_back);
 }
 /************************************************************/
