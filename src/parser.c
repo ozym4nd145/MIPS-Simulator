@@ -24,19 +24,28 @@ instruction instruction_parse(int a)
   int temp = 63;
 
   information->opcode = lsr((a & (temp << 26)), 26);
+  // 31 downto 26
 
   // printf("%d\n",information->opcode);
   temp = (temp >> 1);
   information->rs = lsr((a & (temp << 21)), 21);
+  //25 downto 21
   information->rt = lsr((a & (temp << 16)), 16);
+  //20 downto 16
   information->rd = lsr((a & (temp << 11)), 11);
+  //15 downto 11
   information->shf_amt = lsr((a & (temp << 6)), 6);
+  //10 downto 6
   information->function = a & ((temp << 1) | 1);
+  //5 downto 0
   information->immediate = a & (0xFFFF);
+  //15 downto 0
   information->immediate = (information->immediate << 16) >> 16;
-  // printf("%08x\n",information->immediate);
+  //sign extending immediate
 
   information->target_address = a & (0x3FFFFFF);
+  //25 downto 0
+
   if (information->opcode == 0 && information->function == 32 &&
       information->shf_amt == 0)
   {
@@ -158,6 +167,43 @@ instruction instruction_parse(int a)
     information->Ctype = DP;
     information->Itype = SLTI;
   }
+
+  else if (information->opcode ==0 && information->rs==0 && information->rt==0
+          && information->shf_amt==0 && information->function==0 )
+  {
+    information->Ctype = DP;
+    information->Itype = MFLO;
+  }
+
+  else if(information->opcode == 2)
+  {
+    information->Ctype = BRANCH;
+    information->Itype = JUMP;
+  }
+
+  else if(information->opcode == 3)
+  {
+    information->Ctype = BRANCH;
+    information->Itype = JUMP_LINK;
+  }
+
+  else if(information->opcode == 0 && information->function == 8 
+          information->shf_amt == 0 && information->rd==0 
+          information->rt == 0)
+  {
+    information->Ctype = BRANCH;
+    information->Itype = JUMP_REGISTER;
+  }
+
+  else if(information->opcode == 0 && information->rt==0 &&
+          information->function == 9 )
+  {
+    information->Ctype = BRANCH;
+    information->Itype = JUMP_LINK_REGISTER;
+  }
+
+
+
   else
   {
     throw_error("Wrong Instruction Set.");

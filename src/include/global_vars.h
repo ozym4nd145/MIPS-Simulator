@@ -38,6 +38,11 @@ typedef enum {
   SLTU,
   SLTI,
   LDR_UPPER_IMMEDIATE,
+  JUMP,
+  JUMP_LINK,
+  JUMP_REGISTER,
+  JUMP_LINK_REGISTER,
+  MFLO,
   NO_OP
 } instruction_type;
 

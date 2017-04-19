@@ -134,8 +134,8 @@ void regdump()
   {
     printf("$%2d: 0x%08x\n", i, register_file[i]);
   }
-  printf("hi: %08x\n", register_file[32]);
-  printf("lo: %08x\n", register_file[33]);
+  printf("lo: %08x\n", register_file[32]);
+  printf("hi: %08x\n", register_file[33]);
   printf("pc: %08x\n", PC);
 }
 
