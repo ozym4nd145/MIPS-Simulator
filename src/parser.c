@@ -202,8 +202,6 @@ instruction instruction_parse(int a)
     information->Itype = JUMP_LINK_REGISTER;
   }
 
-
-
   else
   {
     throw_error("Wrong Instruction Set.");

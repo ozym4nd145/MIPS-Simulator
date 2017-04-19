@@ -247,6 +247,10 @@ void* alu_op(void* data)
                          (0x0000001F));  // looking at last 5 bits of register
               break;
 
+              case MFLO:
+              pipeline[2].alu_result = temp_pipeline[1].LO;
+              break;
+
             // HI LO are 2 separate registers for multiplication
 
             case MULTIPLY:
@@ -338,6 +342,28 @@ void* alu_op(void* data)
                 branched = 1;
               }
               break;
+
+            case JUMP:
+              PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
+            break;
+
+            case JUMP_LINK :
+              pipeline[2].alu_result = PC+4;
+              PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
+
+              break;
+
+            case  JUMP_REGISTER :
+
+              PC = r1;
+              break;
+
+            case JUMP_LINK_REGISTER :
+              pipeline[2].alu_result = PC+4;
+              PC = r1;
+
+              break;
+
 
             default:
               throw_error("Wrong Instruction");
