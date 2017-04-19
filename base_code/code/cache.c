@@ -2,11 +2,13 @@
  * cache.c
  */
 
+#include "cache.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "lru.h"
 
-#include "cache.h"
 #include "main.h"
 
 /* cache configuration parameters */
@@ -77,7 +79,7 @@ void init_cache_params(Pcache c, int cache_size)
 {
   c->size = (cache_size) / WORD_SIZE;
   c->associativity = cache_assoc;
-  unsigned num_sets = (c->size) / (c->assoc * words_per_block);
+  unsigned num_sets = (c->size) / (c->associativity * words_per_block);
   int num_bits = LOG2(num_sets);
   c->n_sets = 1 << (num_bits);
   c->index_mask_offset = LOG2(cache_block_size);
@@ -125,19 +127,21 @@ void perform_access(addr, access_type) unsigned addr, access_type;
   /* Assuming Unified cache for now */
   int index = (addr & (icache->index_mask)) >> (icache->index_mask_offset);
   int tag = (addr & (icache->tag_mask)) >> (icache->tag_mask_offset);
-
+  int prev_set_count;
+  int mem_access;
+  Pcache_set set;
   /* handle an access to the cache */
   switch (access_type)
   {
     case TRACE_INST_LOAD:
-      Pcache_set set = (icache->cache_set)[index];
+      set = (icache->set)[index];
       if (set == NULL)
       {
-        (icache->cache_set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
-        set = (icache->cache_set)[index];
+        (icache->set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
+        set = (icache->set)[index];
       }
-      int prev_set_count = set->set_contents_count;
-      int mem_access = lru_operation(tag, set, true);
+      prev_set_count = set->set_contents_count;
+      mem_access = lru_operation(set, tag, 1);
       cache_stat_inst.accesses += 1;
       if (mem_access)
       {
@@ -150,14 +154,14 @@ void perform_access(addr, access_type) unsigned addr, access_type;
       }
       break;
     case TRACE_DATA_LOAD:
-      Pcache_set set = (dcache->cache_set)[index];
+      set = (dcache->set)[index];
       if (set == NULL)
       {
-        (dcache->cache_set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
-        set = (dcache->cache_set)[index];
+        (dcache->set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
+        set = (dcache->set)[index];
       }
-      int prev_set_count = set->set_contents_count;
-      int mem_access = lru_operation(tag, set, true);
+      prev_set_count = set->set_contents_count;
+      mem_access = lru_operation(set, tag, 1);
       cache_stat_data.accesses += 1;
       if (mem_access)
       {
@@ -170,11 +174,11 @@ void perform_access(addr, access_type) unsigned addr, access_type;
       }
       break;
     case TRACE_DATA_STORE:
-      Pcache_set set = (dcache->cache_set)[index];
+      set = (dcache->set)[index];
       if (cache_writeback)
       {
-        int prev_set_count = set->set_contents_count;
-        int mem_access = lru_operation(tag, set, true);
+        prev_set_count = set->set_contents_count;
+        mem_access = lru_operation(set, tag, 1);
         (set->head)->dirty = 1;
         // update variables
         cache_stat_data.accesses += 1;
@@ -191,23 +195,23 @@ void perform_access(addr, access_type) unsigned addr, access_type;
       }
       else
       {
-        int prev_set_count = set->set_contents_count;
-        int mem_access;
+        prev_set_count = set->set_contents_count;
+        mem_access;
         mem_access = 0;
 
         if (cache_writealloc)
         {
-          mem_access = lru_operation(tag, cache_set, true);
+          mem_access = lru_operation(set, tag, 1);
         }
         else
         {
-          lru_operation(tag, cache_set, false);
+          lru_operation(set, tag, 0);
         }
 
         // update variables
         cache_stat_data.copies_back += 1;
         cache_stat_data.accesses += 1;
-        if (mem_access && (set->set_contents_count) == prev_set_count))
+        if (mem_access && ((set->set_contents_count) == prev_set_count))
         {
           cache_stat_data.replacements += 1;
         }

@@ -1,3 +1,5 @@
+#ifndef CACHE_H
+#define CACHE_H
 
 /*
  * cache.h
@@ -83,3 +85,5 @@ void constructor_Pcache_line(unsigned tag);
 
 /* macros */
 #define LOG2(x) ((int)rint((log((double)(x))) / (log(2.0))))
+
+#endif
