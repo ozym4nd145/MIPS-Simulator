@@ -1,6 +1,6 @@
 
 CC = gcc
-CFLAGS = -g
+CFLAGS = -g 
 
 all:  sim
 

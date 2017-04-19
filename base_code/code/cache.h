@@ -36,6 +36,16 @@ typedef struct cache_line_
   struct cache_line_ *LRU_prev;
 } cache_line, *Pcache_line;
 
+typedef struct cache_set_
+{
+  Pcache_line head;
+  Pcache_line tail;
+  int set_contents_count;
+  int max_set_contents_count;
+
+} cache_set, *Pcache_set;
+
+
 typedef struct cache_
 {
   int size;              /* cache size */
@@ -43,7 +53,7 @@ typedef struct cache_
   int n_sets;            /* number of cache sets */
   unsigned index_mask;   /* mask to find cache index */
   int index_mask_offset; /* number of zero bits in mask */
-  Pcache_set *cache_set;
+  Pcache_set *set;
   // Pcache_line *LRU_head; /* head of LRU list for each set */
   // Pcache_line *LRU_tail; /* tail of LRU list for each set */
   // int *set_contents;     /* number of valid entries in set */
@@ -59,22 +69,17 @@ typedef struct cache_stat_
   int copies_back;    /* number of write backs */
 } cache_stat, *Pcache_stat;
 
-typedef struct cache_set_
-{
-  Pcache_line head;
-  Pcache_line tail;
-  int set_contents;
-} cache_set, *Pcache_set;
 
 /* function prototypes */
 void set_cache_param();
 void init_cache();
 void perform_access();
 void flush();
-void delete ();
-void insert();
+void delete(  Pcache_line *head,Pcache_line *tail,  Pcache_line item);
+void insert(  Pcache_line *head,Pcache_line *tail,  Pcache_line item);
 void dump_settings();
 void print_stats();
+void constructor_Pcache_line(unsigned tag);
 
 /* macros */
 #define LOG2(x) ((int)rint((log((double)(x))) / (log(2.0))))
