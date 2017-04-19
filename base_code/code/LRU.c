@@ -46,7 +46,7 @@ int lru_operation(Pcache_set set,unsigned tag,int allocate)
 		if(allocate==1)
 		{			
 
-		if(set->set_content_count==set->max_set_content_count)  //  set is Full | follow LRU to remove the least recently used
+		if(set->set_content_count==cache_assoc)  //  set is Full | follow LRU to remove the least recently used
 		{
 			if(tail->dirty==1)mem_access=1;
 			delete(set->head,set->tail,set->tail);
