@@ -45,14 +45,15 @@ typedef struct cache_set_
 
 } cache_set, *Pcache_set;
 
-
 typedef struct cache_
 {
-  int size;              /* cache size */
+  int size;              /* cache size in words*/
   int associativity;     /* cache associativity */
   int n_sets;            /* number of cache sets */
   unsigned index_mask;   /* mask to find cache index */
+  unsigned tag_mask;     /* mask to find cache index */
   int index_mask_offset; /* number of zero bits in mask */
+  int tag_mask_offset;
   Pcache_set *set;
   // Pcache_line *LRU_head; /* head of LRU list for each set */
   // Pcache_line *LRU_tail; /* tail of LRU list for each set */
@@ -69,14 +70,13 @@ typedef struct cache_stat_
   int copies_back;    /* number of write backs */
 } cache_stat, *Pcache_stat;
 
-
 /* function prototypes */
 void set_cache_param();
 void init_cache();
 void perform_access();
 void flush();
-void delete(  Pcache_line *head,Pcache_line *tail,  Pcache_line item);
-void insert(  Pcache_line *head,Pcache_line *tail,  Pcache_line item);
+void delete (Pcache_line *head, Pcache_line *tail, Pcache_line item);
+void insert(Pcache_line *head, Pcache_line *tail, Pcache_line item);
 void dump_settings();
 void print_stats();
 void constructor_Pcache_line(unsigned tag);

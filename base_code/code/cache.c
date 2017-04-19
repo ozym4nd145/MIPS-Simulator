@@ -28,11 +28,6 @@ static cache c2;
 static cache_stat cache_stat_inst;
 static cache_stat cache_stat_data;
 
-/* declarations for unified cache */
-static Pcache ucache;
-static cache c0;
-static cache_stat cache_stat_unif;
-
 /************************************************************/
 void set_cache_param(param, value) int param;
 int value;
@@ -78,22 +73,49 @@ int value;
 /************************************************************/
 
 /************************************************************/
+void init_cache_params(Pcache c, int cache_size)
+{
+  c->size = (cache_size) / WORD_SIZE;
+  c->associativity = cache_assoc;
+  unsigned num_sets = (c->size) / (c->assoc * words_per_block);
+  int num_bits = LOG2(num_sets);
+  c->n_sets = 1 << (num_bits);
+  c->index_mask_offset = LOG2(cache_block_size);
+  c->tag_mask_offset = ((c->index_mask_offset) + num_bits);
+  c->index_mask = (num_sets - 1) << (c->index_mask_offset);
+  c->tag_mask = ((unsigned)(1 << (32 - (c->tag_mask_offset))) - 1)
+                << (c->tag_mask_offset);
+  c->set = (Pcache_set *)calloc(c->n_sets, sizeof(Pcache_set));
+}
+
+/************************************************************/
+
+/************************************************************/
+// Assuming every quantity to be in power of 2.
 void init_cache()
 {
   /* initialize the cache, and cache statistics data structures */
-  ucache = &c0;
-  icache = &c1;
-  dcache = &c2;
 
   /* Setting all fields zero */
-  memset(&c0, 0, sizeof(cache));
   memset(&c1, 0, sizeof(cache));
   memset(&c2, 0, sizeof(cache));
-  memset(&cache_stat_unif, 0, sizeof(cache_stat));
   memset(&cache_stat_inst, 0, sizeof(cache_stat));
   memset(&cache_stat_data, 0, sizeof(cache_stat));
 
-  // TODO: set index_mask and index_mask_offset
+  if (cache_split == 0)
+  {
+    // In case there is no split both icache and dcache point to same cache.
+    icache = &c1;
+    dcache = &c1;
+    init_cache_params(&c1, cache_usize);
+  }
+  else
+  {
+    icache = &c1;
+    dcache = &c2;
+    init_cache_params(&c1, cache_isize);
+    init_cache_params(&c2, cache_dsize);
+  }
 }
 /************************************************************/
 
@@ -101,48 +123,98 @@ void init_cache()
 void perform_access(addr, access_type) unsigned addr, access_type;
 {
   /* Assuming Unified cache for now */
-  if (1)
-  {
-    int index = (addr & (ucache->index_mask)) >> (ucache->index_mask_offset);
-    Pcache_set cache_set = (ucache->cache_set)[index];
-    int tag = (addr & (ucache->tag_mask)) >> (ucache->tag_mask_offset);
+  int index = (addr & (icache->index_mask)) >> (icache->index_mask_offset);
+  int tag = (addr & (icache->tag_mask)) >> (icache->tag_mask_offset);
 
-    if (cache_set == NULL)
-    {
-      (ucache->cache_set)[index] = allocate_cache_set();
-    }
-    /* handle an access to the cache */
-    switch (access_type)
-    {
-      case TRACE_INST_LOAD:
-      case TRACE_DATA_LOAD:
+  /* handle an access to the cache */
+  switch (access_type)
+  {
+    case TRACE_INST_LOAD:
+      Pcache_set set = (icache->cache_set)[index];
+      if (set == NULL)
+      {
+        (icache->cache_set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
+        set = (icache->cache_set)[index];
+      }
+      int prev_set_count = set->set_contents_count;
+      int mem_access = lru_operation(tag, set, true);
+      cache_stat_inst.accesses += 1;
+      if (mem_access)
+      {
+        cache_stat_inst.misses += 1;
+      }
+      // indicates replace
+      if ((set->set_contents_count) == prev_set_count)
+      {
+        cache_stat_inst.replacements += 1;
+      }
+      break;
+    case TRACE_DATA_LOAD:
+      Pcache_set set = (dcache->cache_set)[index];
+      if (set == NULL)
+      {
+        (dcache->cache_set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
+        set = (dcache->cache_set)[index];
+      }
+      int prev_set_count = set->set_contents_count;
+      int mem_access = lru_operation(tag, set, true);
+      cache_stat_data.accesses += 1;
+      if (mem_access)
+      {
+        cache_stat_data.misses += 1;
+      }
+      // indicates replace
+      if ((set->set_contents_count) == prev_set_count)
+      {
+        cache_stat_data.replacements += 1;
+      }
+      break;
+    case TRACE_DATA_STORE:
+      Pcache_set set = (dcache->cache_set)[index];
+      if (cache_writeback)
+      {
+        int prev_set_count = set->set_contents_count;
+        int mem_access = lru_operation(tag, set, true);
+        (set->head)->dirty = 1;
         // update variables
-        break;
-      case TRACE_DATA_STORE:
-        if (cache_writeback)
+        cache_stat_data.accesses += 1;
+        if (mem_access)
         {
-          int mem_access = lru_operation(tag, cache_set, true);
-          (cache_set->head)->dirty = 1;
-          // update variables
+          cache_stat_data.misses += 1;
+          cache_stat_data.copies_back += 1;
+        }
+        // indicates replace
+        if ((set->set_contents_count) == prev_set_count)
+        {
+          cache_stat_data.replacements += 1;
+        }
+      }
+      else
+      {
+        int prev_set_count = set->set_contents_count;
+        int mem_access;
+        mem_access = 0;
+
+        if (cache_writealloc)
+        {
+          mem_access = lru_operation(tag, cache_set, true);
         }
         else
         {
-          int mem_access;
-          if (cache_writealloc)
-          {
-            mem_access = lru_operation(tag, cache_set, true);
-          }
-          else
-          {
-            mem_access = 1;
-            lru_operation(tag, cache_set, false);
-          }
-          // update variables
+          lru_operation(tag, cache_set, false);
         }
-        break;
-      default:
-        printf("skipping access, unknown type(%d)\n", access_type);
-    }
+
+        // update variables
+        cache_stat_data.copies_back += 1;
+        cache_stat_data.accesses += 1;
+        if (mem_access && (set->set_contents_count) == prev_set_count))
+        {
+          cache_stat_data.replacements += 1;
+        }
+      }
+      break;
+    default:
+      printf("skipping access, unknown type(%d)\n", access_type);
   }
 }
 /************************************************************/
@@ -191,7 +263,6 @@ Pcache_line item;
     *tail = item;
 
   *head = item;
-
 }
 
 /************************************************************/
