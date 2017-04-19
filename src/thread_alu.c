@@ -345,22 +345,26 @@ void* alu_op(void* data)
 
             case JUMP:
               PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
+              branched = 1;
             break;
 
             case JUMP_LINK :
               pipeline[2].alu_result = PC+4;
               PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
+              branched = 1;
 
               break;
 
             case  JUMP_REGISTER :
 
               PC = r1;
+              branched = 1;
               break;
 
             case JUMP_LINK_REGISTER :
               pipeline[2].alu_result = PC+4;
               PC = r1;
+              branched = 1;
 
               break;
 
