@@ -1,8 +1,7 @@
 
-// lru_operation receives cache_set as parameter and updates the cache set.
 
-// It performs its operation independent of read-write operations.
 
+//Constructor for Pcache_line
 
 Pcache_line constructor_Pcache_line(unsigned tag)
 {
@@ -13,18 +12,21 @@ Pcache_line constructor_Pcache_line(unsigned tag)
   temp->LRU_prev = (Pcache_line) malloc(sizeof(Pcache_line));
 }
 
+//Searching for the right block in cache line matching with tag
 
 Pcache_line search(Pcache_line head,unsigned tag)
 {
 	while(head)
 	{
 		if(head->tag == tag)
-			return head;
+			return head;   // search successful
 		head = head->LRU->next;
 	}
-	return NULL;
+	return NULL; //csearch unsuccessful
 } 
 
+// lru_operation receives cache_set as parameter and updates the cache set.
+// It performs its operation independent of read-write operations.
 
 int lru_operation(Pcache_set set,unsigned tag,int allocate)
 {
@@ -32,25 +34,25 @@ int lru_operation(Pcache_set set,unsigned tag,int allocate)
 
 	int mem_access = 0;
 
-	if(found)
+	if(found) //cache HIT
 	{
 		delete(&(set->head),&(set->tail),found);
 		insert(&(set->head),&(set->tail),found);
 	}
 
-	else
+	else //cache MISS
 	{
 		
 		if(allocate==1)
 		{			
 
-		if(set->set_content_count==set->max_set_content_count)
+		if(set->set_content_count==set->max_set_content_count)  //  set is Full | follow LRU to remove the least recently used
 		{
 			if(tail->dirty==1)mem_access=1;
 			delete(set->head,set->tail,set->tail);
 			insert(set->head,set->tail,constructor_Pache_line());
 		}
-		else
+		else  // set is unsaturated | simply fetch from memory
 		{
 			set->set_content_count++;
 			insert(set->head,set->tail,constructor_Pache_line());
