@@ -284,7 +284,7 @@ void write_dirty(Pcache _cache, Pcache_stat stat)
       if (node->dirty == 1)
       {
         node->dirty = 0;
-        stat->copies_back += 1;
+        stat->copies_back++;
       }
       node = node->LRU_next;
     }
@@ -406,8 +406,8 @@ void print_stats()
 
   printf(" TRAFFIC (in words)\n");
   printf("  demand fetch:  %d\n",
-         cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches);
+         4 * (cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches));
   printf("  copies back:   %d\n",
-         cache_stat_inst.copies_back + cache_stat_data.copies_back);
+         4 * (cache_stat_inst.copies_back + cache_stat_data.copies_back));
 }
 /************************************************************/
