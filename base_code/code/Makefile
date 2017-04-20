@@ -1,6 +1,6 @@
 
 CC = gcc
-CFLAGS = -g 
+CFLAGS = -g -Wall 
 
 all:  sim
 
@@ -15,3 +15,6 @@ cache.o:  cache.c cache.h
 
 lru.o:  lru.c lru.h
 	$(CC) $(CFLAGS) -c lru.c
+
+clean: 
+	rm -rf ./*.o

@@ -122,100 +122,110 @@ void init_cache()
 /************************************************************/
 
 /************************************************************/
+void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat)
+{
+  Pcache_set set = (_cache->set)[index];
+  if (set == NULL)
+  {
+    (_cache->set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
+    set = (_cache->set)[index];
+  }
+  int prev_set_count = set->set_contents_count;
+  int mem_access = lru_operation(set, tag, 1);
+  (stat->accesses)++;
+  if (mem_access)
+  {
+    // +2 if dirty bit was 1 else +1
+    (stat->demand_fetches)++;
+    (stat->misses)++;
+
+    // +1 if replacement of block whose dirty bit was 1
+    (stat->copies_back) += (mem_access - 1);
+
+    // indicates replace
+    if ((set->set_contents_count) == prev_set_count)
+    {
+      (stat->replacements)++;
+    }
+  }
+}
+
+void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
+{
+  Pcache_set set = (_cache->set)[index];
+  if (set == NULL)
+  {
+    (_cache->set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
+    set = (_cache->set)[index];
+  }
+
+  (stat->accesses)++;
+
+  if (cache_writeback)
+  {
+    int prev_set_count = set->set_contents_count;
+    int mem_access = lru_operation(set, tag, 1);
+    (set->head)->dirty = 1;
+
+    if (mem_access)
+    {
+      (stat->misses)++;
+      (stat->demand_fetches)++;
+      (stat->copies_back) += (mem_access - 1);
+      // indicates replace
+      if ((set->set_contents_count) == prev_set_count)
+      {
+        (stat->replacements)++;
+      }
+    }
+  }
+  else
+  {
+    int prev_set_count = set->set_contents_count;
+    int mem_access = 0;
+    if (cache_writealloc)
+    {
+      mem_access = lru_operation(set, tag, 1);
+      if (mem_access)
+      {
+        (stat->misses)++;
+        (stat->demand_fetches)++;
+        if ((set->set_contents_count) == prev_set_count)
+        {
+          (stat->replacements)++;
+        }
+      }
+    }
+    else
+    {
+      int miss = lru_operation(set, tag, 0);
+      if (miss) (stat->misses)++;
+    }
+
+    (stat->copies_back)++;
+    (stat->accesses)++;
+  }
+}
+
+/************************************************************/
+
+/************************************************************/
 void perform_access(addr, access_type) unsigned addr, access_type;
 {
   /* Assuming Unified cache for now */
   int index = (addr & (icache->index_mask)) >> (icache->index_mask_offset);
   int tag = (addr & (icache->tag_mask)) >> (icache->tag_mask_offset);
-  int prev_set_count;
-  int mem_access;
-  Pcache_set set;
   /* handle an access to the cache */
   switch (access_type)
   {
     case TRACE_INST_LOAD:
-      set = (icache->set)[index];
-      if (set == NULL)
-      {
-        (icache->set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
-        set = (icache->set)[index];
-      }
-      prev_set_count = set->set_contents_count;
-      mem_access = lru_operation(set, tag, 1);
-      cache_stat_inst.accesses += 1;
-      if (mem_access)
-      {
-        cache_stat_inst.misses += 1;
-      }
-      // indicates replace
-      if ((set->set_contents_count) == prev_set_count)
-      {
-        cache_stat_inst.replacements += 1;
-      }
+      perform_load(icache, index, tag, &cache_stat_inst);
       break;
     case TRACE_DATA_LOAD:
-      set = (dcache->set)[index];
-      if (set == NULL)
-      {
-        (dcache->set)[index] = (Pcache_set)calloc(1, sizeof(cache_set));
-        set = (dcache->set)[index];
-      }
-      prev_set_count = set->set_contents_count;
-      mem_access = lru_operation(set, tag, 1);
-      cache_stat_data.accesses += 1;
-      if (mem_access)
-      {
-        cache_stat_data.misses += 1;
-      }
-      // indicates replace
-      if ((set->set_contents_count) == prev_set_count)
-      {
-        cache_stat_data.replacements += 1;
-      }
+      perform_load(dcache, index, tag, &cache_stat_data);
       break;
     case TRACE_DATA_STORE:
-      set = (dcache->set)[index];
-      if (cache_writeback)
-      {
-        prev_set_count = set->set_contents_count;
-        mem_access = lru_operation(set, tag, 1);
-        (set->head)->dirty = 1;
-        // update variables
-        cache_stat_data.accesses += 1;
-        if (mem_access)
-        {
-          cache_stat_data.misses += 1;
-          cache_stat_data.copies_back += 1;
-        }
-        // indicates replace
-        if ((set->set_contents_count) == prev_set_count)
-        {
-          cache_stat_data.replacements += 1;
-        }
-      }
-      else
-      {
-        prev_set_count = set->set_contents_count;
-        mem_access;
-        mem_access = 0;
-
-        if (cache_writealloc)
-        {
-          mem_access = lru_operation(set, tag, 1);
-        }
-        else
-        {
-          lru_operation(set, tag, 0);
-        }
-
-        // update variables
-        cache_stat_data.copies_back += 1;
-        cache_stat_data.accesses += 1;
-        if (mem_access && ((set->set_contents_count) == prev_set_count))
-        {
-          cache_stat_data.replacements += 1;
-        }
-      }
+      perform_store(dcache, index, tag, &cache_stat_data);
       break;
     default:
       printf("skipping access, unknown type(%d)\n", access_type);
@@ -248,7 +258,6 @@ void write_dirty(Pcache _cache, Pcache_stat stat)
 /************************************************************/
 void flush()
 { /* flush the cache */
-  int i = 0;
   if (cache_split == 0)
   {
     write_dirty(dcache, &cache_stat_data);
