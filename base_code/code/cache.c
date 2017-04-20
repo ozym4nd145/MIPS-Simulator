@@ -132,15 +132,18 @@ void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat)
   }
   int prev_set_count = set->set_contents_count;
   int mem_access = lru_operation(set, tag, 1);
+
   (stat->accesses)++;
   if (mem_access)
   {
-    // +2 if dirty bit was 1 else +1
-    (stat->demand_fetches)++;
+    // fetching words_per_block number of blocks from memory
+    (stat->demand_fetches) += words_per_block;
+
     (stat->misses)++;
 
-    // +1 if replacement of block whose dirty bit was 1
-    (stat->copies_back) += (mem_access - 1);
+    // writing words_per_block number of words to memory
+    // if replacement of block whose dirty bit was 1 is done
+    (stat->copies_back) += (words_per_block) * (mem_access - 1);
 
     // indicates replace
     if ((set->set_contents_count) == prev_set_count)
@@ -162,28 +165,37 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
   (stat->accesses)++;
   int prev_set_count = set->set_contents_count;
   int mem_access = lru_operation(set, tag, cache_writealloc);
-
+  fflush(stdout);
   if (cache_writeback)
   {
     if (cache_writealloc)
     {
       /**
-      on hits it writes to cache setting “dirty” bit for the block, main memory
-      is not updated;
-      on misses it updates the block in main memory and brings the block to the
-      cache;
+      on hits it writes to cache setting “dirty” bit for the block, main
+      memory is not updated;
+      EXPERIMENTAL: on miss fetch from main memory and update in cache,
+      dont update in main memory.
+      NOT: on misses it updates the block in main memory and brings the
+      block to the cache;
       **/
       if (mem_access)
       {
         // represents a miss
         (stat->misses)++;
-        (stat->demand_fetches)++;
-        (stat->copies_back) += (mem_access - 1);
+
+        // fetching words_per_block number of blocks from memory
+        (stat->demand_fetches) += words_per_block;
+
+        // writing words_per_block number of words to memory
+        // if replacement of block whose dirty bit was 1 is done
+        (stat->copies_back) += (words_per_block) * (mem_access - 1);
+
         // indicates replace
         if ((set->set_contents_count) == prev_set_count)
         {
           (stat->replacements)++;
         }
+        (set->head)->dirty = 1;
       }
       else
       {
@@ -194,15 +206,19 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
     else
     {
       /**
-      on hits it writes to cache setting “dirty” bit for the block, main memory
+      on hits it writes to cache setting “dirty” bit for the block, main
+      memory
       is not updated;
-      on misses it updates the block in main memory not bringing that block to
+      on misses it updates the block in main memory not bringing that
+      block to
       the cache;
       **/
       // In this case mem_access = 1 denotes there was a miss
       if (mem_access)
       {
         (stat->misses)++;
+        // writing 1 word to memory
+        (stat->copies_back) += 1;
       }
       else
       {
@@ -213,18 +229,23 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
   }
   else
   {
-    //(stat->copies_back)++;
+    // writing 1 word to memory
+    (stat->copies_back)++;
     if (cache_writealloc)
     {
       /**
       on hits it writes to cache and main memory
-      on misses it updates the block in main memory and brings the block to the
+      on misses it updates the block in main memory and brings the block
+      to the
       cache
       **/
       if (mem_access)
       {
         (stat->misses)++;
-        (stat->demand_fetches)++;
+
+        // fetching words_per_block number of blocks from memory
+        (stat->demand_fetches) += words_per_block;
+
         if ((set->set_contents_count) == prev_set_count)
         {
           (stat->replacements)++;
@@ -235,7 +256,8 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
     {
       /**
       on hits it writes to cache and main memory;
-      on misses it updates the block in main memory not bringing that block to
+      on misses it updates the block in main memory not bringing that
+      block to
       the cache;
       **/
       // In this case mem_access = 1 denotes there was a miss
@@ -284,7 +306,8 @@ void write_dirty(Pcache _cache, Pcache_stat stat)
       if (node->dirty == 1)
       {
         node->dirty = 0;
-        stat->copies_back++;
+        // writing words_per_block number of words to memory
+        (stat->copies_back) += words_per_block;
       }
       node = node->LRU_next;
     }
@@ -406,8 +429,8 @@ void print_stats()
 
   printf(" TRAFFIC (in words)\n");
   printf("  demand fetch:  %d\n",
-         4 * (cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches));
+         (cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches));
   printf("  copies back:   %d\n",
-         4 * (cache_stat_inst.copies_back + cache_stat_data.copies_back));
+         (cache_stat_inst.copies_back + cache_stat_data.copies_back));
 }
 /************************************************************/
