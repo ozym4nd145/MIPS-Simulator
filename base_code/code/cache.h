@@ -82,6 +82,8 @@ void insert(Pcache_line *head, Pcache_line *tail, Pcache_line item);
 void dump_settings();
 void print_stats();
 
+extern int cache_assoc;
+
 /* macros */
 #define LOG2(x) ((int)rint((log((double)(x))) / (log(2.0))))
 

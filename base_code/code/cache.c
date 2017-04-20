@@ -18,7 +18,7 @@ static int cache_isize = DEFAULT_CACHE_SIZE;
 static int cache_dsize = DEFAULT_CACHE_SIZE;
 static int cache_block_size = DEFAULT_CACHE_BLOCK_SIZE;
 static int words_per_block = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
-static int cache_assoc = DEFAULT_CACHE_ASSOC;
+int cache_assoc = DEFAULT_CACHE_ASSOC;
 static int cache_writeback = DEFAULT_CACHE_WRITEBACK;
 static int cache_writealloc = DEFAULT_CACHE_WRITEALLOC;
 
