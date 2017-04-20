@@ -16,6 +16,12 @@ void* register_write(void* data)
   {
     if (STOP_THREAD == 1)
     {
+      pipeline[3].instr.Itype = NO_OP;
+      pipeline[3].instr.Ctype = NO_OP;
+      temp_pipeline[3].instr.Itype = NO_OP;
+      temp_pipeline[3].instr.Ctype = NO_OPERATION;
+      CURR_INSTR[4] = pipeline[3].instr;
+      ACTIVE_STAGE[4] = 0;
 #ifdef DEBUG
       printf("register_write thread ended\n");
 #endif
@@ -53,6 +59,12 @@ void* register_write(void* data)
       if (pipeline[3].instr.Itype != NO_OP)
       {
         INSTRUCTION_COUNT++;
+#ifdef DEBUG
+        printf("%s\n", get_instruction_name(temp_pipeline[3].instr.Itype));
+        printf("Instruction Count %d\n", INSTRUCTION_COUNT);
+
+#endif
+
         // Write value into the Register file
         if (pipeline[3].instr.Itype == LDR_BYTE ||
             pipeline[3].instr.Itype == LDR_WORD ||

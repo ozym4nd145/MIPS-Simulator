@@ -41,6 +41,4 @@ float SVG_WIDTH = 297;
 float SVG_SATURATE = 0.0;
 
 // Display signals
-int ACTIVE_STAGE[5];    // [0..4]-> fetch,decode,alu,mem,write
-int FORWARDING[3];      // [0..2] -> alu-alu, mem-alu, mem-mem
-int FORWARDING_ALU[2];  // Forwarding to rs or rt
+int ACTIVE_STAGE[5];  // [0..4]-> fetch,decode,alu,mem,write
