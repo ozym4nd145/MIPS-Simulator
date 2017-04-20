@@ -187,8 +187,8 @@ instruction instruction_parse(int a)
     information->Itype = JUMP_LINK;
   }
 
-  else if(information->opcode == 0 && information->function == 8 
-          information->shf_amt == 0 && information->rd==0 
+  else if(information->opcode == 0 && information->function == 8 &&
+          information->shf_amt == 0 && information->rd==0 &&
           information->rt == 0)
   {
     information->Ctype = BRANCH;
