@@ -26,6 +26,7 @@ int NUM_THREADS_READ = 0;        // threads that have completed the copy stage
 int NUM_THREADS_WRITE = 0;       // threads that have completed processing for
                                  // that particular cycle
 pthread_t threads[NUM_THREADS];  // Totals running threads
+int BreakPoint[INSTRUCTION_MEM];
 
 control CONTROL_SIGN;
 

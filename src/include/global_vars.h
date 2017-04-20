@@ -96,6 +96,7 @@ extern int CLOCK;  // emulates the clock which all of the instructions follow
 extern double FREQUENCY;
 extern unsigned int DELAY;  // sleep delay for each thread in micro seconds
 extern int Memory_Block[MEMORY_SIZE];
+extern int BreakPoint[INSTRUCTION_MEM];
 extern int
     NUM_THREADS_READ;  // number of threads that have completed the copy stage
                        // from buffer

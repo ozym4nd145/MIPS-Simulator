@@ -37,7 +37,7 @@ void* instruction_fetch(void* data)
 
     // sleep(1);
     // input = "step\0";
-    if (strcmp(input, "step") == 0)
+    if (strcmp(input, "run") == 0)
     {
       // if (PC >= MAX_PC)
       // {
@@ -45,6 +45,9 @@ void* instruction_fetch(void* data)
       //   // TODO: Close all threads and free all memory
       //   // exit(0);
       // }
+
+      while(1)
+      {
       STEPS++;
 
 #ifdef TIME
@@ -186,8 +189,11 @@ void* instruction_fetch(void* data)
       printf("Frequency - %lfGHz\n", 1.0 / (2 * time_spent));
 #endif
 
+      usleep(10*DELAY);
+
       // Implement READ_CLOCK_0 ?
     }
+  }
     else if (strcmp(input, "regdump") == 0)
     {
       regdump();
