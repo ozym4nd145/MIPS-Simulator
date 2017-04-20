@@ -203,7 +203,6 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
     }
 
     (stat->copies_back)++;
-    (stat->accesses)++;
   }
 }
 
@@ -239,7 +238,7 @@ void write_dirty(Pcache _cache, Pcache_stat stat)
   int i = 0;
   for (i = 0; i < (_cache->n_sets); i++)
   {
-    Pcache_set set = (icache->set)[i];
+    Pcache_set set = (_cache->set)[i];
     if (set == NULL) continue;
     Pcache_line node = set->head;
     while (node != NULL)
