@@ -12,6 +12,7 @@ Pcache_line constructor_Pcache_line(unsigned tag)
   temp->dirty = 0;
   temp->LRU_next = (Pcache_line)malloc(sizeof(Pcache_line));
   temp->LRU_prev = (Pcache_line)malloc(sizeof(Pcache_line));
+  return temp;
 }
 
 // Searching for the right block in cache line matching with tag
@@ -21,7 +22,7 @@ Pcache_line search(Pcache_line head, unsigned tag)
   while (head)
   {
     if (head->tag == tag) return head;  // search successful
-    head = head->LRU->next;
+    head = head->LRU_next;
   }
   return NULL;  // csearch unsuccessful
 }
@@ -45,18 +46,18 @@ int lru_operation(Pcache_set set, unsigned tag, int allocate)
   {
     if (allocate == 1)
     {
-      if (set->set_content_count == cache_assoc)  //  set is Full | follow LRU
+      if (set->set_contents_count == DEFAULT_CACHE_ASSOC)  //  set is Full | follow LRU
                                                   //  to remove the least
                                                   //  recently used
       {
-        if (tail->dirty == 1) mem_access = 1;
-        delete (set->head, set->tail, set->tail);
-        insert(set->head, set->tail, constructor_Pache_line());
+        if (set->tail->dirty == 1) mem_access = 1;
+        delete (&(set->head), &(set->tail), set->tail);
+        insert(&(set->head), &(set->tail), constructor_Pcache_line(tag));
       }
       else  // set is unsaturated | simply fetch from memory
       {
-        set->set_content_count++;
-        insert(set->head, set->tail, constructor_Pache_line());
+        set->set_contents_count++;
+        insert(&(set->head), &(set->tail), constructor_Pcache_line(tag));
       }
     }
 
