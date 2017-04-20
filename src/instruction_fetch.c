@@ -21,12 +21,19 @@ void* instruction_fetch(void* data)
   input[3] = 'p';
   input[4] = '\0';
   int temp_pc;
+  int program_end = 0;
 
   while (1)
   {
+
+    if (program_end)
+      break;
+
+
     if (scanf("%s", input) == -1)
     {
       continue;
+      sleep(DELAY);
     }
 
 #ifdef TIME
@@ -37,14 +44,13 @@ void* instruction_fetch(void* data)
 
     // sleep(1);
     // input = "step\0";
-    if (strcmp(input, "run") == 0)
+    if (strcmp(input, "run") == 0 || strcmp(input, "continue") == 0)
     {
-      // if (PC >= MAX_PC)
-      // {
-      //   // printf("Program complete");
-      //   // TODO: Close all threads and free all memory
-      //   // exit(0);
-      // }
+
+      int run = 0;
+
+      if (strcmp(input, "run") == 0)
+        run=1;
 
       while(1)
       {
@@ -59,6 +65,7 @@ void* instruction_fetch(void* data)
 #ifdef DEBUG
         printf("Instruction Thread Ended\n");
 #endif
+        program_end = 1;
         break;
       }
 
@@ -192,22 +199,72 @@ void* instruction_fetch(void* data)
       usleep(10*DELAY);
 
       // Implement READ_CLOCK_0 ?
-    }
-  }
+      if(BreakPoint[PC]==1 && !run)
+        stall=1;
+
+      if(BreakPoint[PC]==1 && run)
+      {
+        if(pipeline[0].instr.Itype==NO_OP && pipeline[1].instr.Itype == NO_OP && pipeline[2].instr.Itype == NO_OP 
+          && pipeline[3].instr.Itype == NO_OP)
+          break;
+      }
+    } // continue stepping instructions loop ends
+  } // run | continue if ends
+
+
     else if (strcmp(input, "regdump") == 0)
     {
       regdump();
     }
+
+
     else if (strcmp(input, "memdump") == 0)
     {
       int start, num;
       scanf(" 0x%x %d", &start, &num);
       memdump(start, num);
     }
+
+
+    else if (strcmp(input, "delete") == 0)
+    {
+      int break_address;
+      scanf(" 0x%x", &break_address);
+      int index = (break_address-BASE_PC_ADDR)/4;
+
+      if(index<0 || index > INSTRUCTION_MEM )
+        printf("Invalid BreakPoint Address\n" );
+
+      else if ( BreakPoint[index]==0 )
+        printf("BreakPoint does not exist at specified address\n");
+
+      else
+        BreakPoint[index]=0;
+    }
+
+
+    else if (strcmp(input, "break") == 0)
+    {
+      int break_address;
+      scanf(" 0x%x", &break_address);
+      int index = (break_address-BASE_PC_ADDR)/4;
+
+      if(index<0 || index > INSTRUCTION_MEM )
+        printf("Invalid BreakPoint Address\n" );
+
+      else if ( BreakPoint[index]==1 )
+        printf("BreakPoint already exists at specified address\n");
+
+      else
+        BreakPoint[index]=1;
+    }
+
+
     else
     {
       printf("Unrecognized command\n");
     }
+    
     usleep(DELAY);
   }
   pthread_exit(NULL);
