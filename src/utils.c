@@ -83,6 +83,16 @@ char *get_instruction_name(const instruction_type instr)
       return "SLTU";
     case SLTI:
       return "SLTI";
+    case JUMP:
+      return "JUMP";
+    case JUMP_LINK:
+      return "JUMP_LINK";
+    case JUMP_REGISTER:
+      return "JUMP_REGISTER";
+    case JUMP_LINK_REGISTER:
+      return "JUMP_LINK_REGISTER";
+    case MFLO:
+      return "MFLO";
       break;
   }
   return NULL;
@@ -134,8 +144,8 @@ void regdump()
   {
     printf("$%2d: 0x%08x\n", i, register_file[i]);
   }
-  printf("hi: %08x\n", register_file[32]);
-  printf("lo: %08x\n", register_file[33]);
+  printf("lo: %08x\n", register_file[32]);
+  printf("hi: %08x\n", register_file[33]);
   printf("pc: %08x\n", PC);
 }
 

@@ -85,6 +85,11 @@ void* register_write(void* data)
           register_file[pipeline[3].instr.rd] = pipeline[3].alu_result;
           CONTROL_SIGN.RegW = 1;
         }
+        else if (pipeline[3].instr.Itype == JUMP_LINK || pipeline[3].instr.Itype == JUMP_LINK_REGISTER )
+        {
+          register_file[pipeline[3].instr.rd] = pipeline[3].alu_result;
+          CONTROL_SIGN.RegW = 1;
+        }
       }
       else
       {
