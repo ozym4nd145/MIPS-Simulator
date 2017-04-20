@@ -51,10 +51,12 @@ void* instruction_fetch(void* data)
 
       if (strcmp(input, "run") == 0)
         run=1;
+      //run mode on
 
       while(1)
       {
       STEPS++;
+      //Our clock
 
 #ifdef TIME
       clock_gettime(CLOCK_REALTIME, &begin);
@@ -67,6 +69,7 @@ void* instruction_fetch(void* data)
         printf("Instruction Thread Ended\n");
 #endif
         program_end = 1;
+        //Program Terminator
         break;
       }
 
@@ -232,6 +235,7 @@ void* instruction_fetch(void* data)
       // Implement READ_CLOCK_0 ?
       if(BreakPoint[PC]==1 && !run)
         stall=1;
+      //Completing all Instructions inserted before BreakPoint
 
       if(BreakPoint[PC]==1 && run)
       {
