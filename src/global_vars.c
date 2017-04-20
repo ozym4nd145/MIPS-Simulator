@@ -21,6 +21,7 @@ int STALL_COUNT = 0;
 int BRANCH_CYCLE_WASTE = 0;
 int INSTRUCTION_MEM_ACCESS = 0;
 unsigned int DELAY = 1000;       // sleep delay for each thread in micro seconds
+int LATENCY = 0;                 // Latency of memory access in cycles
 int NUM_THREADS_READ = 0;        // threads that have completed the copy stage
                                  // from buffer
 int NUM_THREADS_WRITE = 0;       // threads that have completed processing for

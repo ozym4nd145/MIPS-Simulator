@@ -30,7 +30,7 @@
 #define CACHE_PARAM_WRITEALLOC 7
 #define CACHE_PARAM_NOWRITEALLOC 8
 
-typedef enum { LRU } cache_replacement;
+typedef enum { LRU_POLICY } cache_replacement;
 
 /* structure definitions */
 typedef struct cache_line_
