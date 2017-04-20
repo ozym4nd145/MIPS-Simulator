@@ -103,6 +103,7 @@ extern int
 extern int
     NUM_THREADS_WRITE;  // number of threads that have completed processing for
                         // that particular cycle
+extern int stall_BreakPoint;
 
 extern pthread_t threads[NUM_THREADS];
 extern pthread_mutex_t CLOCK_LOCK;

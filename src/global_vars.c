@@ -31,6 +31,7 @@ int BreakPoint[INSTRUCTION_MEM];
 control CONTROL_SIGN;
 
 int Memory_Block[MEMORY_SIZE];  // Memory Block
+int stall_BreakPoint=0;
 
 pthread_mutex_t CLOCK_LOCK;  // Lock for syncing clock signal
 pthread_mutex_t READ_LOCK;   // Lock for syncing read update of all threads

@@ -49,9 +49,19 @@ void* register_read(void* data)
     if (clock_start && new_instruction)
     {
       // copy previous pipeline : Reading stage
+
+
+      if(!stall_BreakPoint)
       temp_pipeline[0] = pipeline[0];
+      else
+      {
+        temp_pipeline[0].instr.Itype = NO_OP;
+        temp_pipeline[0].instr.Ctype = NO_OPERATION;
+      }
+
+
       // Signal that was read
-      CURR_INSTR[1] = pipeline[0].instr;
+      CURR_INSTR[1] = temp_pipeline[0].instr;
 #ifdef DEBUG
       instruction_to_file("results/2_register_read.txt", temp_pipeline[0]);
 #endif
@@ -133,6 +143,7 @@ void* register_read(void* data)
       {
         // if NO_OP then just propagate the instruction
         pipeline[1] = temp_pipeline[0];
+
       }
 
       // update that this thread has completed processing

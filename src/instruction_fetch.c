@@ -107,6 +107,7 @@ void* instruction_fetch(void* data)
 
       // update value of pc( not a problem in stalls as register_read
       // automatically decrements pc)
+      if(!stall_BreakPoint)
       PC += 4;
 
       // loop until reading stage has completed
@@ -127,7 +128,7 @@ void* instruction_fetch(void* data)
       //   CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
       // }
 
-      if (stall == 0)
+      if (stall == 0 && stall_BreakPoint==0)
       {
         if (temp_pc > MAX_PC)
         {
@@ -231,17 +232,27 @@ void* instruction_fetch(void* data)
 #endif
 
       usleep(10*DELAY);
+      printf("%d\n",PC-BASE_PC_ADDR);
 
       // Implement READ_CLOCK_0 ?
-      if(BreakPoint[PC]==1 && !run)
-        stall=1;
+      int index = (PC-BASE_PC_ADDR)/4;
+
+      if(BreakPoint[index]==1 && !run)
+      {
+        stall_BreakPoint=1;
+      }
+
       //Completing all Instructions inserted before BreakPoint
 
-      if(BreakPoint[PC]==1 && run)
+      if(BreakPoint[index]==1 && !run)
       {
-        if(pipeline[0].instr.Itype==NO_OP && pipeline[1].instr.Itype == NO_OP && pipeline[2].instr.Itype == NO_OP 
+        if( pipeline[1].instr.Itype == NO_OP && pipeline[2].instr.Itype == NO_OP 
           && pipeline[3].instr.Itype == NO_OP)
+        {
+          
+          stall_BreakPoint = 0;
           break;
+        }
       }
     } // continue stepping instructions loop ends
   } // run | continue if ends
@@ -265,7 +276,15 @@ void* instruction_fetch(void* data)
     {
       int break_address;
       scanf(" 0x%x", &break_address);
-      int index = (break_address-BASE_PC_ADDR)/4;
+      int index = (break_address-BASE_PC_ADDR);
+
+            if(index%4!=0)
+        {
+          printf("Invalid BreakPoint Address\n" );
+          continue;
+        }
+
+      index/=4;
 
       if(index<0 || index > INSTRUCTION_MEM )
         printf("Invalid BreakPoint Address\n" );
@@ -282,7 +301,16 @@ void* instruction_fetch(void* data)
     {
       int break_address;
       scanf(" 0x%x", &break_address);
-      int index = (break_address-BASE_PC_ADDR)/4;
+      int index = (break_address-BASE_PC_ADDR);
+
+        if(index%4!=0)
+        {
+          printf("Invalid BreakPoint Address\n" );
+          continue;
+        }
+
+      index/=4;
+
 
       if(index<0 || index > INSTRUCTION_MEM )
         printf("Invalid BreakPoint Address\n" );
