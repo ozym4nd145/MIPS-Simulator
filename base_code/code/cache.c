@@ -160,32 +160,67 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
   }
 
   (stat->accesses)++;
+  int prev_set_count = set->set_contents_count;
+  int mem_access = lru_operation(set, tag, cache_writealloc);
 
   if (cache_writeback)
   {
-    int prev_set_count = set->set_contents_count;
-    int mem_access = lru_operation(set, tag, 1);
-    (set->head)->dirty = 1;
-
-    if (mem_access)
+    if (cache_writealloc)
     {
-      (stat->misses)++;
-      (stat->demand_fetches)++;
-      (stat->copies_back) += (mem_access - 1);
-      // indicates replace
-      if ((set->set_contents_count) == prev_set_count)
+      /**
+      on hits it writes to cache setting “dirty” bit for the block, main memory
+      is not updated;
+      on misses it updates the block in main memory and brings the block to the
+      cache;
+      **/
+      if (mem_access)
       {
-        (stat->replacements)++;
+        // represents a miss
+        (stat->misses)++;
+        (stat->demand_fetches)++;
+        (stat->copies_back) += (mem_access - 1);
+        // indicates replace
+        if ((set->set_contents_count) == prev_set_count)
+        {
+          (stat->replacements)++;
+        }
+      }
+      else
+      {
+        // represents a hit
+        (set->head)->dirty = 1;
+      }
+    }
+    else
+    {
+      /**
+      on hits it writes to cache setting “dirty” bit for the block, main memory
+      is not updated;
+      on misses it updates the block in main memory not bringing that block to
+      the cache;
+      **/
+      // In this case mem_access = 1 denotes there was a miss
+      if (mem_access)
+      {
+        (stat->misses)++;
+      }
+      else
+      {
+        // represents a hit
+        (set->head)->dirty = 1;
       }
     }
   }
   else
   {
-    int prev_set_count = set->set_contents_count;
-    int mem_access = 0;
+    //(stat->copies_back)++;
     if (cache_writealloc)
     {
-      mem_access = lru_operation(set, tag, 1);
+      /**
+      on hits it writes to cache and main memory
+      on misses it updates the block in main memory and brings the block to the
+      cache
+      **/
       if (mem_access)
       {
         (stat->misses)++;
@@ -198,11 +233,14 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
     }
     else
     {
-      int miss = lru_operation(set, tag, 0);
-      if (miss) (stat->misses)++;
+      /**
+      on hits it writes to cache and main memory;
+      on misses it updates the block in main memory not bringing that block to
+      the cache;
+      **/
+      // In this case mem_access = 1 denotes there was a miss
+      if (mem_access) (stat->misses)++;
     }
-
-    (stat->copies_back)++;
   }
 }
 
