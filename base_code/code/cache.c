@@ -18,7 +18,7 @@ static int cache_isize = DEFAULT_CACHE_SIZE;
 static int cache_dsize = DEFAULT_CACHE_SIZE;
 static int cache_block_size = DEFAULT_CACHE_BLOCK_SIZE;
 static int words_per_block = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
-static int cache_assoc = DEFAULT_CACHE_ASSOC;
+int cache_assoc = DEFAULT_CACHE_ASSOC;
 static int cache_writeback = DEFAULT_CACHE_WRITEBACK;
 static int cache_writealloc = DEFAULT_CACHE_WRITEALLOC;
 
@@ -224,7 +224,41 @@ void perform_access(addr, access_type) unsigned addr, access_type;
 /************************************************************/
 
 /************************************************************/
-void flush() { /* flush the cache */}
+void write_dirty(Pcache _cache, Pcache_stat stat)
+{
+  int i = 0;
+  for (i = 0; i < (_cache->n_sets); i++)
+  {
+    Pcache_set set = (icache->set)[i];
+    if (set == NULL) continue;
+    Pcache_line node = set->head;
+    while (node != NULL)
+    {
+      if (node->dirty == 1)
+      {
+        node->dirty = 0;
+        stat->copies_back += 1;
+      }
+      node = node->LRU_next;
+    }
+  }
+}
+/************************************************************/
+
+/************************************************************/
+void flush()
+{ /* flush the cache */
+  int i = 0;
+  if (cache_split == 0)
+  {
+    write_dirty(dcache, &cache_stat_data);
+  }
+  else
+  {
+    write_dirty(icache, &cache_stat_inst);
+    write_dirty(dcache, &cache_stat_data);
+  }
+}
 /************************************************************/
 
 /************************************************************/
