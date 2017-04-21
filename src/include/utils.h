@@ -17,4 +17,5 @@ void regdump();
 void make_html(char *svg_name);
 void print_result(char *s);
 int program_memory_interface(int val,int address,int mode);
+instruction program_instruction_interface(int address);
 #endif

@@ -150,13 +150,18 @@ void* instruction_fetch(void* data)
 #endif
           if (control_signal.stall == 0)
           {
-            pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
-            CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
+            // pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+            pipeline[0].instr = program_instruction_interface(temp_pc);
+            // CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
+            CURR_INSTR[0] = pipeline[0].instr;
           }
           else
           {
-            pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4 - 1];
+            // pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4 - 1];
+            // CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
+            pipeline[0].instr = program_instruction_interface(temp_pc-4);
             CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
+            // CURR_INSTR[0] = pipeline[0].instr; 
           }
           INSTRUCTION_MEM_ACCESS++;
         }
@@ -258,6 +263,10 @@ void* instruction_fetch(void* data)
 
 
 
+      }
+      else
+      {
+        stall_BreakPoint=0;
       }
 
       //Completing all Instructions inserted before BreakPoint
