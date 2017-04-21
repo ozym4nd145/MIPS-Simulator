@@ -383,7 +383,7 @@ void* alu_op(void* data)
                    get_instruction_name(pipeline[2].instr.Itype));
 #endif
 
-            
+            // pipeline[2] = temp_pipeline[1];
           }
 
           break;
