@@ -9,19 +9,25 @@
 #include <string.h>
 #include "lru.h"
 
-#include "main.h"
+#include "trace.h"
 
 /* cache configuration parameters */
 static int cache_split = 0;
 static int cache_usize = DEFAULT_CACHE_SIZE;
 static int cache_isize = DEFAULT_CACHE_SIZE;
 static int cache_dsize = DEFAULT_CACHE_SIZE;
-static int cache_block_size = DEFAULT_CACHE_BLOCK_SIZE;
-static int words_per_block = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
-int cache_assoc = DEFAULT_CACHE_ASSOC;
+static int cache_iblock_size = DEFAULT_CACHE_BLOCK_SIZE;
+static int cache_dblock_size = DEFAULT_CACHE_BLOCK_SIZE;
+static int cache_iwords_per_block = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
+static int cache_dwords_per_block = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
+static int cache_iassoc = DEFAULT_CACHE_ASSOC;
+static int cache_dassoc = DEFAULT_CACHE_ASSOC;
 static int cache_writeback = DEFAULT_CACHE_WRITEBACK;
 static int cache_writealloc = DEFAULT_CACHE_WRITEALLOC;
-
+static int cache_iperf = DEFAULT_CACHE_PERFECT;
+static int cache_dperf = DEFAULT_CACHE_PERFECT;
+static cache_replacement cache_dreplacement = DEFAULT_CACHE_REPLACEMENT;
+static cache_replacement cache_ireplacement = DEFAULT_CACHE_REPLACEMENT;
 /* cache model data structures */
 static Pcache icache;
 static Pcache dcache;
@@ -31,14 +37,36 @@ static cache_stat cache_stat_inst;
 static cache_stat cache_stat_data;
 
 /************************************************************/
-void set_cache_param(param, value) int param;
+void set_cache_param(param, value) cache_param param;
 int value;
 {
   switch (param)
   {
+    case CACHE_PARAM_IBLOCK_SIZE:
+      cache_iblock_size = value;
+      cache_iwords_per_block = value / WORD_SIZE;
+      break;
+    case CACHE_PARAM_DBLOCK_SIZE:
+      cache_dblock_size = value;
+      cache_dwords_per_block = value / WORD_SIZE;
+      break;
+    case CACHE_PARAM_IASSOC:
+      cache_iassoc = value;
+      break;
+    case CACHE_PARAM_DASSOC:
+      cache_dassoc = value;
+      break;
+    case CACHE_PARAM_IPERF:
+      cache_iperf = value;
+      break;
+    case CACHE_PARAM_DPERF:
+      cache_dperf = value;
+      break;
     case CACHE_PARAM_BLOCK_SIZE:
-      cache_block_size = value;
-      words_per_block = value / WORD_SIZE;
+      cache_iblock_size = value;
+      cache_iwords_per_block = value / WORD_SIZE;
+      cache_dblock_size = value;
+      cache_dwords_per_block = value / WORD_SIZE;
       break;
     case CACHE_PARAM_USIZE:
       cache_split = FALSE;
@@ -53,7 +81,8 @@ int value;
       cache_dsize = value;
       break;
     case CACHE_PARAM_ASSOC:
-      cache_assoc = value;
+      cache_dassoc = value;
+      cache_iassoc = value;
       break;
     case CACHE_PARAM_WRITEBACK:
       cache_writeback = TRUE;
@@ -67,6 +96,12 @@ int value;
     case CACHE_PARAM_NOWRITEALLOC:
       cache_writealloc = FALSE;
       break;
+    case CACHE_PARAM_DREPLACEMENT:
+      cache_dreplacement = LRU_POLICY;
+      break;
+    case CACHE_PARAM_IREPLACEMENT:
+      cache_ireplacement = LRU_POLICY;
+      break;
     default:
       printf("error set_cache_param: bad parameter value\n");
       exit(-1);
@@ -75,14 +110,15 @@ int value;
 /************************************************************/
 
 /************************************************************/
-void init_cache_params(Pcache c, int cache_size)
+void init_cache_params(Pcache c, int cache_size, int block_size, int wpb,
+                       int assoc)
 {
   c->size = (cache_size) / WORD_SIZE;
-  c->associativity = cache_assoc;
-  unsigned num_sets = (c->size) / (c->associativity * words_per_block);
+  c->associativity = assoc;
+  unsigned num_sets = (c->size) / (c->associativity * wpb);
   int num_bits = LOG2(num_sets);
   c->n_sets = 1 << (num_bits);
-  c->index_mask_offset = LOG2(cache_block_size);
+  c->index_mask_offset = LOG2(block_size);
   c->tag_mask_offset = ((c->index_mask_offset) + num_bits);
   c->index_mask = (num_sets - 1) << (c->index_mask_offset);
   c->tag_mask = ((unsigned)(1 << (32 - (c->tag_mask_offset))) - 1)
@@ -109,20 +145,23 @@ void init_cache()
     // In case there is no split both icache and dcache point to same cache.
     icache = &c1;
     dcache = &c1;
-    init_cache_params(&c1, cache_usize);
+    init_cache_params(&c1, cache_usize, cache_dblock_size,
+                      cache_dwords_per_block, cache_dassoc);
   }
   else
   {
     icache = &c1;
     dcache = &c2;
-    init_cache_params(&c1, cache_isize);
-    init_cache_params(&c2, cache_dsize);
+    init_cache_params(&c1, cache_isize, cache_iblock_size,
+                      cache_iwords_per_block, cache_iassoc);
+    init_cache_params(&c2, cache_dsize, cache_dblock_size,
+                      cache_dwords_per_block, cache_dassoc);
   }
 }
 /************************************************************/
 
 /************************************************************/
-void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat)
+void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
 {
   Pcache_set set = (_cache->set)[index];
   if (set == NULL)
@@ -131,19 +170,19 @@ void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat)
     set = (_cache->set)[index];
   }
   int prev_set_count = set->set_contents_count;
-  int mem_access = lru_operation(set, tag, 1);
+  int mem_access = lru_operation(set, tag, 1, _cache->associativity);
 
   (stat->accesses)++;
   if (mem_access)
   {
     // fetching words_per_block number of blocks from memory
-    (stat->demand_fetches) += words_per_block;
+    (stat->demand_fetches) += wpb;
 
     (stat->misses)++;
 
     // writing words_per_block number of words to memory
     // if replacement of block whose dirty bit was 1 is done
-    (stat->copies_back) += (words_per_block) * (mem_access - 1);
+    (stat->copies_back) += (wpb) * (mem_access - 1);
 
     // indicates replace
     if ((set->set_contents_count) == prev_set_count)
@@ -153,7 +192,7 @@ void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat)
   }
 }
 
-void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
+void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
 {
   Pcache_set set = (_cache->set)[index];
   if (set == NULL)
@@ -164,7 +203,8 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
 
   (stat->accesses)++;
   int prev_set_count = set->set_contents_count;
-  int mem_access = lru_operation(set, tag, cache_writealloc);
+  int mem_access =
+      lru_operation(set, tag, cache_writealloc, _cache->associativity);
   fflush(stdout);
   if (cache_writeback)
   {
@@ -184,11 +224,11 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
         (stat->misses)++;
 
         // fetching words_per_block number of blocks from memory
-        (stat->demand_fetches) += words_per_block;
+        (stat->demand_fetches) += wpb;
 
         // writing words_per_block number of words to memory
         // if replacement of block whose dirty bit was 1 is done
-        (stat->copies_back) += (words_per_block) * (mem_access - 1);
+        (stat->copies_back) += (wpb) * (mem_access - 1);
 
         // indicates replace
         if ((set->set_contents_count) == prev_set_count)
@@ -244,7 +284,7 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
         (stat->misses)++;
 
         // fetching words_per_block number of blocks from memory
-        (stat->demand_fetches) += words_per_block;
+        (stat->demand_fetches) += wpb;
 
         if ((set->set_contents_count) == prev_set_count)
         {
@@ -272,19 +312,36 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat)
 void perform_access(addr, access_type) unsigned addr, access_type;
 {
   /* Assuming Unified cache for now */
-  int index = (addr & (icache->index_mask)) >> (icache->index_mask_offset);
-  int tag = (addr & (icache->tag_mask)) >> (icache->tag_mask_offset);
+  int index, tag;
   /* handle an access to the cache */
   switch (access_type)
   {
     case TRACE_INST_LOAD:
-      perform_load(icache, index, tag, &cache_stat_inst);
+      if (!cache_iperf)
+      {
+        index = (addr & (icache->index_mask)) >> (icache->index_mask_offset);
+        tag = (addr & (icache->tag_mask)) >> (icache->tag_mask_offset);
+        perform_load(icache, index, tag, &cache_stat_inst,
+                     cache_iwords_per_block);
+      }
       break;
     case TRACE_DATA_LOAD:
-      perform_load(dcache, index, tag, &cache_stat_data);
+      if (!cache_dperf)
+      {
+        index = (addr & (dcache->index_mask)) >> (dcache->index_mask_offset);
+        tag = (addr & (dcache->tag_mask)) >> (dcache->tag_mask_offset);
+        perform_load(dcache, index, tag, &cache_stat_data,
+                     cache_dwords_per_block);
+      }
       break;
     case TRACE_DATA_STORE:
-      perform_store(dcache, index, tag, &cache_stat_data);
+      if (!cache_dperf)
+      {
+        index = (addr & (dcache->index_mask)) >> (dcache->index_mask_offset);
+        tag = (addr & (dcache->tag_mask)) >> (dcache->tag_mask_offset);
+        perform_store(dcache, index, tag, &cache_stat_data,
+                      cache_dwords_per_block);
+      }
       break;
     default:
       printf("skipping access, unknown type(%d)\n", access_type);
@@ -293,7 +350,7 @@ void perform_access(addr, access_type) unsigned addr, access_type;
 /************************************************************/
 
 /************************************************************/
-void write_dirty(Pcache _cache, Pcache_stat stat)
+void write_dirty(Pcache _cache, Pcache_stat stat, int wpb)
 {
   int i = 0;
   for (i = 0; i < (_cache->n_sets); i++)
@@ -307,7 +364,7 @@ void write_dirty(Pcache _cache, Pcache_stat stat)
       {
         node->dirty = 0;
         // writing words_per_block number of words to memory
-        (stat->copies_back) += words_per_block;
+        (stat->copies_back) += wpb;
       }
       node = node->LRU_next;
     }
@@ -318,15 +375,16 @@ void write_dirty(Pcache _cache, Pcache_stat stat)
 /************************************************************/
 void flush()
 { /* flush the cache */
-  if (cache_split == 0)
-  {
-    write_dirty(dcache, &cache_stat_data);
-  }
-  else
-  {
-    write_dirty(icache, &cache_stat_inst);
-    write_dirty(dcache, &cache_stat_data);
-  }
+  // if (cache_split == 0)
+  // {
+  //   write_dirty(dcache, &cache_stat_data);
+  // }
+  // else
+  // {
+  //   write_dirty(icache, &cache_stat_inst);
+  //   write_dirty(dcache, &cache_stat_data);
+  // }
+  write_dirty(dcache, &cache_stat_data, cache_dwords_per_block);
 }
 /************************************************************/
 
@@ -389,8 +447,8 @@ void dump_settings()
     printf("  Unified I- D-cache\n");
     printf("  Size: \t%d\n", cache_usize);
   }
-  printf("  Associativity: \t%d\n", cache_assoc);
-  printf("  Block size: \t%d\n", cache_block_size);
+  printf("  Associativity: \t%d\n", cache_dassoc);
+  printf("  Block size: \t%d\n", cache_dblock_size);
   printf("  Write policy: \t%s\n",
          cache_writeback ? "WRITE BACK" : "WRITE THROUGH");
   printf("  Allocation policy: \t%s\n",

@@ -30,7 +30,7 @@ Pcache_line search(Pcache_line head, unsigned tag)
 // lru_operation receives cache_set as parameter and updates the cache set.
 // It performs its operation independent of read-write operations.
 
-int lru_operation(Pcache_set set, unsigned tag, int allocate)
+int lru_operation(Pcache_set set, unsigned tag, int allocate, int assoc)
 {
   Pcache_line found = search(set->head, tag);
 
@@ -46,10 +46,9 @@ int lru_operation(Pcache_set set, unsigned tag, int allocate)
   {
     if (allocate == 1)
     {
-
-      if (set->set_contents_count == cache_assoc)  //  set is Full | follow LRU
-                                                   //  to remove the least
-                                                   //  recently used
+      if (set->set_contents_count == assoc)  //  set is Full | follow LRU
+                                             //  to remove the least
+                                             //  recently used
 
       {
         if (set->tail->dirty == 1) mem_access++;

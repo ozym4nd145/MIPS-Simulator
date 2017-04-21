@@ -16,19 +16,32 @@
 #define DEFAULT_CACHE_ASSOC 1
 #define DEFAULT_CACHE_WRITEBACK TRUE
 #define DEFAULT_CACHE_WRITEALLOC TRUE
+#define DEFAULT_CACHE_PERFECT FALSE
+#define DEFAULT_CACHE_REPLACEMENT LRU_POLICY
+#define TRACE_DATA_LOAD 0
+#define TRACE_DATA_STORE 1
+#define TRACE_INST_LOAD 2
 
 /* constants for settting cache parameters */
-#define CACHE_PARAM_BLOCK_SIZE 0
-#define CACHE_PARAM_USIZE 1
-#define CACHE_PARAM_ISIZE 2
-#define CACHE_PARAM_IPERF 0
-#define CACHE_PARAM_DSIZE 3
-#define CACHE_PARAM_DPERF 0
-#define CACHE_PARAM_ASSOC 4
-#define CACHE_PARAM_WRITEBACK 5
-#define CACHE_PARAM_WRITETHROUGH 6
-#define CACHE_PARAM_WRITEALLOC 7
-#define CACHE_PARAM_NOWRITEALLOC 8
+typedef enum {
+  CACHE_PARAM_BLOCK_SIZE,
+  CACHE_PARAM_IBLOCK_SIZE,
+  CACHE_PARAM_DBLOCK_SIZE,
+  CACHE_PARAM_USIZE,
+  CACHE_PARAM_ISIZE,
+  CACHE_PARAM_IPERF,
+  CACHE_PARAM_DSIZE,
+  CACHE_PARAM_DPERF,
+  CACHE_PARAM_ASSOC,
+  CACHE_PARAM_IASSOC,
+  CACHE_PARAM_DASSOC,
+  CACHE_PARAM_WRITEBACK,
+  CACHE_PARAM_WRITETHROUGH,
+  CACHE_PARAM_WRITEALLOC,
+  CACHE_PARAM_NOWRITEALLOC,
+  CACHE_PARAM_IREPLACEMENT,
+  CACHE_PARAM_DREPLACEMENT,
+} cache_param;
 
 typedef enum { LRU_POLICY } cache_replacement;
 
@@ -85,9 +98,8 @@ void delete (Pcache_line *head, Pcache_line *tail, Pcache_line item);
 void insert(Pcache_line *head, Pcache_line *tail, Pcache_line item);
 void dump_settings();
 void print_stats();
-void init_cache_params(Pcache c, int cache_size);
-
-extern int cache_assoc;
+void init_cache_params(Pcache c, int cache_size, int block_size, int wpb,
+                       int assoc);
 
 /* macros */
 #define LOG2(x) ((int)rint((log((double)(x))) / (log(2.0))))

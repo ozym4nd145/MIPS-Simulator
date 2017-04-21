@@ -4,5 +4,5 @@
 #include "cache.h"
 
 Pcache_line constructor_Pcache_line(unsigned tag);
-int lru_operation(Pcache_set set, unsigned tag, int allocate);
+int lru_operation(Pcache_set set, unsigned tag, int allocate, int assoc);
 #endif
