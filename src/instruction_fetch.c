@@ -21,12 +21,19 @@ void* instruction_fetch(void* data)
   input[3] = 'p';
   input[4] = '\0';
   int temp_pc;
+  int program_end = 0;
 
   while (1)
   {
+
+    if (program_end)
+      break;
+
+
     if (scanf("%s", input) == -1)
     {
       continue;
+      sleep(DELAY);
     }
 
 #ifdef TIME
@@ -37,15 +44,20 @@ void* instruction_fetch(void* data)
 
     // sleep(1);
     // input = "step\0";
-    if (strcmp(input, "step") == 0)
+    if (strcmp(input, "run") == 0 || strcmp(input, "continue") == 0)
     {
-      // if (PC >= MAX_PC)
-      // {
-      //   // printf("Program complete");
-      //   // TODO: Close all threads and free all memory
-      //   // exit(0);
-      // }
+
+      int run = 0;
+      printf("%d\n",run );
+
+      if (strcmp(input, "run") == 0)
+        run=1;
+      //run mode on
+
+      while(1)
+      {
       STEPS++;
+      //Our clock
 
 #ifdef TIME
       clock_gettime(CLOCK_REALTIME, &begin);
@@ -57,6 +69,8 @@ void* instruction_fetch(void* data)
 #ifdef DEBUG
         printf("Instruction Thread Ended\n");
 #endif
+        program_end = 1;
+        //Program Terminator
         break;
       }
 
@@ -94,6 +108,7 @@ void* instruction_fetch(void* data)
 
       // update value of pc( not a problem in stalls as register_read
       // automatically decrements pc)
+      if(!stall_BreakPoint)
       PC += 4;
 
       // loop until reading stage has completed
@@ -114,7 +129,7 @@ void* instruction_fetch(void* data)
       //   CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
       // }
 
-      if (stall == 0)
+      if (stall == 0 && stall_BreakPoint==0)
       {
         if (temp_pc > MAX_PC)
         {
@@ -154,9 +169,19 @@ void* instruction_fetch(void* data)
                get_instruction_name(CURR_INSTR[0].Itype));
 #endif
       }
+      else if(stall_BreakPoint ==0)
+      {
+        pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+        CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
+        pipeline[0].pc = temp_pc;
+        CONTROL_SIGN.STALL_C = 1;
+        ACTIVE_STAGE[0] = 0;
+      }
       else
       {
         pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+        pipeline[0].instr.Itype = NO_OP;
+        pipeline[0].instr.Ctype = NO_OPERATION;
         CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
         pipeline[0].pc = temp_pc;
         CONTROL_SIGN.STALL_C = 1;
@@ -217,22 +242,111 @@ void* instruction_fetch(void* data)
       printf("Frequency - %lfGHz\n", 1.0 / (2 * time_spent));
 #endif
 
+      usleep(10*DELAY);
+      printf("%d\n",PC-BASE_PC_ADDR);
+
       // Implement READ_CLOCK_0 ?
-    }
+      int index = (PC-BASE_PC_ADDR)/4;
+
+      if(BreakPoint[index]==1 && !run)
+      {
+        stall_BreakPoint=1;
+              // printf("%s\n",get_instruction_name(pipeline[0].instr.Itype ));
+              //       printf("%s\n",get_instruction_name(pipeline[1].instr.Itype ));
+              //             printf("%s\n",get_instruction_name(pipeline[2].instr.Itype ));
+
+
+
+
+      }
+
+      //Completing all Instructions inserted before BreakPoint
+
+      if(BreakPoint[index]==1 && !run)
+      {
+        if(pipeline[0].instr.Itype == NO_OP && pipeline[1].instr.Itype == NO_OP && pipeline[2].instr.Itype == NO_OP 
+          && pipeline[3].instr.Itype == NO_OP)
+        {
+          pipeline[0].instr.Itype = NO_OP;
+          pipeline[0].instr.Ctype = NO_OPERATION ;
+          stall_BreakPoint = 0;
+          break;
+        }
+      }
+    } // continue stepping instructions loop ends
+  } // run | continue if ends
+
+
     else if (strcmp(input, "regdump") == 0)
     {
       regdump();
     }
+
+
     else if (strcmp(input, "memdump") == 0)
     {
       int start, num;
       scanf(" 0x%x %d", &start, &num);
       memdump(start, num);
     }
+
+
+    else if (strcmp(input, "delete") == 0)
+    {
+      int break_address;
+      scanf(" 0x%x", &break_address);
+      int index = (break_address-BASE_PC_ADDR);
+
+            if(index%4!=0)
+        {
+          printf("Invalid BreakPoint Address\n" );
+          continue;
+        }
+
+      index/=4;
+
+      if(index<0 || index > INSTRUCTION_MEM )
+        printf("Invalid BreakPoint Address\n" );
+
+      else if ( BreakPoint[index]==0 )
+        printf("BreakPoint does not exist at specified address\n");
+
+      else
+        BreakPoint[index]=0;
+    }
+
+
+    else if (strcmp(input, "break") == 0)
+    {
+      int break_address;
+      scanf(" 0x%x", &break_address);
+      int index = (break_address-BASE_PC_ADDR);
+
+        if(index%4!=0)
+        {
+          printf("Invalid BreakPoint Address\n" );
+          continue;
+        }
+
+      index/=4;
+
+
+      if(index<0 || index > INSTRUCTION_MEM )
+        printf("Invalid BreakPoint Address\n" );
+
+      else if ( BreakPoint[index]==1 )
+        printf("BreakPoint already exists at specified address\n");
+
+      else
+        BreakPoint[index]=1;
+    }
+
+
     else
     {
       printf("Unrecognized command\n");
     }
+    
     usleep(DELAY);
   }
   pthread_exit(NULL);

@@ -344,6 +344,7 @@ void* alu_op(void* data)
 
             case JUMP_LINK :
               pipeline[2].alu_result = PC+4;
+              pipeline[2].instr.rd=31;
               PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
               branched = 1;
 

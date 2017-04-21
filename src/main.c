@@ -72,6 +72,10 @@ int main(int argc, char* argv[])
   // Initializing MAX_PC
   MAX_PC = (4 * (i - 1)) + BASE_PC_ADDR;
 
+
+  for(;i>=0;i--)
+    BreakPoint[i]=0;
+
   // Initializing memory and pipeline buffer
   for (i = 0; i <= (NUM_THREADS - 1); i++)
   {
