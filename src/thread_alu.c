@@ -245,6 +245,10 @@ void* alu_op(void* data)
               pipeline[2].alu_result = temp_pipeline[1].LO;
               break;
 
+              case MOVE:
+              pipeline[2].alu_result = r2;
+              break;
+
             // HI LO are 2 separate registers for multiplication
 
             case MULTIPLY:
