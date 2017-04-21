@@ -33,8 +33,8 @@ static Pcache icache;
 static Pcache dcache;
 static cache c1;
 static cache c2;
-static cache_stat cache_stat_inst;
-static cache_stat cache_stat_data;
+cache_stat cache_stat_inst;
+cache_stat cache_stat_data;
 
 /************************************************************/
 void set_cache_param(param, value) cache_param param;

@@ -100,7 +100,8 @@ void dump_settings();
 void print_stats();
 void init_cache_params(Pcache c, int cache_size, int block_size, int wpb,
                        int assoc);
-
+extern cache_stat cache_stat_inst;
+extern cache_stat cache_stat_data;
 /* macros */
 #define LOG2(x) ((int)rint((log((double)(x))) / (log(2.0))))
 
