@@ -10,7 +10,7 @@
 */
 #define INSTRUCTION_MEM 0x00010000
 #define NUM_THREADS 5
-#define MEMORY_SIZE 1671168  // equals 64MB of memory
+#define MEMORY_SIZE 16777216  // equals 64MB of memory
 #define BASE_ADDR 0x10010000
 #define END_ADDR 0x14010000
 #define BASE_PC_ADDR 0x00400000
