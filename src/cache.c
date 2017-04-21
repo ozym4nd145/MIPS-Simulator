@@ -178,12 +178,14 @@ void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
     // fetching words_per_block number of blocks from memory
     (stat->demand_fetches) += wpb;
 
+    // number of memory access
+    (stat->num_mem_access) += mem_access;
+
     (stat->misses)++;
 
     // writing words_per_block number of words to memory
     // if replacement of block whose dirty bit was 1 is done
     (stat->copies_back) += (wpb) * (mem_access - 1);
-
     // indicates replace
     if ((set->set_contents_count) == prev_set_count)
     {
@@ -223,6 +225,9 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
         // represents a miss
         (stat->misses)++;
 
+        // number of memory access
+        (stat->num_mem_access) += mem_access;
+
         // fetching words_per_block number of blocks from memory
         (stat->demand_fetches) += wpb;
 
@@ -256,6 +261,9 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
       // In this case mem_access = 1 denotes there was a miss
       if (mem_access)
       {
+        // number of memory access
+        (stat->num_mem_access) += 1;
+
         (stat->misses)++;
         // writing 1 word to memory
         (stat->copies_back) += 1;
@@ -279,9 +287,15 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
       to the
       cache
       **/
+      // adding one to num_mem_access for write
+      (stat->num_mem_access) += 1;
+
       if (mem_access)
       {
         (stat->misses)++;
+
+        // number of memory access (one to fetch from memory)
+        (stat->num_mem_access) += 1;
 
         // fetching words_per_block number of blocks from memory
         (stat->demand_fetches) += wpb;
@@ -300,6 +314,10 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
       block to
       the cache;
       **/
+
+      // adding one to num_mem_access for write
+      (stat->num_mem_access) += 1;
+
       // In this case mem_access = 1 denotes there was a miss
       if (mem_access) (stat->misses)++;
     }

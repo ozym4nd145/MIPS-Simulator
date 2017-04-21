@@ -249,10 +249,14 @@ void print_result(char *s)
     throw_error("Error in opening result file");
   }
   // fprintf(write, "Reached\n" );
-  double cycles = STEPS - 1;
+  double cycle_waste_on_miss = ceil(LATENCY * FREQUENCY);
+  double cycles =
+      (STEPS - 1) +
+      (cache_stat_inst.num_mem_access + cache_stat_data.num_mem_access) *
+          cycles_waste_on_miss;
   double Ins_C = INSTRUCTION_COUNT;
   double IPC = Ins_C / cycles;
-  double time_exe = cycles * 0.5;
+  double time_exe = cycles * (1.0 / FREQUENCY);
   double idle_time = ((double)(-Ins_C + cycles)) * 0.5;
   double idle_time_percent = (idle_time / time_exe) * 100;
   // printf("BRANCH_CYCLE_WASTE%d\n", BRANCH_CYCLE_WASTE);

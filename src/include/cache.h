@@ -87,6 +87,7 @@ typedef struct cache_stat_
   int replacements;   /* number of misses that cause replacments */
   int demand_fetches; /* number of fetches */
   int copies_back;    /* number of write backs */
+  int num_mem_access; /* number of memory accesses (read as well as write) */
 } cache_stat, *Pcache_stat;
 
 /* function prototypes */
