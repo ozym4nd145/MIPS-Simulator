@@ -3,7 +3,8 @@
 
 ### Usage
 * Run `make` to compile the source code.
-* ` Usage: processor_simulator <path_input_HEX_file> <path_output_SVG_file> <path_output_result_file> `
+* ` Usage: processor_simulator <path_input_HEX_file> <input_of_cfg_file> <path_output_SVG_file> <path_output_result_file> `
+* Run `make cache` to compile the trace cache simulator
 * Open the svg file create on Chrome Browser
 * Type `step` to advanced a single clock cycle
 * Type `memdump <start_mem_addr> <num_block>` to view memory dump

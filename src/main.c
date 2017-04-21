@@ -104,6 +104,9 @@ int main(int argc, char* argv[])
     register_file[i] = 0;
   }
 
+  // Initializing stack pointer
+  register_file[29] = END_ADDR - 4;
+
   for (i = 0; i < NUM_THREADS; i++)
   {
     ACTIVE_STAGE[i] = 0;
