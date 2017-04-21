@@ -294,7 +294,7 @@ int program_memory_interface(int val, int address, int mode)
 {
   if (address < BASE_ADDR || address > END_ADDR)
   {
-    throw_error("Illegal Memory Access");
+    throw_error("Illegal Data Memory Access");
   }
 
   if (mode == 1)
@@ -308,4 +308,13 @@ int program_memory_interface(int val, int address, int mode)
     Memory_Block[(address - BASE_ADDR) / 4] = val;
     return 1;
   }
+}
+
+instruction program_instruction_interface(int address)
+{
+  if(address<BASE_PC_ADDR)
+  {
+    throw_error("Illegal Memory Access");
+  }
+    return program[(address-BASE_PC_ADDR)/4];
 }
