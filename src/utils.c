@@ -1,9 +1,9 @@
 #include "utils.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "cache.h"
 #include "global_vars.h"
-
 void throw_error(char *a)
 {
   fprintf(stderr, "%s\n", a);
@@ -249,7 +249,7 @@ void print_result(char *s)
     throw_error("Error in opening result file");
   }
   // fprintf(write, "Reached\n" );
-  double cycle_waste_on_miss = ceil(LATENCY * FREQUENCY);
+  double cycles_waste_on_miss = ceil(LATENCY * FREQUENCY);
   double cycles =
       (STEPS - 1) +
       (cache_stat_inst.num_mem_access + cache_stat_data.num_mem_access) *
@@ -312,9 +312,10 @@ int program_memory_interface(int val, int address, int mode)
 
 instruction program_instruction_interface(int address)
 {
-  if(address<BASE_PC_ADDR)
+  if (address < BASE_PC_ADDR)
   {
     throw_error("Illegal Memory Access");
   }
-    return program[(address-BASE_PC_ADDR)/4];
+  perform_access(address, TRACE_INST_LOAD);
+  return program[(address - BASE_PC_ADDR) / 4];
 }
