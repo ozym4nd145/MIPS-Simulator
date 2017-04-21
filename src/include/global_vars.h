@@ -45,6 +45,7 @@ typedef enum {
   JUMP_REGISTER,
   JUMP_LINK_REGISTER,
   MFLO,
+  MOVE,
   NO_OP
 } instruction_type;
 

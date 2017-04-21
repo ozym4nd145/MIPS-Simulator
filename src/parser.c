@@ -167,7 +167,7 @@ instruction instruction_parse(int a)
   }
 
   else if (information->opcode ==0 && information->rs==0 && information->rt==0
-          && information->shf_amt==0 && information->function==0 )
+          && information->shf_amt==0 && information->function==18 )
   {
     information->Ctype = DP;
     information->Itype = MFLO;
@@ -198,6 +198,13 @@ instruction instruction_parse(int a)
   {
     information->Ctype = BRANCH;
     information->Itype = JUMP_LINK_REGISTER;
+  }
+
+  else if(information->opcode==0 && information->function==33 
+          && information->shf_amt==0)
+  {
+    information->Ctype = DP;
+    information->Itype = MOVE;
   }
 
   else

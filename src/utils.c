@@ -95,6 +95,8 @@ char *get_instruction_name(const instruction_type instr)
       return "JUMP_LINK_REGISTER";
     case MFLO:
       return "MFLO";
+      case MOVE:
+      return "MOVE";
       break;
   }
   return NULL;
