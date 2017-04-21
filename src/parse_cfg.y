@@ -46,20 +46,20 @@ Icache:
       | CORE Core
       | DRAM Dram
       | PERFECT EQUAL BOOL Icache            {set_cache_param(CACHE_PARAM_IPERF, $3);  /*printf("CACHE_PARAM_IPERF %d\n",$3); */ }
-      | SIZE EQUAL INTEGER Icache            {set_cache_param(CACHE_PARAM_ISIZE, $3);  /*printf("CACHE_PARAM_ISIZE %d\n",$3); */ }
+      | SIZE EQUAL INTEGER Icache            {set_cache_param(CACHE_PARAM_ISIZE, 1024*($3));  /*printf("CACHE_PARAM_ISIZE %d\n",$3); */ }
       | ASSOC EQUAL INTEGER Icache           {set_cache_param(CACHE_PARAM_IASSOC, $3);  /*printf("CACHE_PARAM_IASSOC %d\n",$3); */ }
       | REPLACEMENT EQUAL LRU Icache         {set_cache_param(CACHE_PARAM_IREPLACEMENT, 0);  /*printf("CACHE_PARAM_IREPLACEMENT %s\n","lru"); */ }
-      | WRITETHROUGH EQUAL INTEGER Icache    {set_cache_param(CACHE_PARAM_WRITETHROUGH, $3);  /*printf("CACHE_PARAM_IWRITETHROUGH %d\n",$3); */ }
+      | WRITETHROUGH EQUAL INTEGER Icache    {if (($3)) { set_cache_param(CACHE_PARAM_WRITETHROUGH,0); } else { set_cache_param(CACHE_PARAM_WRITEBACK,0); }  /*printf("CACHE_PARAM_IWRITETHROUGH %d\n",$3); */ }
       | BLOCK_SIZE EQUAL INTEGER Icache      {set_cache_param(CACHE_PARAM_IBLOCK_SIZE, $3);  /*printf("CACHE_PARAM_IBLOCK_SIZE %d\n",$3); */ }
 Dcache:
       | ICACHE Icache
       | CORE Core
       | DRAM Dram
       | PERFECT EQUAL BOOL Dcache            {set_cache_param(CACHE_PARAM_DPERF, $3);  /*printf("CACHE_PARAM_DPERF %d\n",$3); */ }
-      | SIZE EQUAL INTEGER Dcache            {set_cache_param(CACHE_PARAM_DSIZE, $3);  /*printf("CACHE_PARAM_DSIZE %d\n",$3); */ }
+      | SIZE EQUAL INTEGER Dcache            {set_cache_param(CACHE_PARAM_DSIZE, 1024*($3));  /*printf("CACHE_PARAM_DSIZE %d\n",$3); */ }
       | ASSOC EQUAL INTEGER Dcache           {set_cache_param(CACHE_PARAM_DASSOC, $3);  /*printf("CACHE_PARAM_DASSOC %d\n",$3); */ }
       | REPLACEMENT EQUAL LRU Dcache         {set_cache_param(CACHE_PARAM_DREPLACEMENT, 0);  /*printf("CACHE_PARAM_DREPLACEMENT %s\n","lru"); */ }
-      | WRITETHROUGH EQUAL INTEGER Dcache    {set_cache_param(CACHE_PARAM_WRITETHROUGH, $3);  /*printf("CACHE_PARAM_DWRITETHROUGH %d\n",$3); */ }
+      | WRITETHROUGH EQUAL INTEGER Dcache    {if (($3)) { set_cache_param(CACHE_PARAM_WRITETHROUGH,0); } else { set_cache_param(CACHE_PARAM_WRITEBACK,0); }  /*printf("CACHE_PARAM_DWRITETHROUGH %d\n",$3); */ }
       | BLOCK_SIZE EQUAL INTEGER Dcache      {set_cache_param(CACHE_PARAM_DBLOCK_SIZE, $3);  /*printf("CACHE_PARAM_DBLOCK_SIZE %d\n",$3); */ }
 Core:
       | ICACHE Icache
