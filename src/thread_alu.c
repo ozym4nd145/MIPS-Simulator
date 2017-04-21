@@ -348,6 +348,7 @@ void* alu_op(void* data)
 
             case JUMP_LINK :
               pipeline[2].alu_result = PC+4;
+              printf("Here %d\n",pipeline[2].alu_result);
               pipeline[2].instr.rd=31;
               PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
               branched = 1;
@@ -382,7 +383,7 @@ void* alu_op(void* data)
                    get_instruction_name(pipeline[2].instr.Itype));
 #endif
 
-            pipeline[2] = temp_pipeline[1];
+            
           }
 
           break;
