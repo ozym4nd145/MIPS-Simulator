@@ -253,6 +253,11 @@ void* instruction_fetch(void* data)
       // Implement READ_CLOCK_0 ?
       int index = (PC-BASE_PC_ADDR)/4;
 
+      if(PC < BASE_PC_ADDR || PC > 5*4+MAX_PC)
+      {
+        throw_error("Wrong Branch | Jump address");
+      }
+
       if(BreakPoint[index]==1 && !run)
       {
         stall_BreakPoint=1;
