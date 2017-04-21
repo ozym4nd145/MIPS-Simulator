@@ -1,7 +1,9 @@
 #include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "cache.h"
 #include "global_vars.h"
+
 void throw_error(char *a)
 {
   fprintf(stderr, "%s\n", a);
@@ -265,27 +267,41 @@ void print_result(char *s)
   fprintf(write, "Idle Time (%%),%.4lf%%\n", idle_time_percent);
   fprintf(write, "Cache Summary\n");
   fprintf(write, "Cache L1-I\n");
-  fprintf(write, "num cache accesses,%d\n", INSTRUCTION_MEM_ACCESS);
+  fprintf(write, "num cache accesses,%d\n", cache_stat_inst.accesses);
+  fprintf(write, "num cache misses,%d\n", cache_stat_inst.misses);
+  fprintf(write, "miss rate,%.4f%%\n",
+          ((cache_stat_inst.misses * 1.0) / cache_stat_inst.accesses) * 100.0);
   fprintf(write, "Cache L1-D\n");
-  fprintf(write, "num cache accesses,%d\n", DATA_MEM_ACCESS);
+  fprintf(write, "num cache accesses,%d\n", cache_stat_data.accesses);
+  fprintf(write, "num cache misses,%d\n", cache_stat_data.misses);
+  fprintf(write, "miss rate,%.4f%%\n",
+          ((cache_stat_inst.misses * 1.0) / cache_stat_data.accesses) * 100.0);
+  fprintf(write, "DRAM summary\n");
+  fprintf(write, "num dram accesses,%d\n",
+          (cache_stat_inst.accesses + cache_stat_data.accesses));
+  fprintf(write, "average dram access latency (ns),%.4f\n",
+          (1.0 * LATENCY * (cache_stat_data.misses + cache_stat_inst.misses)) /
+              (cache_stat_inst.accesses + cache_stat_data.accesses));
   fclose(write);
 }
 
 // Mode =1 => read from memory| Mode !=1 => write to memory
-int program_memory_interface(int val,int address,int mode)
+int program_memory_interface(int val, int address, int mode)
 {
-  if(address<BASE_ADDR ||  address>END_ADDR)
+  if (address < BASE_ADDR || address > END_ADDR)
   {
     throw_error("Illegal Memory Access");
   }
 
-  if(mode==1)
+  if (mode == 1)
   {
-    return Memory_Block[(address-BASE_ADDR)/4];
+    perform_access(address, TRACE_DATA_LOAD);
+    return Memory_Block[(address - BASE_ADDR) / 4];
   }
   else
   {
-    Memory_Block[(address-BASE_ADDR)/4]=val;
+    perform_access(address, TRACE_DATA_STORE);
+    Memory_Block[(address - BASE_ADDR) / 4] = val;
     return 1;
   }
 }
