@@ -35,4 +35,4 @@ ignore/
 .vscode/
 src/simulator
 src/results
-testcases
+my_outputs/
