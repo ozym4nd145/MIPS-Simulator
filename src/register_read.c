@@ -51,13 +51,9 @@ void* register_read(void* data)
       // copy previous pipeline : Reading stage
 
 
-      if(!stall_BreakPoint)
       temp_pipeline[0] = pipeline[0];
-      else
-      {
-        temp_pipeline[0].instr.Itype = NO_OP;
-        temp_pipeline[0].instr.Ctype = NO_OPERATION;
-      }
+      // printf("%s\n",get_instruction_name(temp_pipeline[0].instr.Itype ));
+      
 
 
       // Signal that was read

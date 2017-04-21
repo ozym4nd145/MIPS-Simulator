@@ -48,6 +48,7 @@ void* instruction_fetch(void* data)
     {
 
       int run = 0;
+      printf("%d\n",run );
 
       if (strcmp(input, "run") == 0)
         run=1;
@@ -168,9 +169,19 @@ void* instruction_fetch(void* data)
                get_instruction_name(CURR_INSTR[0].Itype));
 #endif
       }
+      else if(stall_BreakPoint ==0)
+      {
+        pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+        CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
+        pipeline[0].pc = temp_pc;
+        CONTROL_SIGN.STALL_C = 1;
+        ACTIVE_STAGE[0] = 0;
+      }
       else
       {
         pipeline[0].instr = program[(temp_pc - BASE_PC_ADDR) / 4];
+        pipeline[0].instr.Itype = NO_OP;
+        pipeline[0].instr.Ctype = NO_OPERATION;
         CURR_INSTR[0] = program[(temp_pc - BASE_PC_ADDR) / 4];
         pipeline[0].pc = temp_pc;
         CONTROL_SIGN.STALL_C = 1;
@@ -240,16 +251,24 @@ void* instruction_fetch(void* data)
       if(BreakPoint[index]==1 && !run)
       {
         stall_BreakPoint=1;
+              // printf("%s\n",get_instruction_name(pipeline[0].instr.Itype ));
+              //       printf("%s\n",get_instruction_name(pipeline[1].instr.Itype ));
+              //             printf("%s\n",get_instruction_name(pipeline[2].instr.Itype ));
+
+
+
+
       }
 
       //Completing all Instructions inserted before BreakPoint
 
       if(BreakPoint[index]==1 && !run)
       {
-        if( pipeline[1].instr.Itype == NO_OP && pipeline[2].instr.Itype == NO_OP 
+        if(pipeline[0].instr.Itype == NO_OP && pipeline[1].instr.Itype == NO_OP && pipeline[2].instr.Itype == NO_OP 
           && pipeline[3].instr.Itype == NO_OP)
         {
-          
+          pipeline[0].instr.Itype = NO_OP;
+          pipeline[0].instr.Ctype = NO_OPERATION ;
           stall_BreakPoint = 0;
           break;
         }
