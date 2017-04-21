@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "cache.h"
 #include "global_vars.h"
 #include "main_functions.h"
+#include "parse_cfg.tab.h"
 #include "svg.h"
 #include "utils.h"
 
@@ -12,16 +14,16 @@ int main(int argc, char* argv[])
   FILE* code;
   FILE* svg;
   // Input error handling
-  if (argc == 4)
+  if (argc == 5)
   {
     code = fopen(argv[1], "r");
   }
   else
   {
-    fprintf(
-        stderr,
-        "Usage: %s <input_HEX_file> <output_SVG_file> <output_results_file>\n",
-        argv[0]);
+    fprintf(stderr,
+            "Usage: %s <input_HEX_file> <input_CFG_file> <output_SVG_file> "
+            "<output_results_file>\n",
+            argv[0]);
     throw_error("");
   }
 
@@ -30,8 +32,7 @@ int main(int argc, char* argv[])
     throw_error("Error in opening instruction file");
   }
   // Drawing the svg
-  svg = fopen(argv[2], "w");
-
+  svg = fopen(argv[3], "w");
   if (svg == NULL)
   {
     throw_error("Error in opening svg file");
@@ -40,9 +41,18 @@ int main(int argc, char* argv[])
   draw_svg(svg);
   fclose(svg);
 
+  init_cache();
+  parse_cfgin = fopen(argv[2], "r");
+  if (parse_cfgin == NULL)
+  {
+    throw_error("Error in opening config file");
+  }
+  parse_cfgparse();
+  fclose(parse_cfgin);
+
   // Calculating base path of svg
-  char* base_name = strdup(argv[2]);
-  int name_start_index = strlen(argv[2]) - 1;
+  char* base_name = strdup(argv[3]);
+  int name_start_index = strlen(argv[3]) - 1;
   while (name_start_index >= 0)
   {
     if (argv[2][name_start_index] == '/')
@@ -72,9 +82,7 @@ int main(int argc, char* argv[])
   // Initializing MAX_PC
   MAX_PC = (4 * (i - 1)) + BASE_PC_ADDR;
 
-
-  for(;i>=0;i--)
-    BreakPoint[i]=0;
+  for (; i >= 0; i--) BreakPoint[i] = 0;
 
   // Initializing memory and pipeline buffer
   for (i = 0; i <= (NUM_THREADS - 1); i++)
@@ -129,7 +137,7 @@ int main(int argc, char* argv[])
 #ifdef DEBUG
   printf("Control  Reached here\n");
 #endif
-  print_result(argv[3]);
+  print_result(argv[4]);
 
   free(base_name);
   fclose(code);

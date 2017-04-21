@@ -10,7 +10,7 @@ HEADERS = $(wildcard $(HEADER_DIR)/*.h)
 SRCS = main.c global_vars.c utils.c parser.c instruction_fetch.c register_read.c thread_alu.c data_memory.c register_write.c display.c svg.c cache.c lru.c
 OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 
-processor_simulator: $(OBJS) $(OBJDIR)/lex.parse_cfg.o $(OBJDIR)/parse_cfg.tab.o
+processor_simulator: $(OBJDIR)/lex.parse_cfg.o $(OBJDIR)/parse_cfg.tab.o $(OBJS)
 	$(CC) $(LFLAGS) $(INCLUDE) -o $@ $^ $(LIBS)
 
 cache: cache.c lru.c trace.c $(HEADERS)
@@ -27,11 +27,11 @@ time: processor_simulator
 $(OBJDIR)/%.o: %.c $(HEADERS) | $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ -c $<
 
-$(OBJDIR)/parse_cfg.tab.o: parse_cfg.y
+$(OBJDIR)/parse_cfg.tab.o: parse_cfg.y | $(OBJDIR)
 	bison -p parse_cfg -d parse_cfg.y
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ parse_cfg.tab.c
 
-$(OBJDIR)/lex.parse_cfg.o: parse_cfg.l $(OBJDIR)/parse_cfg.tab.o
+$(OBJDIR)/lex.parse_cfg.o: parse_cfg.l $(OBJDIR)/parse_cfg.tab.o | $(OBJDIR)
 	flex -P parse_cfg parse_cfg.l
 	$(CC) $(CFLAGS) -o $@ lex.parse_cfg.c
 

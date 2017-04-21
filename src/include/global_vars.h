@@ -2,6 +2,8 @@
 #define GLOBAL_VARS_H
 
 #include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /**
 * Instruction memory
@@ -114,6 +116,9 @@ extern pthread_mutex_t WRITE_LOCK;
 extern float SVG_HEIGHT;
 extern float SVG_WIDTH;
 extern float SVG_SATURATE;
+
+extern FILE* parse_cfgin;
+extern int parse_cfgparse(void);
 
 // Display signals
 extern int ACTIVE_STAGE[5];  // [0..4]-> fetch,decode,alu,mem,write
