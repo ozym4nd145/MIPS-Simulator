@@ -1,0 +1,42 @@
+svg {
+  background-color: beige;
+}
+
+.signal{
+    stroke:cornflowerblue;
+    stroke-width: 0.3;
+}
+.text_label{
+    font-size: 5px;
+}
+#fetch
+{
+    filter: url("#colorsaturate");
+    opacity: 0.5;
+}#t1 {
+    display: none;
+}#decode
+{
+    filter: url("#colorsaturate");
+    opacity: 0.5;
+}#t2 {
+    display: none;
+}#execute
+{
+    filter: url("#colorsaturate");
+    opacity: 0.5;
+}#t3 {
+    display: none;
+}#memory
+{
+    filter: url("#colorsaturate");
+    opacity: 0.5;
+}#t4 {
+    display: none;
+}#writeback
+{
+    filter: url("#colorsaturate");
+    opacity: 0.5;
+}#t5 {
+    display: none;
+}

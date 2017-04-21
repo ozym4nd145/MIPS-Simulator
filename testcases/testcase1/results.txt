@@ -1,0 +1,11 @@
+Instructions,20
+Cycles,24
+IPC,0.8333
+Time (ns),12
+Idle time (ns),2
+Idle time (%),16.6667%
+Cache Summary
+Cache L1-I
+num cache accesses,20
+Cache L1-D
+num cache accesses,2
