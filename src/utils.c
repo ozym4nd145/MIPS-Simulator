@@ -97,6 +97,12 @@ char *get_instruction_name(const instruction_type instr)
       return "MFLO";
       case MOVE:
       return "MOVE";
+      case BRANCH_NOT_EQUAL:
+      return "BRANCH_NOT_EQUAL";
+      case SLL:
+      return "SLL";
+      case SLT:
+      return "SLT";
       break;
   }
   return NULL;

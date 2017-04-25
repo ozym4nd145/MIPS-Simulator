@@ -207,6 +207,25 @@ instruction instruction_parse(int a)
     information->Itype = MOVE;
   }
 
+  else if(information->opcode == 0 && information->function==42 && 
+  		  information->shf_amt==0)
+  {
+  	information->Ctype = DP;
+  	information->Itype = SLT;
+  }
+
+  else if(information->opcode ==0 && information->function==0)
+  {
+  	information->Ctype = DP;
+  	information->Itype = SLL;
+  }
+
+  else if(information->opcode == 5)
+  {
+  	information->Ctype = BRANCH;
+  	information->Itype = BRANCH_NOT_EQUAL;
+  }
+
   else
   {
     free(information);

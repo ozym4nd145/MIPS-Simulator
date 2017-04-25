@@ -218,6 +218,17 @@ void* alu_op(void* data)
                 pipeline[2].alu_result = 0;
               break;
 
+            case SLL:
+              pipeline[2].alu_result = r2<<temp_pipeline[1].instr.shf_amt;
+             break;
+
+             case SLT:
+              if(r1<r2)
+                pipeline[2].alu_result = 1;
+              else
+                pipeline[2].alu_result = 0;
+              break;
+
             case SLTI:
               if (r1 < temp_pipeline[1].instr.immediate)
                 pipeline[2].alu_result = 1;
@@ -248,6 +259,9 @@ void* alu_op(void* data)
               case MOVE:
               pipeline[2].alu_result = r2;
               break;
+
+              
+
 
             // HI LO are 2 separate registers for multiplication
 
@@ -340,6 +354,15 @@ void* alu_op(void* data)
                 branched = 1;
               }
               break;
+
+            case BRANCH_NOT_EQUAL:
+            if(r1!=r2)
+            {
+              PC = temp_pipeline[1].pc + 
+              (temp_pipeline[1].instr.immediate<<2);
+              branched = 1;
+            }
+            break;
 
             case JUMP:
               PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
