@@ -518,12 +518,13 @@ void print_eval_stats()
   assert(cache_iblock_size == cache_dblock_size);
   assert(cache_iassoc == cache_dassoc);
   int cs = cache_isize;
+  int assoc = cache_iassoc;
   char *ivd = (cache_split == 0) ? "Unified" : "Split";
   int bs = cache_iblock_size;
   char *write = (cache_writeback == 0) ? "WT" : "WB";
   char *alloc = (cache_writealloc == 0) ? "WNA" : "WA";
 
-  printf("%6d %8s %4d %4s %4s ", cs, ivd, bs, write, alloc);
+  printf("%6d %8s %4d %1d %4s %4s ", cs, ivd, bs, assoc, write, alloc);
   // Instruction
   // Misses
   printf("%7d ", cache_stat_inst.misses);
