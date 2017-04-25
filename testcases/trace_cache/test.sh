@@ -4,34 +4,55 @@ make clean
 make cache
 make clean
 cd -
-# rm -rf ../my_outputs
-# mkdir -p ../my_outputs
 
-# $EXEC ../traces/public-assoc.trace > ../my_outputs/public-assoc.out
-# $EXEC ../traces/public-block.trace > ../my_outputs/public-block.out
-# $EXEC ../traces/public-instr.trace > ../my_outputs/public-instr.out
-# $EXEC ../traces/public-write.trace > ../my_outputs/public-write.out
-# $EXEC ../traces/spice10.trace > ../my_outputs/spice10.out
-# $EXEC ../traces/spice100.trace > ../my_outputs/spice100.out
-# $EXEC ../traces/spice1000.trace > ../my_outputs/spice1000.out
-
-# diff ../outputs/public-assoc1.out ../my_outputs/public-assoc.out
-# diff ../outputs/public-block1.out ../my_outputs/public-block.out
-# diff ../outputs/public-instr1.out ../my_outputs/public-instr.out
-# diff ../outputs/public-write1.out ../my_outputs/public-write.out
-# diff ../outputs/spice10.out ../my_outputs/spice10.out
-# diff ../outputs/spice100.out ../my_outputs/spice100.out
-# diff ../outputs/spice1000.out ../my_outputs/spice1000.out
-
-###########################################################################
-#Better Testing
-###########################################################################
 TEST_DIR="./traces"
 OUT_DIR="./outputs"
 MY_OUT_DIR="./my_outputs"
 EXEC="../../src/cache"
 rm -rf $MY_OUT_DIR
 mkdir -p $MY_OUT_DIR
+
+###########################################################################
+#Part 1 Testcases
+###########################################################################
+echo "-------------------------------------------------------"
+echo "Testcases for Part 1"
+echo "-------------------------------------------------------"
+
+
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/public-assoc.trace > $MY_OUT_DIR/public-assoc.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/public-block.trace > $MY_OUT_DIR/public-block.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/public-instr.trace > $MY_OUT_DIR/public-instr.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/public-write.trace > $MY_OUT_DIR/public-write.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/spice10.trace > $MY_OUT_DIR/spice10.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/spice100.trace > $MY_OUT_DIR/spice100.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/spice1000.trace > $MY_OUT_DIR/spice1000.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/spice.trace > $MY_OUT_DIR/spice.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/tex.trace > $MY_OUT_DIR/tex.out
+$EXEC -bs 16 -us 8192 -a 1 -wb -wa $TEST_DIR/cc.trace > $MY_OUT_DIR/cc.out
+echo "public-assoc.out"
+diff -y --suppress-common-lines $OUT_DIR/public-assoc1.out $MY_OUT_DIR/public-assoc.out
+echo "public-block.out"
+diff -y --suppress-common-lines $OUT_DIR/public-block1.out $MY_OUT_DIR/public-block.out
+echo "public-instr.out"
+diff -y --suppress-common-lines $OUT_DIR/public-instr1.out $MY_OUT_DIR/public-instr.out
+echo "public-write.out"
+diff -y --suppress-common-lines $OUT_DIR/public-write1.out $MY_OUT_DIR/public-write.out
+echo "spice10.out"
+diff -y --suppress-common-lines $OUT_DIR/spice10.out $MY_OUT_DIR/spice10.out
+echo "spice100.out"
+diff -y --suppress-common-lines $OUT_DIR/spice100.out $MY_OUT_DIR/spice100.out
+echo "spice1000.out"
+diff -y --suppress-common-lines $OUT_DIR/spice1000.out $MY_OUT_DIR/spice1000.out
+echo "spice.out"
+diff -y --suppress-common-lines $OUT_DIR/spice1.out $MY_OUT_DIR/spice.out
+echo "-------------------------------------------------------"
+
+###########################################################################
+#Part 2 Testcases
+###########################################################################
+echo "Testcases for Part 2"
+echo "-------------------------------------------------------"
 
 $EXEC $TEST_DIR/public-assoc.trace > $MY_OUT_DIR/public-assoc1.out
 $EXEC -bs 16 -us 256 -a 1 -wb -wa $TEST_DIR/public-assoc.trace > $MY_OUT_DIR/public-assoc2.out

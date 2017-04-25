@@ -29,7 +29,7 @@ char **argv;
 
   if (argc < 2)
   {
-    printf("usage:  sim <options> <trace file>\n");
+    printf("Usage: %s <options> <trace file>\n",argv[0]);
     exit(-1);
   }
 
