@@ -524,19 +524,28 @@ void print_eval_stats()
   char *write = (cache_writeback == 0) ? "WT" : "WB";
   char *alloc = (cache_writealloc == 0) ? "WNA" : "WA";
 
-  printf("|| %-6d | %-8s | %-4d | %-4d |  %-4s |  %-4s || ", cs, ivd, bs, assoc,
+  float hit_rate_inst =
+      (1.0 - (float)cache_stat_inst.misses / (float)cache_stat_inst.accesses);
+  float hit_rate_data =
+      (1.0 - (float)cache_stat_data.misses / (float)cache_stat_data.accesses);
+
+  printf("|| %-8d | %-8s | %-4d | %-8d |  %-4s |  %-4s || ", cs, ivd, bs, assoc,
          write, alloc);
   // Instruction
   // Misses
   printf(" %-8d | ", cache_stat_inst.misses);
   // Repl
   printf("%-8d | ", cache_stat_inst.replacements);
+  // Hit Rate
+  printf(" %-7.4f | ", hit_rate_inst);
 
   // Data
   // Misses
   printf("%-8d | ", cache_stat_data.misses);
   // Repl
   printf("%-8d | ", cache_stat_data.replacements);
+  // Hit Rate
+  printf(" %-7.4f | ", hit_rate_data);
 
   // Total
   // Demand Fetch
