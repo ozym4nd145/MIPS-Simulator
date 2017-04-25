@@ -51,29 +51,73 @@ TABLE_SEP="||-------------------------------------------------------------------
 
 # cat $MY_OUT_DIR/test_given.table
 
-###########################################################################
-# Hit rate of the cache as a function of cache size
-###########################################################################
-echo "Hit rate of the cache as a function of cache size"
+# ###########################################################################
+# # Hit rate of the cache as a function of cache size
+# ###########################################################################
+# cd ../../src
+# make clean
+# make eval
+# make clean
+# cd -
+# echo "Hit rate of the cache as a function of cache size"
 
-echo "Hit rate of the cache as a function of cache size" > $MY_OUT_DIR/cache_size.table
+# echo "Hit rate of the cache as a function of cache size" > $MY_OUT_DIR/cache_size.table
+
+# for fl in spice.trace tex.trace cc.trace
+# do
+#   echo "Processing $fl"
+#   echo -e "\n" >> $MY_OUT_DIR/cache_size.table
+#   echo "$fl" >> $MY_OUT_DIR/cache_size.table
+#   echo "$TABLE_SEP" >> $MY_OUT_DIR/cache_size.table
+#   echo "$TABLE_HEAD" >> $MY_OUT_DIR/cache_size.table
+#   echo "$TABLE_LABEL" >> $MY_OUT_DIR/cache_size.table
+#   echo "$TABLE_SEP" >> $MY_OUT_DIR/cache_size.table
+#   for i in {1..20}
+#   do
+#     echo -e "\tDoing for cache size $((2**($i+1)))"
+#     $EXEC -is $((2**($i+1))) -ds $((2**($i+1))) -bs 4 -a $((2**($i-1))) -wb -wa $TEST_DIR/$fl >> $MY_OUT_DIR/cache_size.table
+#   done
+#   cd ../../src
+#   make clean
+#   make cache
+#   make clean
+#   cd -
+#   echo "$TABLE_SEP" >> $MY_OUT_DIR/cache_size.table   
+#   $EXEC -is 4 -ds 4 -bs 4 -a 1 -wb -wa $TEST_DIR/$fl >> $MY_OUT_DIR/cache_size.table    
+#   echo "$TABLE_SEP" >> $MY_OUT_DIR/cache_size.table
+#   echo ""
+# done
+
+# cat $MY_OUT_DIR/cache_size.table
+
+###########################################################################
+# Hit rate of the cache as a function of block size
+###########################################################################
+cd ../../src
+make clean
+make eval
+make clean
+cd -
+echo "Hit rate of the cache as a function of block size"
+
+echo "Hit rate of the cache as a function of block size" > $MY_OUT_DIR/block_size.table
 
 for fl in spice.trace tex.trace cc.trace
 do
   echo "Processing $fl"
-  echo -e "\n" >> $MY_OUT_DIR/cache_size.table
-  echo "$fl" >> $MY_OUT_DIR/cache_size.table
-  echo "$TABLE_SEP" >> $MY_OUT_DIR/cache_size.table
-  echo "$TABLE_HEAD" >> $MY_OUT_DIR/cache_size.table
-  echo "$TABLE_LABEL" >> $MY_OUT_DIR/cache_size.table
-  echo "$TABLE_SEP" >> $MY_OUT_DIR/cache_size.table
-  for i in {1..20}
+  echo -e "\n" >> $MY_OUT_DIR/block_size.table
+  echo "$fl" >> $MY_OUT_DIR/block_size.table
+  echo "$TABLE_SEP" >> $MY_OUT_DIR/block_size.table
+  echo "$TABLE_HEAD" >> $MY_OUT_DIR/block_size.table
+  echo "$TABLE_LABEL" >> $MY_OUT_DIR/block_size.table
+  echo "$TABLE_SEP" >> $MY_OUT_DIR/block_size.table
+  for i in {1..11}
   do
-    echo -e "\tDoing for cache size $((2**($i+1)))"
-    $EXEC -is $((2**($i+1))) -ds $((2**($i+1))) -bs 4 -a $((2**($i-1))) -wb -wa $TEST_DIR/$fl >> $MY_OUT_DIR/cache_size.table
+    echo -e "\tDoing for block size $((2**($i+1)))"
+    $EXEC -is 8192 -ds 8192 -bs $((2**($i+1))) -a 2 -wb -wa $TEST_DIR/$fl >> $MY_OUT_DIR/block_size.table
   done
-  echo "$TABLE_SEP" >> $MY_OUT_DIR/cache_size.table
+  echo "$TABLE_SEP" >> $MY_OUT_DIR/block_size.table
   echo ""
 done
 
-cat $MY_OUT_DIR/cache_size.table
+cat $MY_OUT_DIR/block_size.table
