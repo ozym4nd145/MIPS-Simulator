@@ -46,6 +46,9 @@ typedef enum {
   JUMP_LINK_REGISTER,
   MFLO,
   MOVE,
+  SLL,
+  SLT,
+  BRANCH_NOT_EQUAL,
   NO_OP
 } instruction_type;
 
