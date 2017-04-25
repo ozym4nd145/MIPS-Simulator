@@ -529,7 +529,7 @@ void print_eval_stats()
   float hit_rate_data =
       (1.0 - (float)cache_stat_data.misses / (float)cache_stat_data.accesses);
 
-  printf("|| %-6d | %-8s | %-4d | %-4d |  %-4s |  %-4s || ", cs, ivd, bs, assoc,
+  printf("|| %-8d | %-8s | %-4d | %-8d |  %-4s |  %-4s || ", cs, ivd, bs, assoc,
          write, alloc);
   // Instruction
   // Misses
