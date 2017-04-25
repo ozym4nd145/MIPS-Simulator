@@ -11,9 +11,9 @@ EXEC="../../src/cache"
 rm -rf $MY_OUT_DIR
 mkdir -p $MY_OUT_DIR
 
-TABLE_HEAD="||                                                 ||    Instructions    |       Data        |       Total       ||"
-TABLE_LABEL="||   CS   | I- vs D- |  BS  |  Ass | Write | Alloc ||  Misses  |   Repl  | Misses  |  Repl   |   DF    |   CB    ||"
-TABLE_SEP="||---------------------------------------------------------------------------------------------------------------||"
+TABLE_HEAD="||                                                 ||     Instructions     |         Data        |        Total        ||"
+TABLE_LABEL="||   CS   | I- vs D- |  BS  |  Ass | Write | Alloc ||  Misses   |   Repl   | Misses   |  Repl    |   DF     |   CB     ||"
+TABLE_SEP="||---------------------------------------------------------------------------------------------------------------------||"
 
 # Testing given table
 echo "Testing Given table"

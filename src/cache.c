@@ -528,22 +528,22 @@ void print_eval_stats()
          write, alloc);
   // Instruction
   // Misses
-  printf(" %-7d | ", cache_stat_inst.misses);
+  printf(" %-8d | ", cache_stat_inst.misses);
   // Repl
-  printf("%-7d | ", cache_stat_inst.replacements);
+  printf("%-8d | ", cache_stat_inst.replacements);
 
   // Data
   // Misses
-  printf("%-7d | ", cache_stat_data.misses);
+  printf("%-8d | ", cache_stat_data.misses);
   // Repl
-  printf("%-7d | ", cache_stat_data.replacements);
+  printf("%-8d | ", cache_stat_data.replacements);
 
   // Total
   // Demand Fetch
-  printf("%-7d | ",
+  printf("%-8d | ",
          (cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches));
   // Copies Back
-  printf("%-7d ||\n",
+  printf("%-8d ||\n",
          (cache_stat_inst.copies_back + cache_stat_data.copies_back));
 }
 /************************************************************/
