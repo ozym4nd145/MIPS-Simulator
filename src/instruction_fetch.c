@@ -59,6 +59,7 @@ void* instruction_fetch(void* data)
       STEPS++;
       //Our clock
 
+
 #ifdef TIME
       clock_gettime(CLOCK_REALTIME, &begin);
 #endif
@@ -192,6 +193,9 @@ void* instruction_fetch(void* data)
         CONTROL_SIGN.STALL_C = 1;
         ACTIVE_STAGE[0] = 0;
       }
+      //printf("Instrcution fetch %s\n",get_instruction_name(pipeline[0].instr.Itype));
+      if(STEPS%1000==0)
+      printf("%x\n",PC );
       // wait for the rest of the threads to complete write stage
       while (1)
       {
