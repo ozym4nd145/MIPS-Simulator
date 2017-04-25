@@ -52,7 +52,7 @@ void* register_read(void* data)
 
 
       temp_pipeline[0] = pipeline[0];
-      printf("%s\n",get_instruction_name(temp_pipeline[0].instr.Itype ));
+     // printf("%s\n",get_instruction_name(temp_pipeline[0].instr.Itype ));
       
 
 
