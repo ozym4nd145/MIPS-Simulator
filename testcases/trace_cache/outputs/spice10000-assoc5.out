@@ -1,0 +1,22 @@
+*** CACHE SETTINGS ***
+  Unified I- D-cache
+  Size: 	256
+  Associativity: 	8
+  Block size: 	16
+  Write policy: 	WRITE BACK
+  Allocation policy: 	WRITE ALLOCATE
+
+*** CACHE STATISTICS ***
+ INSTRUCTIONS
+  accesses:  6920
+  misses:    309
+  miss rate: 0.0447 (hit rate 0.9553)
+  replace:   300
+ DATA
+  accesses:  3080
+  misses:    321
+  miss rate: 0.1042 (hit rate 0.8958)
+  replace:   314
+ TRAFFIC (in words)
+  demand fetch:  2520
+  copies back:   116
