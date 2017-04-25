@@ -3,12 +3,12 @@
  */
 
 #include "cache.h"
+#include <assert.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "lru.h"
-
 #include "trace.h"
 
 /* cache configuration parameters */
@@ -507,6 +507,52 @@ void print_stats()
   printf("  demand fetch:  %d\n",
          (cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches));
   printf("  copies back:   %d\n",
+         (cache_stat_inst.copies_back + cache_stat_data.copies_back));
+}
+/************************************************************/
+
+/************************************************************/
+void print_eval_stats()
+{
+  assert(cache_isize == cache_dsize);
+  assert(cache_iblock_size == cache_dblock_size);
+  assert(cache_iassoc == cache_dassoc);
+  int cs = cache_isize;
+  int assoc = cache_iassoc;
+  char *ivd = (cache_split == 0) ? "Unified" : "Split";
+  int bs = cache_iblock_size;
+  char *write = (cache_writeback == 0) ? "WT" : "WB";
+  char *alloc = (cache_writealloc == 0) ? "WNA" : "WA";
+
+  float hit_rate_inst =
+      (1.0 - (float)cache_stat_inst.misses / (float)cache_stat_inst.accesses);
+  float hit_rate_data =
+      (1.0 - (float)cache_stat_data.misses / (float)cache_stat_data.accesses);
+
+  printf("|| %-8d | %-8s | %-4d | %-8d |  %-4s |  %-4s || ", cs, ivd, bs, assoc,
+         write, alloc);
+  // Instruction
+  // Misses
+  printf(" %-8d | ", cache_stat_inst.misses);
+  // Repl
+  printf("%-8d | ", cache_stat_inst.replacements);
+  // Hit Rate
+  printf(" %-7.4f | ", hit_rate_inst);
+
+  // Data
+  // Misses
+  printf("%-8d | ", cache_stat_data.misses);
+  // Repl
+  printf("%-8d | ", cache_stat_data.replacements);
+  // Hit Rate
+  printf(" %-7.4f | ", hit_rate_data);
+
+  // Total
+  // Demand Fetch
+  printf("%-8d | ",
+         (cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches));
+  // Copies Back
+  printf("%-8d ||\n",
          (cache_stat_inst.copies_back + cache_stat_data.copies_back));
 }
 /************************************************************/

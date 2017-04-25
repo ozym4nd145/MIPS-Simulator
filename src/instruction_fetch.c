@@ -48,7 +48,7 @@ void* instruction_fetch(void* data)
     {
 
       int run = 0;
-      printf("%d\n",run );
+      //printf("%d\n",run );
 
       if (strcmp(input, "run") == 0)
         run=1;
@@ -95,6 +95,7 @@ void* instruction_fetch(void* data)
       pthread_mutex_unlock(&CLOCK_LOCK);
 
       int stall = control_signal.stall;
+      if(STEPS%50==0)
       printf("Step = %d\n", STEPS);
 
       if(PC<BASE_PC_ADDR)
@@ -103,6 +104,7 @@ void* instruction_fetch(void* data)
       }
 
       temp_pc = PC;
+     // printf("Counter %d\n",register_file[8]);
 
       // Setting display
       // ACTIVE_STAGE[0] = 1;
@@ -251,8 +253,8 @@ void* instruction_fetch(void* data)
       printf("Frequency - %lfGHz\n", 1.0 / (2 * time_spent));
 #endif
 
-      usleep(10*DELAY);
-      printf("%d\n",PC-BASE_PC_ADDR);
+      
+      //printf("%d\n",PC-BASE_PC_ADDR);
 
       // Implement READ_CLOCK_0 ?
       int index = (PC-BASE_PC_ADDR)/4;
@@ -291,6 +293,8 @@ void* instruction_fetch(void* data)
           break;
         }
       }
+      usleep(4*DELAY);
+
     } // continue stepping instructions loop ends
   } // run | continue if ends
 

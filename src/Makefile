@@ -13,8 +13,12 @@ OBJS = $(patsubst %.c, $(OBJDIR)/%.o, $(SRCS))
 processor_simulator: $(OBJDIR)/lex.parse_cfg.o $(OBJDIR)/parse_cfg.tab.o $(OBJS)
 	$(CC) $(LFLAGS) $(INCLUDE) -o $@ $^ $(LIBS)
 
-cache: cache.c lru.c trace.c $(HEADERS)
-	$(CC) $(LFLAGS) $(INCLUDE) -o $@ cache.c lru.c trace.c -lm
+cache: $(OBJDIR)/cache.o $(OBJDIR)/lru.o $(OBJDIR)/trace.o
+	$(CC) $(LFLAGS) $(INCLUDE) -o $@ $^ $(LIBS)
+
+eval: CFLAGS += -DEVALUATION
+eval: LFLAGS += -DEVALUATION
+eval: cache
 
 debug: CFLAGS += -DDEBUG
 debug: LFLAGS += -DDEBUG
