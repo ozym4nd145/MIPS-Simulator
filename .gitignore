@@ -36,3 +36,4 @@ src/processor_simulator
 src/cache
 src/results
 my_outputs/
+eval_results/

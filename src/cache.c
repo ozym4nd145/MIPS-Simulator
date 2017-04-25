@@ -524,24 +524,26 @@ void print_eval_stats()
   char *write = (cache_writeback == 0) ? "WT" : "WB";
   char *alloc = (cache_writealloc == 0) ? "WNA" : "WA";
 
-  printf("%6d %8s %4d %1d %4s %4s ", cs, ivd, bs, assoc, write, alloc);
+  printf("|| %-6d | %-8s | %-4d | %-4d |  %-4s |  %-4s || ", cs, ivd, bs, assoc,
+         write, alloc);
   // Instruction
   // Misses
-  printf("%7d ", cache_stat_inst.misses);
+  printf(" %-7d | ", cache_stat_inst.misses);
   // Repl
-  printf("%7d ", cache_stat_inst.replacements);
+  printf("%-7d | ", cache_stat_inst.replacements);
 
   // Data
   // Misses
-  printf("%7d ", cache_stat_data.misses);
+  printf("%-7d | ", cache_stat_data.misses);
   // Repl
-  printf("%7d ", cache_stat_data.replacements);
+  printf("%-7d | ", cache_stat_data.replacements);
 
   // Total
   // Demand Fetch
-  printf("%7d ",
+  printf("%-7d | ",
          (cache_stat_inst.demand_fetches + cache_stat_data.demand_fetches));
   // Copies Back
-  printf("%7d\n", (cache_stat_inst.copies_back + cache_stat_data.copies_back));
+  printf("%-7d ||\n",
+         (cache_stat_inst.copies_back + cache_stat_data.copies_back));
 }
 /************************************************************/
