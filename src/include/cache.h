@@ -99,6 +99,7 @@ void delete (Pcache_line *head, Pcache_line *tail, Pcache_line item);
 void insert(Pcache_line *head, Pcache_line *tail, Pcache_line item);
 void dump_settings();
 void print_stats();
+void print_eval_stats();
 void init_cache_params(Pcache c, int cache_size, int block_size, int wpb,
                        int assoc);
 extern cache_stat cache_stat_inst;

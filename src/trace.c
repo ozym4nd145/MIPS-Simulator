@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cache.h"
-
 static FILE *traceFile;
 
 int main(argc, argv) int argc;
@@ -17,7 +16,13 @@ char **argv;
   parse_args(argc, argv);
   init_cache();
   play_trace(traceFile);
+
+#if EVALUATION
+  print_eval_stats();
+#else
   print_stats();
+#endif
+
   return 0;
 }
 
@@ -29,7 +34,7 @@ char **argv;
 
   if (argc < 2)
   {
-    printf("Usage: %s <options> <trace file>\n",argv[0]);
+    printf("Usage: %s <options> <trace file>\n", argv[0]);
     exit(-1);
   }
 
@@ -127,7 +132,9 @@ char **argv;
     exit(-1);
   }
 
+#ifndef EVALUATION
   dump_settings();
+#endif
 
   /* open the trace file */
   traceFile = fopen(argv[arg_index], "r");
@@ -159,8 +166,10 @@ void play_trace(inFile) FILE *inFile;
     }
 
     num_inst++;
+#ifndef EVALUATION
     if (!(num_inst % PRINT_INTERVAL))
       printf("processed %d references\n", num_inst);
+#endif
   }
 
   flush();
