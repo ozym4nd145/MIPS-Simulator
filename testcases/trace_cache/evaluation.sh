@@ -54,17 +54,17 @@ cat $MY_OUT_DIR/test_given.table
 ###########################################################################
 # Hit rate of the cache as a function of cache size
 ###########################################################################
-cd ../../src
-make clean
-make eval
-make clean
-cd -
 echo "Hit rate of the cache as a function of cache size"
 
 echo "Hit rate of the cache as a function of cache size" > $MY_OUT_DIR/cache_size.table
 
 for fl in spice.trace tex.trace cc.trace
 do
+  cd ../../src
+  make clean
+  make eval
+  make clean
+  cd -
   echo "Processing $fl"
   echo -e "\n" >> $MY_OUT_DIR/cache_size.table
   echo "$fl" >> $MY_OUT_DIR/cache_size.table
