@@ -287,7 +287,7 @@ void print_result(char *s)
   fprintf(write, "num cache accesses,%d\n", cache_stat_data.accesses);
   fprintf(write, "num cache misses,%d\n", cache_stat_data.misses);
   fprintf(write, "miss rate,%.4f%%\n",
-          ((cache_stat_inst.misses * 1.0) / cache_stat_data.accesses) * 100.0);
+          ((cache_stat_data.misses * 1.0) / cache_stat_data.accesses) * 100.0);
   fprintf(write, "DRAM summary\n");
   fprintf(write, "num dram accesses,%d\n",
           (cache_stat_inst.accesses + cache_stat_data.accesses));

@@ -195,7 +195,7 @@ void* instruction_fetch(void* data)
           }
           // printf("Instrcution fetch
           // %s\n",get_instruction_name(pipeline[0].instr.Itype));
-          if (STEPS % 1000 == 0) printf("%x\n", PC);
+          // if (STEPS % 1000 == 0) printf("%x\n", PC);
           // wait for the rest of the threads to complete write stage
           while (1)
           {
@@ -234,7 +234,6 @@ void* instruction_fetch(void* data)
 
 #ifdef DEBUG
           printf("PC - %08x\n", temp_pc);
-          printf("BRANCH_CYCLE_WASTE %d\n", BRANCH_CYCLE_WASTE);
           instruction_to_file("results/1_instruction_fetch.txt", pipeline[0]);
 #endif
           // make clock 0 thus marking the end of the instruction

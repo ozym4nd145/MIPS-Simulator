@@ -161,7 +161,8 @@ void init_cache()
 /************************************************************/
 
 /************************************************************/
-void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
+void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb,
+                  int perf)
 {
   Pcache_set set = (_cache->set)[index];
   if (set == NULL)
@@ -170,31 +171,37 @@ void perform_load(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
     set = (_cache->set)[index];
   }
   int prev_set_count = set->set_contents_count;
-  int mem_access = lru_operation(set, tag, 1, _cache->associativity);
-
   (stat->accesses)++;
-  if (mem_access)
+
+  // Execute rest only when cache is not perfect
+  if (!perf)
   {
-    // fetching words_per_block number of blocks from memory
-    (stat->demand_fetches) += wpb;
+    int mem_access = lru_operation(set, tag, 1, _cache->associativity);
 
-    // number of memory access
-    (stat->num_mem_access) += mem_access;
-
-    (stat->misses)++;
-
-    // writing words_per_block number of words to memory
-    // if replacement of block whose dirty bit was 1 is done
-    (stat->copies_back) += (wpb) * (mem_access - 1);
-    // indicates replace
-    if ((set->set_contents_count) == prev_set_count)
+    if (mem_access)
     {
-      (stat->replacements)++;
+      // fetching words_per_block number of blocks from memory
+      (stat->demand_fetches) += wpb;
+
+      // number of memory access
+      (stat->num_mem_access) += mem_access;
+
+      (stat->misses)++;
+
+      // writing words_per_block number of words to memory
+      // if replacement of block whose dirty bit was 1 is done
+      (stat->copies_back) += (wpb) * (mem_access - 1);
+      // indicates replace
+      if ((set->set_contents_count) == prev_set_count)
+      {
+        (stat->replacements)++;
+      }
     }
   }
 }
 
-void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
+void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb,
+                   int perf)
 {
   Pcache_set set = (_cache->set)[index];
   if (set == NULL)
@@ -204,122 +211,127 @@ void perform_store(Pcache _cache, int index, int tag, Pcache_stat stat, int wpb)
   }
 
   (stat->accesses)++;
-  int prev_set_count = set->set_contents_count;
-  int mem_access =
-      lru_operation(set, tag, cache_writealloc, _cache->associativity);
-  fflush(stdout);
-  if (cache_writeback)
+
+  // Execute rest only when cache is not perfect
+  if (!perf)
   {
-    if (cache_writealloc)
+    int prev_set_count = set->set_contents_count;
+    int mem_access =
+        lru_operation(set, tag, cache_writealloc, _cache->associativity);
+    fflush(stdout);
+    if (cache_writeback)
     {
-      /**
-      on hits it writes to cache setting “dirty” bit for the block, main
-      memory is not updated;
-      EXPERIMENTAL: on miss fetch from main memory and update in cache,
-      dont update in main memory.
-      NOT: on misses it updates the block in main memory and brings the
-      block to the cache;
-      **/
-      if (mem_access)
+      if (cache_writealloc)
       {
-        // represents a miss
-        (stat->misses)++;
-
-        // number of memory access
-        (stat->num_mem_access) += mem_access;
-
-        // fetching words_per_block number of blocks from memory
-        (stat->demand_fetches) += wpb;
-
-        // writing words_per_block number of words to memory
-        // if replacement of block whose dirty bit was 1 is done
-        (stat->copies_back) += (wpb) * (mem_access - 1);
-
-        // indicates replace
-        if ((set->set_contents_count) == prev_set_count)
+        /**
+        on hits it writes to cache setting “dirty” bit for the block, main
+        memory is not updated;
+        EXPERIMENTAL: on miss fetch from main memory and update in cache,
+        dont update in main memory.
+        NOT: on misses it updates the block in main memory and brings the
+        block to the cache;
+        **/
+        if (mem_access)
         {
-          (stat->replacements)++;
+          // represents a miss
+          (stat->misses)++;
+
+          // number of memory access
+          (stat->num_mem_access) += mem_access;
+
+          // fetching words_per_block number of blocks from memory
+          (stat->demand_fetches) += wpb;
+
+          // writing words_per_block number of words to memory
+          // if replacement of block whose dirty bit was 1 is done
+          (stat->copies_back) += (wpb) * (mem_access - 1);
+
+          // indicates replace
+          if ((set->set_contents_count) == prev_set_count)
+          {
+            (stat->replacements)++;
+          }
+          (set->head)->dirty = 1;
         }
-        (set->head)->dirty = 1;
-      }
-      else
-      {
-        // represents a hit
-        (set->head)->dirty = 1;
-      }
-    }
-    else
-    {
-      /**
-      on hits it writes to cache setting “dirty” bit for the block, main
-      memory
-      is not updated;
-      on misses it updates the block in main memory not bringing that
-      block to
-      the cache;
-      **/
-      // In this case mem_access = 1 denotes there was a miss
-      if (mem_access)
-      {
-        // number of memory access
-        (stat->num_mem_access) += 1;
-
-        (stat->misses)++;
-        // writing 1 word to memory
-        (stat->copies_back) += 1;
-      }
-      else
-      {
-        // represents a hit
-        (set->head)->dirty = 1;
-      }
-    }
-  }
-  else
-  {
-    // writing 1 word to memory
-    (stat->copies_back)++;
-    if (cache_writealloc)
-    {
-      /**
-      on hits it writes to cache and main memory
-      on misses it updates the block in main memory and brings the block
-      to the
-      cache
-      **/
-      // adding one to num_mem_access for write
-      (stat->num_mem_access) += 1;
-
-      if (mem_access)
-      {
-        (stat->misses)++;
-
-        // number of memory access (one to fetch from memory)
-        (stat->num_mem_access) += 1;
-
-        // fetching words_per_block number of blocks from memory
-        (stat->demand_fetches) += wpb;
-
-        if ((set->set_contents_count) == prev_set_count)
+        else
         {
-          (stat->replacements)++;
+          // represents a hit
+          (set->head)->dirty = 1;
+        }
+      }
+      else
+      {
+        /**
+        on hits it writes to cache setting “dirty” bit for the block, main
+        memory
+        is not updated;
+        on misses it updates the block in main memory not bringing that
+        block to
+        the cache;
+        **/
+        // In this case mem_access = 1 denotes there was a miss
+        if (mem_access)
+        {
+          // number of memory access
+          (stat->num_mem_access) += 1;
+
+          (stat->misses)++;
+          // writing 1 word to memory
+          (stat->copies_back) += 1;
+        }
+        else
+        {
+          // represents a hit
+          (set->head)->dirty = 1;
         }
       }
     }
     else
     {
-      /**
-      on hits it writes to cache and main memory;
-      on misses it updates the block in main memory not bringing that
-      block to
-      the cache;
-      **/
+      // writing 1 word to memory
+      (stat->copies_back)++;
+      if (cache_writealloc)
+      {
+        /**
+        on hits it writes to cache and main memory
+        on misses it updates the block in main memory and brings the block
+        to the
+        cache
+        **/
+        // adding one to num_mem_access for write
+        (stat->num_mem_access) += 1;
 
-      // adding one to num_mem_access for write
-      (stat->num_mem_access) += 1;
+        if (mem_access)
+        {
+          (stat->misses)++;
 
-      // In this case mem_access = 1 denotes there was a miss
-      if (mem_access) (stat->misses)++;
+          // number of memory access (one to fetch from memory)
+          (stat->num_mem_access) += 1;
+
+          // fetching words_per_block number of blocks from memory
+          (stat->demand_fetches) += wpb;
+
+          if ((set->set_contents_count) == prev_set_count)
+          {
+            (stat->replacements)++;
+          }
+        }
+      }
+      else
+      {
+        /**
+        on hits it writes to cache and main memory;
+        on misses it updates the block in main memory not bringing that
+        block to
+        the cache;
+        **/
+
+        // adding one to num_mem_access for write
+        (stat->num_mem_access) += 1;
+
+        // In this case mem_access = 1 denotes there was a miss
+        if (mem_access) (stat->misses)++;
+      }
     }
   }
 }
@@ -335,31 +347,22 @@ void perform_access(addr, access_type) unsigned addr, access_type;
   switch (access_type)
   {
     case TRACE_INST_LOAD:
-      if (!cache_iperf)
-      {
-        index = (addr & (icache->index_mask)) >> (icache->index_mask_offset);
-        tag = (addr & (icache->tag_mask)) >> (icache->tag_mask_offset);
-        perform_load(icache, index, tag, &cache_stat_inst,
-                     cache_iwords_per_block);
-      }
+      index = (addr & (icache->index_mask)) >> (icache->index_mask_offset);
+      tag = (addr & (icache->tag_mask)) >> (icache->tag_mask_offset);
+      perform_load(icache, index, tag, &cache_stat_inst, cache_iwords_per_block,
+                   cache_iperf);
       break;
     case TRACE_DATA_LOAD:
-      if (!cache_dperf)
-      {
-        index = (addr & (dcache->index_mask)) >> (dcache->index_mask_offset);
-        tag = (addr & (dcache->tag_mask)) >> (dcache->tag_mask_offset);
-        perform_load(dcache, index, tag, &cache_stat_data,
-                     cache_dwords_per_block);
-      }
+      index = (addr & (dcache->index_mask)) >> (dcache->index_mask_offset);
+      tag = (addr & (dcache->tag_mask)) >> (dcache->tag_mask_offset);
+      perform_load(dcache, index, tag, &cache_stat_data, cache_dwords_per_block,
+                   cache_dperf);
       break;
     case TRACE_DATA_STORE:
-      if (!cache_dperf)
-      {
-        index = (addr & (dcache->index_mask)) >> (dcache->index_mask_offset);
-        tag = (addr & (dcache->tag_mask)) >> (dcache->tag_mask_offset);
-        perform_store(dcache, index, tag, &cache_stat_data,
-                      cache_dwords_per_block);
-      }
+      index = (addr & (dcache->index_mask)) >> (dcache->index_mask_offset);
+      tag = (addr & (dcache->tag_mask)) >> (dcache->tag_mask_offset);
+      perform_store(dcache, index, tag, &cache_stat_data,
+                    cache_dwords_per_block, cache_dperf);
       break;
     default:
       printf("skipping access, unknown type(%d)\n", access_type);
