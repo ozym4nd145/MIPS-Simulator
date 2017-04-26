@@ -307,7 +307,7 @@ void* alu_op(void* data)
 
         case BRANCH:
         {
-          int branched = 0;
+          int branched = 0, jumped = 0;
           switch (temp_pipeline[1].instr.Itype)
           {
             case BRANCH_EQUAL:
@@ -368,15 +368,18 @@ void* alu_op(void* data)
               PC = (PC & (0xF0000000)) |
                    (temp_pipeline[1].instr.target_address << 2);
               branched = 1;
+              jumped = 1;
+
               break;
 
             case JUMP_LINK:
-              pipeline[2].alu_result = PC + 4;
-              printf("Here %d\n", pipeline[2].alu_result);
+              pipeline[2].alu_result = temp_pipeline[1].pc + 4;
+              // printf("Here %d\n", pipeline[2].alu_result);
               pipeline[2].instr.rd = 31;
               PC = (PC & (0xF0000000)) |
                    (temp_pipeline[1].instr.target_address << 2);
               branched = 1;
+              jumped = 1;
 
               break;
 
@@ -384,12 +387,14 @@ void* alu_op(void* data)
 
               PC = r1;
               branched = 1;
+              jumped = 1;
               break;
 
             case JUMP_LINK_REGISTER:
-              pipeline[2].alu_result = PC + 4;
+              pipeline[2].alu_result = temp_pipeline[1].pc + 4;
               PC = r1;
               branched = 1;
+              jumped = 1;
 
               break;
 
@@ -401,7 +406,7 @@ void* alu_op(void* data)
           if (branched == 1)
           {
             control_signal.branched = 1;
-            PC += 4;
+            if (jumped == 0) PC += 4;
 #ifdef DEBUG
             printf("Branch Taken%s\n",
                    get_instruction_name(pipeline[2].instr.Itype));
