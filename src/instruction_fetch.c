@@ -41,12 +41,15 @@ void* instruction_fetch(void* data)
 
     // sleep(1);
     // input = "step\0";
-    if (strcmp(input, "run") == 0 || strcmp(input, "continue") == 0)
+    if (strcmp(input, "run") == 0 || strcmp(input, "continue") == 0 ||
+        strcmp(input, "step") == 0)
     {
       int run = 0;
+      int step_given = 0;
       // printf("%d\n",run );
 
       if (strcmp(input, "run") == 0) run = 1;
+      if (strcmp(input, "step") == 0) step_given = 1;
       // run mode on
 
       while (1)
@@ -97,7 +100,11 @@ void* instruction_fetch(void* data)
           pthread_mutex_unlock(&CLOCK_LOCK);
 
           int stall = control_signal.stall;
-          if (STEPS % 50 == 0) printf("Step = %d\n", STEPS);
+
+          if (step_given)
+            printf("Step = %d\n", STEPS);
+          else if (STEPS % 50 == 0)
+            printf("Step = %d\n", STEPS);
 
           if (PC < BASE_PC_ADDR)
           {
@@ -259,6 +266,8 @@ void* instruction_fetch(void* data)
           {
             throw_error("Wrong Branch | Jump address");
           }
+
+          if (step_given == 1) break;
 
           if (BreakPoint[index] == 1 && !run)
           {

@@ -132,14 +132,14 @@ int main(int argc, char* argv[])
   pthread_create(&threads[2], NULL, alu_op, (void*)NULL);
   pthread_create(&threads[3], NULL, memory_op, (void*)NULL);
   pthread_create(&threads[4], NULL, register_write, (void*)NULL);
-  // pthread_create(&threads[5], NULL, print_svg, (void*)(base_name));
+  pthread_create(&threads[5], NULL, print_svg, (void*)(base_name));
 
   pthread_join(threads[0], NULL);
   pthread_join(threads[1], NULL);
   pthread_join(threads[2], NULL);
   pthread_join(threads[3], NULL);
   pthread_join(threads[4], NULL);
-// pthread_join(threads[5], NULL);
+  pthread_join(threads[5], NULL);
 
 #ifdef DEBUG
   printf("Control  Reached here\n");

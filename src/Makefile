@@ -55,10 +55,10 @@ test_parse: $(OBJDIR)/parse_cfg.tab.o $(OBJDIR)/lex.parse_cfg.o $(OBJS)
 
 
 submit: processor_simulator
-	rm -rf ../ignore/Assignment5 ../ignore/*.zip
-	mkdir -p ../ignore/Assignment5/src
-	cp -r $(SRCS) $(HEADER_DIR) Makefile ../ignore/Assignment5/src
-	cp ../README.md processor_simulator ../results.txt ../ignore/Assignment5
-	cd ../ignore/Assignment5 &&	zip -r ../2015CS10262_Assignment5.zip ./*
-	cp ../ignore/2015CS10262_Assignment5.zip ../ignore/2015CS10435_Assignment5.zip
-	rm -rf ../ignore/Assignment5
+	rm -rf ../ignore/Assignment6 ../ignore/*.zip
+	mkdir -p ../ignore/Assignment6/src
+	cp -r ../src ../ignore/Assignment6/src
+	cp ../README.md processor_simulator cache ../ignore/Assignment6
+	cd ../ignore/Assignment6 &&	zip -r ../2015CS10262_Assignment6.zip ./*
+	cp ../ignore/2015CS10262_Assignment6.zip ../ignore/2015CS10435_Assignment6.zip
+	rm -rf ../ignore/Assignment6
