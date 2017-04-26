@@ -117,6 +117,10 @@ int main(int argc, char* argv[])
   control_signal.stall = 0;
   control_signal.branched = 0;
 
+#ifdef DEBUG
+  trace_file = fopen("trace.txt", "w");
+#endif
+
   // Initializing mutex locks
   pthread_mutex_init(&CLOCK_LOCK, NULL);
   pthread_mutex_init(&READ_LOCK, NULL);
@@ -128,14 +132,14 @@ int main(int argc, char* argv[])
   pthread_create(&threads[2], NULL, alu_op, (void*)NULL);
   pthread_create(&threads[3], NULL, memory_op, (void*)NULL);
   pthread_create(&threads[4], NULL, register_write, (void*)NULL);
- // pthread_create(&threads[5], NULL, print_svg, (void*)(base_name));
+  // pthread_create(&threads[5], NULL, print_svg, (void*)(base_name));
 
   pthread_join(threads[0], NULL);
   pthread_join(threads[1], NULL);
   pthread_join(threads[2], NULL);
   pthread_join(threads[3], NULL);
   pthread_join(threads[4], NULL);
-  //pthread_join(threads[5], NULL);
+// pthread_join(threads[5], NULL);
 
 #ifdef DEBUG
   printf("Control  Reached here\n");
@@ -144,6 +148,8 @@ int main(int argc, char* argv[])
 
   free(base_name);
   fclose(code);
-
+#ifdef DEBUG
+  fclose(trace_file);
+#endif
   return 0;
 }

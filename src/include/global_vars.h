@@ -126,4 +126,12 @@ extern int parse_cfgparse(void);
 
 // Display signals
 extern int ACTIVE_STAGE[5];  // [0..4]-> fetch,decode,alu,mem,write
+// Indicates whether All threads have seen clock's falling edge or not
+extern int CLOCK_ZERO_READ[5];  // [0..4]-> decode,alu,mem,write,display
+extern int SVG_WRITTEN;         // Indicates whether SVG is written or not
+
+#ifdef DEBUG
+FILE* trace_file;  // trace file for debuggin
+#endif
+
 #endif

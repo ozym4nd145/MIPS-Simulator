@@ -20,7 +20,7 @@ int DATA_MEM_ACCESS = 0;
 int STALL_COUNT = 0;
 int BRANCH_CYCLE_WASTE = 0;
 int INSTRUCTION_MEM_ACCESS = 0;
-unsigned int DELAY = 1000;       // sleep delay for each thread in micro seconds
+unsigned int DELAY = 1;          // sleep delay for each thread in micro seconds
 int LATENCY = 0;                 // Latency of memory access in cycles
 int NUM_THREADS_READ = 0;        // threads that have completed the copy stage
                                  // from buffer
@@ -32,7 +32,7 @@ int BreakPoint[INSTRUCTION_MEM];
 control CONTROL_SIGN;
 
 int Memory_Block[MEMORY_SIZE];  // Memory Block
-int stall_BreakPoint=0;
+int stall_BreakPoint = 0;
 
 pthread_mutex_t CLOCK_LOCK;  // Lock for syncing clock signal
 pthread_mutex_t READ_LOCK;   // Lock for syncing read update of all threads
@@ -44,3 +44,8 @@ float SVG_SATURATE = 0.0;
 
 // Display signals
 int ACTIVE_STAGE[5];  // [0..4]-> fetch,decode,alu,mem,write
+int CLOCK_ZERO_READ[5] = {1, 1, 1, 1,
+                          1};  // [0..4]-> decode,alu,mem,write,display
+int SVG_WRITTEN = 1;
+
+FILE* trace_file;

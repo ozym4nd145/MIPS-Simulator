@@ -15,6 +15,7 @@ void* alu_op(void* data)
   int clock_start = 0;
   int new_instruction = 1;
   long long int temp;
+  CLOCK_ZERO_READ[1] = 1;
   while (1)
   {
     if (STOP_THREAD == 1)
@@ -40,12 +41,14 @@ void* alu_op(void* data)
     if (CLOCK == 1)
     {
       clock_start = 1;
+      CLOCK_ZERO_READ[1] = 0;
     }
     if (CLOCK == 0)
     {
       // indicates that the current instruction has ended
       clock_start = 0;
       new_instruction = 1;
+      CLOCK_ZERO_READ[1] = 1;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
 
@@ -219,11 +222,11 @@ void* alu_op(void* data)
               break;
 
             case SLL:
-              pipeline[2].alu_result = r2<<temp_pipeline[1].instr.shf_amt;
-             break;
+              pipeline[2].alu_result = r2 << temp_pipeline[1].instr.shf_amt;
+              break;
 
-             case SLT:
-              if(r1<r2)
+            case SLT:
+              if (r1 < r2)
                 pipeline[2].alu_result = 1;
               else
                 pipeline[2].alu_result = 0;
@@ -252,16 +255,13 @@ void* alu_op(void* data)
                          (0x0000001F));  // looking at last 5 bits of register
               break;
 
-              case MFLO:
+            case MFLO:
               pipeline[2].alu_result = temp_pipeline[1].LO;
               break;
 
-              case MOVE:
+            case MOVE:
               pipeline[2].alu_result = r2;
               break;
-
-              
-
 
             // HI LO are 2 separate registers for multiplication
 
@@ -356,41 +356,42 @@ void* alu_op(void* data)
               break;
 
             case BRANCH_NOT_EQUAL:
-            if(r1!=r2)
-            {
-              PC = temp_pipeline[1].pc + 
-              (temp_pipeline[1].instr.immediate<<2);
-              branched = 1;
-            }
-            break;
+              if (r1 != r2)
+              {
+                PC = temp_pipeline[1].pc +
+                     (temp_pipeline[1].instr.immediate << 2);
+                branched = 1;
+              }
+              break;
 
             case JUMP:
-              PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
+              PC = (PC & (0xF0000000)) |
+                   (temp_pipeline[1].instr.target_address << 2);
               branched = 1;
-            break;
+              break;
 
-            case JUMP_LINK :
-              pipeline[2].alu_result = PC+4;
-              printf("Here %d\n",pipeline[2].alu_result);
-              pipeline[2].instr.rd=31;
-              PC = (PC & (0xF0000000))|(temp_pipeline[1].instr.target_address<<2);
+            case JUMP_LINK:
+              pipeline[2].alu_result = PC + 4;
+              printf("Here %d\n", pipeline[2].alu_result);
+              pipeline[2].instr.rd = 31;
+              PC = (PC & (0xF0000000)) |
+                   (temp_pipeline[1].instr.target_address << 2);
               branched = 1;
 
               break;
 
-            case  JUMP_REGISTER :
+            case JUMP_REGISTER:
 
               PC = r1;
               branched = 1;
               break;
 
-            case JUMP_LINK_REGISTER :
-              pipeline[2].alu_result = PC+4;
+            case JUMP_LINK_REGISTER:
+              pipeline[2].alu_result = PC + 4;
               PC = r1;
               branched = 1;
 
               break;
-
 
             default:
               throw_error("Wrong Instruction");

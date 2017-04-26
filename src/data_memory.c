@@ -11,6 +11,7 @@ void* memory_op(void* data)
 {
   int clock_start = 0;
   int new_instruction = 1;
+  CLOCK_ZERO_READ[2] = 1;
 
   while (1)
   {
@@ -37,12 +38,14 @@ void* memory_op(void* data)
     if (CLOCK == 1)
     {
       clock_start = 1;
+      CLOCK_ZERO_READ[2] = 0;
     }
     if (CLOCK == 0)
     {
       // indicates that the current instruction has ended
       clock_start = 0;
       new_instruction = 1;
+      CLOCK_ZERO_READ[2] = 1;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
 
@@ -125,8 +128,8 @@ void* memory_op(void* data)
         {
           case LDR_WORD:
           {
-            //pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
-            pipeline[3].rt_val = program_memory_interface(0,offset,1);
+            // pipeline[3].rt_val = Memory_Block[(offset - BASE_ADDR) / 4];
+            pipeline[3].rt_val = program_memory_interface(0, offset, 1);
             DATA_MEM_ACCESS++;
             CONTROL_SIGN.MemRd = 1;
             break;
@@ -135,7 +138,7 @@ void* memory_op(void* data)
           {
             int x = (offset - BASE_ADDR) % 4;
             // int y = Memory_Block[(offset - BASE_ADDR) / 4];
-            int y = program_memory_interface(0,offset,1);
+            int y = program_memory_interface(0, offset, 1);
             DATA_MEM_ACCESS++;
             CONTROL_SIGN.MemRd = 1;
             int z;
@@ -166,7 +169,7 @@ void* memory_op(void* data)
             //     %d\n",
             //     offset, BASE_ADDR, write_val);
             // Memory_Block[(offset - BASE_ADDR) / 4] = write_val;
-            program_memory_interface(write_val,offset,2);
+            program_memory_interface(write_val, offset, 2);
             DATA_MEM_ACCESS++;
             CONTROL_SIGN.MemWr = 1;
             break;
@@ -174,10 +177,10 @@ void* memory_op(void* data)
           case STR_BYTE:
           {
             int byte_pos = (offset - BASE_ADDR) % 4;
-            //int index = (offset - BASE_ADDR) / 4;
+            // int index = (offset - BASE_ADDR) / 4;
             int write_val2 = write_val & (0x0000FF);
             // int temp = Memory_Block[index];
-            int temp = program_memory_interface(0,offset,1);
+            int temp = program_memory_interface(0, offset, 1);
             DATA_MEM_ACCESS++;
             CONTROL_SIGN.MemWr = 1;
 
@@ -197,7 +200,7 @@ void* memory_op(void* data)
                 break;
             }
             // Memory_Block[index] = temp;
-            program_memory_interface(temp,offset,2);
+            program_memory_interface(temp, offset, 2);
 
             break;
           }

@@ -11,6 +11,7 @@ void* register_write(void* data)
 {
   int clock_start = 0;
   int new_instruction = 1;
+  CLOCK_ZERO_READ[3] = 1;
 
   while (1)
   {
@@ -34,12 +35,14 @@ void* register_write(void* data)
     if (CLOCK == 1)
     {
       clock_start = 1;
+      CLOCK_ZERO_READ[3] = 0;
     }
     if (CLOCK == 0)
     {
       // indicates that the current instruction has ended
       clock_start = 0;
       new_instruction = 1;
+      CLOCK_ZERO_READ[3] = 1;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
 
@@ -85,7 +88,8 @@ void* register_write(void* data)
           register_file[pipeline[3].instr.rd] = pipeline[3].alu_result;
           CONTROL_SIGN.RegW = 1;
         }
-        else if (pipeline[3].instr.Itype == JUMP_LINK || pipeline[3].instr.Itype == JUMP_LINK_REGISTER )
+        else if (pipeline[3].instr.Itype == JUMP_LINK ||
+                 pipeline[3].instr.Itype == JUMP_LINK_REGISTER)
         {
           register_file[pipeline[3].instr.rd] = pipeline[3].alu_result;
           CONTROL_SIGN.RegW = 1;

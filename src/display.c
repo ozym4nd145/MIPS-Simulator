@@ -25,6 +25,7 @@ void* print_svg(void* data)
   {
     labels[i] = (char*)malloc(40 * sizeof(char));
   }
+  CLOCK_ZERO_READ[4] = 1;
 
   while (1)
   {
@@ -58,12 +59,15 @@ void* print_svg(void* data)
     if (CLOCK == 0)
     {
       clock_fall = 1;
+      CLOCK_ZERO_READ[4] = 1;
     }
     if (CLOCK == 1)
     {
       // indicates that the new instruction is being executed in pipeline
       new_fall = 1;
       clock_fall = 0;
+      CLOCK_ZERO_READ[4] = 0;
+      SVG_WRITTEN = 0;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
 
@@ -137,6 +141,7 @@ void* print_svg(void* data)
       fclose(js);
       fclose(css);
       new_fall = 0;
+      SVG_WRITTEN = 1;
     }
     if (STOP_THREAD == 1 && flag == 1)
     {

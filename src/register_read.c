@@ -15,7 +15,7 @@ void* register_read(void* data)
 {
   int clock_start = 0;
   int new_instruction = 1;
-
+  CLOCK_ZERO_READ[0] = 1;
   while (1)
   {
     if (STOP_THREAD == 1)
@@ -37,12 +37,14 @@ void* register_read(void* data)
     if (CLOCK == 1)
     {
       clock_start = 1;
+      CLOCK_ZERO_READ[0] = 0;
     }
     if (CLOCK == 0)
     {
       // indicates that the current instruction has ended
       new_instruction = 1;
       clock_start = 0;
+      CLOCK_ZERO_READ[0] = 1;
     }
     pthread_mutex_unlock(&CLOCK_LOCK);
 

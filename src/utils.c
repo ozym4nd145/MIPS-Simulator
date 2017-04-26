@@ -95,13 +95,13 @@ char *get_instruction_name(const instruction_type instr)
       return "JUMP_LINK_REGISTER";
     case MFLO:
       return "MFLO";
-      case MOVE:
+    case MOVE:
       return "MOVE";
-      case BRANCH_NOT_EQUAL:
+    case BRANCH_NOT_EQUAL:
       return "BRANCH_NOT_EQUAL";
-      case SLL:
+    case SLL:
       return "SLL";
-      case SLT:
+    case SLT:
       return "SLT";
       break;
   }
@@ -308,11 +308,18 @@ int program_memory_interface(int val, int address, int mode)
   if (mode == 1)
   {
     perform_access(address, TRACE_DATA_LOAD);
+#ifdef DEBUG
+    fprintf(trace_file, "0 %x\n", address);
+#endif
     return Memory_Block[(address - BASE_ADDR) / 4];
   }
   else
   {
     perform_access(address, TRACE_DATA_STORE);
+#ifdef DEBUG
+    fprintf(trace_file, "1 %x\n", address);
+#endif
+
     Memory_Block[(address - BASE_ADDR) / 4] = val;
     return 1;
   }
@@ -325,5 +332,8 @@ instruction program_instruction_interface(int address)
     throw_error("Illegal Memory Access");
   }
   perform_access(address, TRACE_INST_LOAD);
+#ifdef DEBUG
+  fprintf(trace_file, "2 %x\n", address);
+#endif
   return program[(address - BASE_PC_ADDR) / 4];
 }
