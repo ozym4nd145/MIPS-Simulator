@@ -125,6 +125,7 @@ int main(int argc, char* argv[])
   pthread_mutex_init(&CLOCK_LOCK, NULL);
   pthread_mutex_init(&READ_LOCK, NULL);
   pthread_mutex_init(&WRITE_LOCK, NULL);
+  pthread_mutex_init(&MEMORY_LOCK, NULL);
 
   // Creating threads
   pthread_create(&threads[0], NULL, instruction_fetch, (void*)NULL);

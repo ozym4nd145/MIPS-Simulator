@@ -116,6 +116,7 @@ extern pthread_t threads[NUM_THREADS];
 extern pthread_mutex_t CLOCK_LOCK;
 extern pthread_mutex_t READ_LOCK;
 extern pthread_mutex_t WRITE_LOCK;
+extern pthread_mutex_t MEMORY_LOCK;
 
 extern float SVG_HEIGHT;
 extern float SVG_WIDTH;

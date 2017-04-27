@@ -298,8 +298,8 @@ void* instruction_fetch(void* data)
               break;
             }
           }
-          usleep(DELAY / 10);
         }
+        usleep(DELAY);
       }  // continue stepping instructions loop ends
     }    // run | continue if ends
 

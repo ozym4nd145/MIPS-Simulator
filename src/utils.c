@@ -307,7 +307,9 @@ int program_memory_interface(int val, int address, int mode)
 
   if (mode == 1)
   {
+    pthread_mutex_lock(&MEMORY_LOCK);
     perform_access(address, TRACE_DATA_LOAD);
+    pthread_mutex_unlock(&MEMORY_LOCK);
 #ifdef DEBUG
     fprintf(trace_file, "0 %x\n", address);
 #endif
@@ -315,7 +317,9 @@ int program_memory_interface(int val, int address, int mode)
   }
   else
   {
+    pthread_mutex_lock(&MEMORY_LOCK);
     perform_access(address, TRACE_DATA_STORE);
+    pthread_mutex_unlock(&MEMORY_LOCK);
 #ifdef DEBUG
     fprintf(trace_file, "1 %x\n", address);
 #endif
@@ -331,7 +335,11 @@ instruction program_instruction_interface(int address)
   {
     throw_error("Illegal Memory Access");
   }
+
+  pthread_mutex_lock(&MEMORY_LOCK);
   perform_access(address, TRACE_INST_LOAD);
+  pthread_mutex_unlock(&MEMORY_LOCK);
+
 #ifdef DEBUG
   fprintf(trace_file, "2 %x\n", address);
 #endif
